@@ -3,10 +3,10 @@
 
 struct Positional: public BaseComponent {
 
-    int pos[2]; // x, y
+    unsigned int pos[2]; // x, y
 
-    public:
-        Positional();
-        unsigned int x(void);
-        unsigned int y(void);
+    Positional(void);
+    Positional(unsigned int x, unsigned int y);
+    unsigned int x(void);
+    unsigned int y(void);
 };

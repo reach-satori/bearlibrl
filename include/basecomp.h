@@ -4,6 +4,8 @@
 struct Entity; // avoid circular includes
 
 struct BaseComponent {
-    unsigned int tag;
+    const unsigned int tag;
     std::weak_ptr<Entity> parent;
+
+    BaseComponent(unsigned int tag);
 };

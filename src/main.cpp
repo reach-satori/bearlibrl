@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include "map.h"
 #include "tile.h"
-#include <utility>
+#include "entity.h"
+#include "poscomp.h"
 typedef unsigned int uint;
 
 int main()
@@ -35,6 +36,11 @@ int main()
     }
     //
 
+    auto player = std::make_shared<Entity>();
+    auto pos = std::make_shared<Positional>(5, 5);
+    player->add_component(std::move(pos));
+
+
 
     while (key != TK_CLOSE) {
         /* while (terminal_has_input()){ */
@@ -50,6 +56,7 @@ int main()
         /* terminal_clear(); */
         /* terminal_put(x, y, 0x40); */
         /* terminal_refresh(); */
+        //draw map
         for (int x = 0; x < map.width; x++) {
             for (int y = 0; y < map.height; y++) {
                 for (auto it = map.tiles[x][y].begin(); it != map.tiles[x][y].end(); it++) {
