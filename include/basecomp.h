@@ -1,11 +1,11 @@
 #pragma once
 #include <memory>
+#include "typedefs.h"
 
-struct Entity; // avoid circular includes
 
 struct BaseComponent {
-    const unsigned int tag;
+    const uint tag;
     std::weak_ptr<Entity> parent;
 
-    BaseComponent(unsigned int tag);
+    BaseComponent(uint tag);
 };

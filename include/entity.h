@@ -1,12 +1,15 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <map>
 #include "basecomp.h"
+#include "typedefs.h"
+
 
 
 struct Entity {
-        std::vector<unsigned int> tags;
-        std::vector<std::shared_ptr<BaseComponent>> components;
+        std::map<uint, BCptr> components;
 
-        void add_component(std::shared_ptr<BaseComponent> comp);
+        void add_component(BCptr comp);
+        std::vector<uint> get_tags(void);
 };

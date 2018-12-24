@@ -1,24 +1,23 @@
 #pragma once
 #include "tiletags.h"
+#include "typedefs.h"
+#include <vector>
 
 struct Tile {
 
-    unsigned int tag = 0;
-    unsigned int character;
+    uint tag = 0;
+    uint character;
+
+    Tile(uint tag, uint character);
 };
 
 
 struct FloorTile: public Tile {
     bool passable = true;
-    FloorTile() {
-        character = 0x2e;
-        tag = T_FLOOR;
-    }
+    FloorTile();
 };
+
 struct WallTile: public Tile {
     bool passable = false;
-    WallTile() {
-        character = 0x23;
-        tag = T_WALL;
-    }
+    WallTile();
 };

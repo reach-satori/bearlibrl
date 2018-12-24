@@ -1,12 +1,14 @@
 #pragma once
 #include "basecomp.h"
+#include "typedefs.h"
 
 struct Positional: public BaseComponent {
 
-    unsigned int pos[2]; // x, y
+    uint pos[2]; // x, y
+    uint codepoint; // display character
 
     Positional(void);
-    Positional(unsigned int x, unsigned int y);
-    unsigned int x(void);
-    unsigned int y(void);
+    Positional(uint x, uint y);
+    uint x(void);
+    uint y(void);
 };
