@@ -8,13 +8,13 @@ struct Tile {
 
     uint tag = 0;
     uint character;
+    uint passable;
 
-    Tile(uint tag, uint character);
+    Tile(uint tag, uint character, bool passable);
 };
 
 
 struct FloorTile: public Tile {
-    bool passable = true;
     FloorTile();
 };
 

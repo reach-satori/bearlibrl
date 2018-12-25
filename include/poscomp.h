@@ -9,6 +9,9 @@ struct Positional: public BaseComponent {
 
     Positional(void);
     Positional(uint x, uint y);
+    ~Positional(void);
+
     uint x(void);
     uint y(void);
+    void move(uint x, uint y);
 };

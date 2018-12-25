@@ -10,12 +10,12 @@ all: $(EXE)
 
 
 $(EXE): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o $(EXE) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(OBJ) -g -o $(EXE) $(LDFLAGS)
 
 -include $(DEP)
 
 build/%.o: src/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -g -c $< -o $@
 
 clean:
 	rm $(EXE) $(OBJ)

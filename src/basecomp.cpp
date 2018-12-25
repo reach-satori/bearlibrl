@@ -1,4 +1,4 @@
 #include "basecomp.h"
 
 
-BaseComponent::BaseComponent(unsigned int tag) : tag(tag) {}
+BaseComponent::BaseComponent(uint tag) : tag(tag) {}

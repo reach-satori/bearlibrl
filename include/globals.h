@@ -1,6 +1,11 @@
 #pragma once
 #include "tile.h"
+#include "entity.h"
+#include "map.h"
 #include <map>
-#pragma once
+#include <set>
 
 extern std::map<uint, Tile*> alltiles;
+extern Entity* player;
+extern std::shared_ptr<Map> cmap;
+extern std::shared_ptr<std::set<std::shared_ptr<Entity>>> cent;

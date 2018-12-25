@@ -1,7 +1,6 @@
-#include "BearLibTerminal.h"
 #include <stdio.h>
 #include <set>
-
+#include "BearLibTerminal.h"
 
 #include "typedefs.h"
 #include "tile.h"
@@ -14,8 +13,6 @@
 #include "globals.h"
 
 
-
-
 int main()
 {
     terminal_open();
@@ -26,25 +23,50 @@ int main()
 
     //map creation
     Map map(80, 25);
-
     create_room(&map, 10, 10, 10, 10);
+    cmap = std::make_shared<Map>(map);
 
+    //initializing entities here for now
     std::set<std::shared_ptr<Entity>> entities = std::set<std::shared_ptr<Entity>>();
-    auto player = std::make_shared<Entity>();
     auto pos = std::make_shared<Positional>(13, 13);
     pos->codepoint = 0x40;
-    player->add_component(std::move(pos));
-
-    entities.insert(player);
-
-
+    player->add_component(pos);
 
     //main loop
     while (key != TK_CLOSE) {
 
-        draw_map(map);
-        draw_entities(entities);
+        //input
+        while (terminal_has_input()) {
+            key = terminal_read();
+        }
+        uint& x = pos->pos[0];
+        uint& y = pos->pos[1];
+        switch(key) {
+            case TK_UP    :
+                if (cmap->is_passable(x, y-1)) {
+                    pos->pos[1] -= 1;
+                }
+                break;
+            case TK_DOWN    :
+                if (cmap->is_passable(x, y-1)) {
+                    pos->pos[1] += 1;
+                }
+                break;
+            case TK_LEFT    :
+                if (cmap->is_passable(x, y-1)) {
+                    pos->pos[0] -= 1;
+                }
+                break;
+            case TK_RIGHT    :
+                if (cmap->is_passable(x, y-1)) {
+                    pos->pos[0] += 1;
+                }
+                break;
+        }
+        key = 0;
 
+        draw_map(cmap);
+        draw_entities(cent);
 
         terminal_refresh();
         terminal_clear();

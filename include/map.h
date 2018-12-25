@@ -12,6 +12,7 @@ struct Map {
     Map();
     Map(uint width, uint height);
     std::vector<uint> get_tags(uint x, uint y);
+    bool is_passable(uint x, uint y);
 };
 
 void create_room(Map* map, uint xi, uint yi, uint w, uint h);
