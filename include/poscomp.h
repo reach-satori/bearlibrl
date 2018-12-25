@@ -8,7 +8,7 @@ struct Positional: public BaseComponent {
     uint codepoint; // display character
 
     Positional(void);
-    Positional(uint x, uint y);
+    Positional(uint x, uint y, uint codepoint);
     ~Positional(void);
 
     uint x(void);

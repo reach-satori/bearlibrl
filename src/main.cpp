@@ -14,48 +14,49 @@
 #include "comptags.h"
 
 #include "draw.h"
+#include "input.h"
 
 #include "globals.h"
+
+#define FRAMEWAIT 60
 
 void player_act() {
 
 }
 
 void tick_game() {
-
     //first pass to order speeds
     auto pact = player->get_action();
-    std::vector<std::shared_ptr<Action>> acts;
-    std::vector<int> speeds;
-    for (auto const& ent: *cent) {
-        auto act = ent->get_action();
-        if (act == nullptr)
-            continue;
-        acts.push_back(act);
-        speeds.push_back(act->speed);
-    }
 
-    std::sort(speeds.begin(), speeds.end());
-    assert(speeds.size() == acts.size());
-
-    int loopnum = 0;
     while(pact->tick > 0) {
-        //every entity with an action component takes their action
-        int tickdec = speeds[loopnum];
-        for (auto act: acts) {
-            act->tick -= tickdec;
+
+        int lowest_tick = 1000;
+        for (auto ent: *cent) {
+            auto act = ent->get_action();
+            if (act == nullptr)
+                continue;
+            lowest_tick = act->tick < lowest_tick ? act->tick : lowest_tick;
+        }
+
+
+        //every entity with an action component takes their action, from fastest to slowest
+        for (auto ent: *cent) {
+            auto act = ent->get_action();
+            if (act == nullptr)
+                continue;
+
+            act->tick -= lowest_tick;
             if (act.get() != pact.get() && act->tick <= 0 ) {
                 act->tick += act->speed;
+                printf("action from other entity happened\n#####\n");
                 //do action with AI here
             }
-            if (pact->tick <= 0)
+            if (pact.get() == act.get() && act->tick <= 0)
                 break;
         }
-        loopnum++;
     }
     pact->tick += pact->speed;
-    printf("%i\n", pact->tick);
-    /* player_act(); */
+    //player action comes right after this?
 }
 
 int main() {
@@ -63,7 +64,6 @@ int main() {
     terminal_set("input.events=keypress");
 
     terminal_refresh();
-    int key=0;
 
     //map creation
     Map map(80, 25);
@@ -72,56 +72,38 @@ int main() {
 
     //initializing entities here for now
     std::set<std::shared_ptr<Entity>> entities = std::set<std::shared_ptr<Entity>>();
-    auto pos = std::make_shared<Positional>(13, 13);
-    pos->codepoint = 0x40;
-    player->add_component(std::move(pos));
+    player->add_component(std::make_shared<Positional>(13, 13, 0xBF));
     player->add_component(std::make_shared<Action>(1000));
 
+    auto other_entity = std::make_shared<Entity>();
+    other_entity->add_component(std::make_shared<Positional>(13, 13, 0x21));
+    other_entity->add_component(std::make_shared<Action>(300));
+
     cent->insert(player);
+    cent->insert(other_entity);
 
     //main loop
+    int key=0;
     while (key != TK_CLOSE) {
 
-        tick_game();
+        if (game_running) {
+            tick_game(); // deals with entities that have an action component
+        }
+
+        game_running = false;
         while (terminal_has_input()) {
-            key = terminal_read();
+            key = terminal_read(); // get our input in non-blocking way
+            game_running = true;
         }
-        uint* pos = player->get_pos();
-
-        assert(pos != nullptr);
-
-        uint& x = pos[0];
-        uint& y = pos[1];
-        switch(key) {
-            case TK_UP    :
-                if (cmap->is_passable(x, y-1)) {
-                    y -= 1;
-                }
-                break;
-            case TK_DOWN    :
-                if (cmap->is_passable(x, y+1)) {
-                    y += 1;
-                }
-                break;
-            case TK_LEFT    :
-                if (cmap->is_passable(x-1, y)) {
-                    x -= 1;
-                }
-                break;
-            case TK_RIGHT    :
-                if (cmap->is_passable(x+1, y)) {
-                    x += 1;
-                }
-                break;
-        }
-        key = 0;
+        process_input(key);
+        key=0;
 
         draw_map(cmap);
         draw_entities(cent);
 
         terminal_refresh();
         terminal_clear();
-        terminal_delay(20);
+        terminal_delay(1000/FRAMEWAIT);
     }
 
     terminal_close();

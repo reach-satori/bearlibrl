@@ -3,9 +3,9 @@
 #include "typedefs.h"
 
 
-Positional::Positional(uint x, uint y) : BaseComponent(C_POSITIONAL), pos{x, y} {}
+Positional::Positional(uint x, uint y, uint codepoint) : BaseComponent(C_POSITIONAL), pos{x, y}, codepoint(codepoint) {}
 
-Positional::Positional(void) : Positional(5, 5) {}
+Positional::Positional(void) : Positional(5, 5, 0xB0) {}
 
 Positional::~Positional(void) {}
 
