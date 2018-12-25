@@ -17,5 +17,5 @@ struct Entity {
         std::set<uint> get_tags(void);
         std::shared_ptr<Positional> get_positional(void);
         uint* get_pos(void);
-        std::shared_ptr<Action> get_action(void);
+        std::shared_ptr<Actional> get_action(void);
 };

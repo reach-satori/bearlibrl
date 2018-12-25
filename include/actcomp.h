@@ -1,13 +1,13 @@
-
 #pragma once
 #include "basecomp.h"
 #include "typedefs.h"
+#include "comptags.h"
 
-struct Action: public BaseComponent {
-    const int base_speed;
+struct Actional: public BaseComponent {
+    int base_speed;
     int speed;
     int tick;
 
-    Action(int spd);
-    Action();
+    Actional(int spd);
+    Actional();
 };

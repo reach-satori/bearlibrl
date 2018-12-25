@@ -35,12 +35,12 @@ uint* Entity::get_pos(void) {
 
 }
 
-std::shared_ptr<Action> Entity::get_action(void) {
-    std::shared_ptr<Action> out;
+std::shared_ptr<Actional> Entity::get_action(void) {
+    std::shared_ptr<Actional> out;
     auto tags = get_tags();
     auto ptag = tags.find(C_ACT);
     if (ptag != tags.end()) {
-        out = std::dynamic_pointer_cast<Action>(components.find(*ptag)->second);
+        out = std::dynamic_pointer_cast<Actional>(components.find(*ptag)->second);
     } else {
         out = nullptr;
     }

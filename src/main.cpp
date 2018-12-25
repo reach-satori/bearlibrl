@@ -5,13 +5,14 @@
 #include "BearLibTerminal.h"
 
 #include "typedefs.h"
+
 #include "tile.h"
 #include "map.h"
 
 #include "entity.h"
 #include "poscomp.h"
 #include "actcomp.h"
-#include "comptags.h"
+#include "hpcomp.h"
 
 #include "draw.h"
 #include "input.h"
@@ -20,16 +21,11 @@
 
 #define FRAMEWAIT 60
 
-void player_act() {
-
-}
-
 void tick_game() {
-    //first pass to order speeds
     auto pact = player->get_action();
-
     while(pact->tick > 0) {
 
+        //get lowest tick (action that comes soonest)
         int lowest_tick = 1000;
         for (auto ent: *cent) {
             auto act = ent->get_action();
@@ -48,7 +44,6 @@ void tick_game() {
             act->tick -= lowest_tick;
             if (act.get() != pact.get() && act->tick <= 0 ) {
                 act->tick += act->speed;
-                printf("action from other entity happened\n#####\n");
                 //do action with AI here
             }
             if (pact.get() == act.get() && act->tick <= 0)
@@ -71,13 +66,12 @@ int main() {
     cmap = std::make_shared<Map>(map);
 
     //initializing entities here for now
-    std::set<std::shared_ptr<Entity>> entities = std::set<std::shared_ptr<Entity>>();
-    player->add_component(std::make_shared<Positional>(13, 13, 0xBF));
-    player->add_component(std::make_shared<Action>(1000));
-
+    player->add_component(std::make_shared<Positional>(13, 13, 0x40));
+    player->add_component(std::make_shared<Actional>(1000));
+    //another one
     auto other_entity = std::make_shared<Entity>();
     other_entity->add_component(std::make_shared<Positional>(13, 13, 0x21));
-    other_entity->add_component(std::make_shared<Action>(300));
+    other_entity->add_component(std::make_shared<Actional>(500));
 
     cent->insert(player);
     cent->insert(other_entity);

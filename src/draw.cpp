@@ -14,15 +14,9 @@ void draw_entities(std::shared_ptr<std::set<std::shared_ptr<Entity>>> entities) 
     if (entities->size() == 0) return;
 
     for (auto const& ent : *entities) {
-        auto tags = ent->get_tags();
-        auto pos = tags.find(C_POSITIONAL);
-        if (pos == tags.end()) {
-            return; //no positional, no draw
-        } else {
-            //cast shr_ptr BaseComponent to shr_ptr Positional
-            auto positional = std::dynamic_pointer_cast<Positional>(ent->components.find(*pos)->second);
-            auto realpos = positional->pos;
-            terminal_put(realpos[0], realpos[1], positional->codepoint);
-        }
+        auto pos = ent->get_positional(); // maybe add a "visual" component instead later
+        if (pos == nullptr) continue;
+        pos->draw();
     }
 }
+

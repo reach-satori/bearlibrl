@@ -1,6 +1,8 @@
 #pragma once
 #include "basecomp.h"
+#include "comptags.h"
 #include "typedefs.h"
+#include "BearLibTerminal.h"
 
 struct Positional: public BaseComponent {
 
@@ -14,4 +16,5 @@ struct Positional: public BaseComponent {
     uint x(void);
     uint y(void);
     void move(uint x, uint y);
+    void draw();
 };
