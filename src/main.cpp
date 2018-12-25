@@ -32,6 +32,8 @@ int main()
     pos->codepoint = 0x40;
     player->add_component(pos);
 
+    cent->insert(player);
+
     //main loop
     while (key != TK_CLOSE) {
 
@@ -48,17 +50,17 @@ int main()
                 }
                 break;
             case TK_DOWN    :
-                if (cmap->is_passable(x, y-1)) {
+                if (cmap->is_passable(x, y+1)) {
                     pos->pos[1] += 1;
                 }
                 break;
             case TK_LEFT    :
-                if (cmap->is_passable(x, y-1)) {
+                if (cmap->is_passable(x-1, y)) {
                     pos->pos[0] -= 1;
                 }
                 break;
             case TK_RIGHT    :
-                if (cmap->is_passable(x, y-1)) {
+                if (cmap->is_passable(x+1, y)) {
                     pos->pos[0] += 1;
                 }
                 break;

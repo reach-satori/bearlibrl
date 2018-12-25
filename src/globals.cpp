@@ -5,7 +5,7 @@ std::map<uint, Tile*> alltiles {
     std::make_pair(T_WALL, new WallTile)
 };
 
-Entity* player = new Entity;
+std::shared_ptr<Entity> player = std::make_shared<Entity>();
 
 std::shared_ptr<Map> cmap = std::make_shared<Map>();
 

@@ -2,6 +2,8 @@
 #include "typedefs.h"
 #include <map>
 
+Entity::Entity() : components(std::map<uint, BCptr>()) {}
+
 void Entity::add_component(BCptr comp) {
     //parent is weak_ptr
     comp->parent = std::make_shared<Entity>(*this);
