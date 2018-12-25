@@ -5,9 +5,9 @@
 
 Positional::Positional(uint x, uint y) : BaseComponent(C_POSITIONAL), pos{x, y} {}
 
-Positional::Positional(void) : BaseComponent(C_POSITIONAL), pos{5, 5} {}
+Positional::Positional(void) : Positional(5, 5) {}
 
-Positional::~Positional(void) {};
+Positional::~Positional(void) {}
 
 uint Positional::x(void) {
     return pos[0];

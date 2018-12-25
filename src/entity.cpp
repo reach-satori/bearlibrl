@@ -1,6 +1,4 @@
 #include "entity.h"
-#include "typedefs.h"
-#include <map>
 
 Entity::Entity() : components(std::map<uint, BCptr>()) {}
 
@@ -12,6 +10,42 @@ void Entity::add_component(BCptr comp) {
     components.insert(compin);
     //add tag to taglist
     //add parent weak_ptr to component "parent" field
+}
+
+std::shared_ptr<Positional> Entity::get_positional(void){
+    std::shared_ptr<Positional> out;
+    auto tags = get_tags();
+    auto ptag = tags.find(C_POSITIONAL);
+    if (ptag != tags.end()) {
+        out = std::dynamic_pointer_cast<Positional>(components.find(*ptag)->second);
+    } else {
+        out = nullptr;
+    }
+    return out;
+}
+
+uint* Entity::get_pos(void) {
+    uint* out = nullptr;
+    auto tags = get_tags();
+    auto ptag = tags.find(C_POSITIONAL);
+    if (ptag != tags.end()) {
+        out = get_positional()->pos;
+    }
+    return out;
+
+}
+
+std::shared_ptr<Action> Entity::get_action(void) {
+    std::shared_ptr<Action> out;
+    auto tags = get_tags();
+    auto ptag = tags.find(C_ACT);
+    if (ptag != tags.end()) {
+        out = std::dynamic_pointer_cast<Action>(components.find(*ptag)->second);
+    } else {
+        out = nullptr;
+    }
+    return out;
+
 }
 
 std::set<uint> Entity::get_tags(void)  {
