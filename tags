@@ -8,7 +8,7 @@ BCptr	include/typedefs.h	/^typedef std::shared_ptr<BaseComponent> BCptr;$/;"	t
 BaseComponent	include/basecomp.h	/^struct BaseComponent {$/;"	s
 BaseComponent	src/basecomp.cpp	/^BaseComponent::BaseComponent(unsigned int tag) : tag(tag) {}$/;"	f	class:BaseComponent
 CXX	Makefile	/^CXX = g++$/;"	m
-CXXFLAGS	Makefile	/^CXXFLAGS = -Iinclude -Wfatal-errors -Wall -MMD -g$/;"	m
+CXXFLAGS	Makefile	/^CXXFLAGS = -Iinclude -Wfatal-errors -Wall -MMD$/;"	m
 C_POSITIONAL	include/comptags.h	1;"	d
 DEP	Makefile	/^DEP = $(OBJ:%.o=%.d)$/;"	m
 EXE	Makefile	/^EXE = test$/;"	m
@@ -17,8 +17,8 @@ FloorTile	include/tile.h	/^struct FloorTile: public Tile {$/;"	s
 FloorTile	src/tile.cpp	/^FloorTile::FloorTile() : Tile(T_FLOOR, 0x2e) {};$/;"	f	class:FloorTile
 LDFLAGS	Makefile	/^LDFLAGS = -Llibs -lBearLibTerminal$/;"	m
 Map	include/map.h	/^struct Map {$/;"	s
-Map	src/map.cpp	/^Map::Map() : width(80), height(25) {};$/;"	f	class:Map
-Map	src/map.cpp	/^Map::Map(uint width, uint height) : width(width), height(height) {};$/;"	f	class:Map
+Map	src/map.cpp	/^Map::Map() : Map::Map(80, 25) {};$/;"	f	class:Map
+Map	src/map.cpp	/^Map::Map(uint width, uint height) : width(width), height(height) {$/;"	f	class:Map
 OBJ	Makefile	/^OBJ = $(SRC:src\/%.cpp=build\/%.o)$/;"	m
 Positional	include/poscomp.h	/^struct Positional: public BaseComponent {$/;"	s
 Positional	src/poscomp.cpp	/^Positional::Positional(unsigned int x, unsigned int y) : BaseComponent(C_POSITIONAL), pos{x, y} {}$/;"	f	class:Positional
@@ -28,29 +28,28 @@ T_FLOOR	include/tiletags.h	1;"	d
 T_WALL	include/tiletags.h	2;"	d
 Tile	include/tile.h	/^struct Tile {$/;"	s
 Tile	src/tile.cpp	/^Tile::Tile(uint tag, uint character) : tag(tag), character(character) {};$/;"	f	class:Tile
-Visible	include/viscomp.h	/^struct Visible: public BaseComponent {$/;"	s
 WallTile	include/tile.h	/^struct WallTile: public Tile {$/;"	s
 WallTile	src/tile.cpp	/^WallTile::WallTile() : Tile(T_WALL, 0x23) {};$/;"	f	class:WallTile
 add_component	src/entity.cpp	/^void Entity::add_component(BCptr comp) {$/;"	f	class:Entity
 character	include/tile.h	/^    uint character;$/;"	m	struct:Tile
 codepoint	include/poscomp.h	/^    uint codepoint; \/\/ display character$/;"	m	struct:Positional
 components	include/entity.h	/^        std::map<uint, BCptr> components;$/;"	m	struct:Entity
-create_room	src/main.cpp	/^void create_room(Map* map, uint xi, uint yi, uint w, uint h) {$/;"	f
-flor	src/main.cpp	/^FloorTile *flor = new FloorTile();$/;"	v
-get_tags	src/entity.cpp	/^std::vector<uint> Entity::get_tags(void)  {$/;"	f	class:Entity
+create_room	src/map.cpp	/^void create_room(Map* map, uint xi, uint yi, uint w, uint h) {$/;"	f
+draw_entities	src/draw.cpp	/^void draw_entities(std::set<std::shared_ptr<Entity>> entities) {$/;"	f
+draw_map	src/draw.cpp	/^void draw_map(Map map) {$/;"	f
+get_tags	src/entity.cpp	/^std::set<uint> Entity::get_tags(void)  {$/;"	f	class:Entity
 get_tags	src/map.cpp	/^std::vector<uint> Map::get_tags(uint x, uint y) {$/;"	f	class:Map
+get_tile_ptr	src/map.cpp	/^Tile* get_tile_ptr(uint tag) {$/;"	f
 height	include/map.h	/^    uint height;$/;"	m	struct:Map
 main	src/main.cpp	/^int main()$/;"	f
 parent	include/basecomp.h	/^    std::weak_ptr<Entity> parent;$/;"	m	struct:BaseComponent
 passable	include/tile.h	/^    bool passable = false;$/;"	m	struct:WallTile
 passable	include/tile.h	/^    bool passable = true;$/;"	m	struct:FloorTile
 pos	include/poscomp.h	/^    uint pos[2]; \/\/ x, y$/;"	m	struct:Positional
-pos	include/viscomp.h	/^    unsigned int pos[2]; \/\/ x, y$/;"	m	struct:Visible
 tag	include/basecomp.h	/^    const uint tag;$/;"	m	struct:BaseComponent
 tag	include/tile.h	/^    uint tag = 0;$/;"	m	struct:Tile
 tiles	include/map.h	/^    std::vector<std::vector<std::map<uint, Tile*>>> tiles;$/;"	m	struct:Map
 uint	include/typedefs.h	/^typedef unsigned int uint;$/;"	t
-wall	src/main.cpp	/^WallTile *wall = new WallTile();$/;"	v
 width	include/map.h	/^    uint width;$/;"	m	struct:Map
 x	src/poscomp.cpp	/^unsigned int Positional::x(void) {$/;"	f	class:Positional
 y	src/poscomp.cpp	/^unsigned int Positional::y(void) {$/;"	f	class:Positional

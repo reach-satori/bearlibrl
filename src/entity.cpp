@@ -12,10 +12,14 @@ void Entity::add_component(BCptr comp) {
     comp->parent = std::weak_ptr<Entity>(tempshared);
 }
 
-std::vector<uint> Entity::get_tags(void)  {
-    std::vector<uint> out;
+std::set<uint> Entity::get_tags(void)  {
+    std::set<uint> out;
+    if (components.size() == 0) {
+        out.insert(0);
+        return out;
+    }
     for (auto it = components.begin(); it != components.end(); it++) {
-        out.push_back(it->first);
+        out.insert(it->first);
     }
     return out;
 }

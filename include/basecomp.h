@@ -8,4 +8,5 @@ struct BaseComponent {
     std::weak_ptr<Entity> parent;
 
     BaseComponent(uint tag);
+    virtual ~BaseComponent() = default;
 };

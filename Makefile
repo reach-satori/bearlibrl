@@ -3,7 +3,7 @@ EXE = test
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:src/%.cpp=build/%.o)
 DEP = $(OBJ:%.o=%.d)
-CXXFLAGS = -Iinclude -Wfatal-errors -Wall -MMD -fPIC
+CXXFLAGS = -Iinclude -Wfatal-errors -Wall -MMD
 LDFLAGS = -Llibs -lBearLibTerminal
 
 all: $(EXE)

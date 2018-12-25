@@ -4,7 +4,7 @@
 
 
 
-//constructor just makes a solid wall map
+//constructor just makes a solid wall map of widthxheight
 //widthxheight map, each 'tile' is really a map of tiletag:tile* (pointers to just one immutable tile instance per tile
 Map::Map(uint width, uint height) : width(width), height(height) {
     std::map<uint, Tile*> outermost{std::make_pair(T_WALL, get_tile_ptr(T_WALL))};

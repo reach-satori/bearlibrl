@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <set>
 #include <memory>
 #include <map>
 #include "basecomp.h"
@@ -11,5 +11,5 @@ struct Entity {
         std::map<uint, BCptr> components;
 
         void add_component(BCptr comp);
-        std::vector<uint> get_tags(void);
+        std::set<uint> get_tags(void);
 };
