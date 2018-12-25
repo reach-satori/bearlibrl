@@ -1,22 +1,17 @@
 #include "BearLibTerminal.h"
 #include <stdio.h>
-#include "map.h"
+
+
 #include "tile.h"
+#include "map.h"
 #include "entity.h"
 #include "poscomp.h"
 #include "comptags.h"
 #include "typedefs.h"
 
-FloorTile *flor = new FloorTile();
-WallTile *wall = new WallTile();
+#include "globals.h"
 
-void create_room(Map* map, uint xi, uint yi, uint w, uint h) {
-    for (uint x = xi; x < xi + w; x++) {
-        for (uint y = yi; y < yi + h; y++) {
-            map->tiles[x][y] = std::map<uint, Tile*>{std::make_pair(T_FLOOR, flor)};
-        }
-    }
-}
+
 
 int main()
 {
@@ -30,16 +25,13 @@ int main()
     int key=0;
 
     //map creation
-    Map map;
-    map.width=80;
-    map.height=25;
-    std::map<uint, Tile*> outermost{std::make_pair(T_WALL, wall)};
+    Map map(80, 25);
+    std::map<uint, Tile*> outermost{std::make_pair(T_WALL, get_tile_ptr(T_WALL))};
     std::vector<std::map<uint, Tile*>> col(map.height, outermost);
     map.tiles = std::vector<std::vector<std::map<uint, Tile*>>>(map.width, col);
     //widthxheight map, each 'tile' is really a map of tiletag:tile* (pointers to just one immutable tile instance per tile
     //
 
-    //create a room in the map
     create_room(&map, 10, 10, 10, 10);
 
     auto player = std::make_shared<Entity>();

@@ -2,6 +2,7 @@
 #include "tiletags.h"
 #include "typedefs.h"
 #include <vector>
+#include <map>
 
 struct Tile {
 
@@ -21,3 +22,4 @@ struct WallTile: public Tile {
     bool passable = false;
     WallTile();
 };
+
