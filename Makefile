@@ -1,5 +1,5 @@
 CXX = g++
-EXE = test
+EXE = build/test
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:src/%.cpp=build/%.o)
 DEP = $(OBJ:%.o=%.d)

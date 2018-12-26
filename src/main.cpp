@@ -14,10 +14,11 @@
 #include "actcomp.h"
 #include "hpcomp.h"
 
-#include "draw.h"
 #include "input.h"
+#include "camera.h"
 
 #include "globals.h"
+#include "consts.h"
 
 #define FRAMEWAIT 60
 
@@ -56,17 +57,22 @@ void tick_game() {
 
 int main() {
     terminal_open();
-    terminal_set("input.events=keypress");
+
+    char buffer[256];
+    std::snprintf(buffer, 256, "input.events=keypress; window.size=%dx%d", CONSOLE_WIDTH, CONSOLE_HEIGHT);
+    terminal_set(buffer);
 
     terminal_refresh();
 
     //map creation
-    Map map(80, 25);
-    create_room(&map, 10, 10, 10, 10);
+    Map map(200, 200);
+    create_room(&map, 1, 1, 100, 10);
+    create_room(&map, 50, 1, 6, 150);
     cmap = std::make_shared<Map>(map);
 
+
     //initializing entities here for now
-    player->add_component(std::make_shared<Positional>(13, 13, 0x40));
+    player->add_component(std::make_shared<Positional>(5, 5,0x40));
     player->add_component(std::make_shared<Actional>(1000));
     //another one
     auto other_entity = std::make_shared<Entity>();
@@ -82,6 +88,7 @@ int main() {
 
         if (game_running) {
             tick_game(); // deals with entities that have an action component
+            camera->center(player->get_positional());
         }
 
         game_running = false;
@@ -92,8 +99,8 @@ int main() {
         process_input(key);
         key=0;
 
-        draw_map(cmap);
-        draw_entities(cent);
+        camera->draw_world();
+        camera->draw_entities();
 
         terminal_refresh();
         terminal_clear();

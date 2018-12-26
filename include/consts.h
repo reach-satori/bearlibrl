@@ -1,0 +1,2 @@
+#define CONSOLE_WIDTH 60
+#define CONSOLE_HEIGHT 25

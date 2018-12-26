@@ -1,4 +1,5 @@
 #include "poscomp.h"
+#include "globals.h"
 
 
 Positional::Positional(uint x, uint y, uint codepoint) : BaseComponent(C_POSITIONAL), pos{x, y}, codepoint(codepoint) {}
@@ -16,7 +17,10 @@ uint Positional::y(void) {
 }
 
 void Positional::move(uint x, uint y) {
-    //stub
+    if (cmap->is_passable(x, y)) {
+        pos[0] = x;
+        pos[1] = y;
+    }
 }
 
 void Positional::draw() {

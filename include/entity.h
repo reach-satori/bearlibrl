@@ -16,6 +16,5 @@ struct Entity {
         void add_component(BCptr comp);
         std::set<uint> get_tags(void);
         std::shared_ptr<Positional> get_positional(void);
-        uint* get_pos(void);
         std::shared_ptr<Actional> get_action(void);
 };

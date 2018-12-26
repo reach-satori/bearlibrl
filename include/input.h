@@ -1,5 +1,6 @@
 #include "BearLibTerminal.h"
 #include <cassert>
-#include "globals.h"
+#include <stdlib.h>
+
 
 void process_input(int key);

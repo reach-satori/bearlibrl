@@ -24,17 +24,6 @@ std::shared_ptr<Positional> Entity::get_positional(void){
     return out;
 }
 
-uint* Entity::get_pos(void) {
-    uint* out = nullptr;
-    auto tags = get_tags();
-    auto ptag = tags.find(C_POSITIONAL);
-    if (ptag != tags.end()) {
-        out = get_positional()->pos;
-    }
-    return out;
-
-}
-
 std::shared_ptr<Actional> Entity::get_action(void) {
     std::shared_ptr<Actional> out;
     auto tags = get_tags();

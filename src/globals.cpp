@@ -13,4 +13,6 @@ std::shared_ptr<std::set<std::shared_ptr<Entity>>> cent = std::make_shared<std::
 
 bool game_running = false;
 
+std::shared_ptr<Camera> camera = std::make_shared<Camera>();
+
 
