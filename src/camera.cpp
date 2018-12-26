@@ -7,9 +7,7 @@ Camera::Camera() {};
 void Camera::draw_world(void) {
     for (uint x = 0; x < width; x++) {
         for (uint y = 0; y < height; y++) {
-            for (auto it = cmap->tiles[x+pos[0]][y+pos[1]].begin(); it != cmap->tiles[x+pos[0]][y+pos[1]].end(); it++) {
-                terminal_put(x, y, (*it).second->character);
-            }
+            terminal_put(x, y, cmap->tiles[x+pos[0]][y+pos[1]].second->character);
         }
     }
 }
@@ -27,6 +25,7 @@ void Camera::draw_entities(void) {
 void Camera::set_pos(int x, int y) {
     pos[0] = clamp(x, 0, pos[0] + width);
     pos[1] = clamp(y, 0, pos[1] + height);
+    printf("camera position set: xpos:%d, ypos:%d, camx after:%d, camy after:%d\n", x, y, pos[0], pos[1]);
 }
 
 //returns true if within some margin of the center of the camera (either horizontally or vertically)

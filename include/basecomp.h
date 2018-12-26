@@ -10,3 +10,4 @@ struct BaseComponent {
     BaseComponent(uint tag);
     virtual ~BaseComponent() = default;
 };
+

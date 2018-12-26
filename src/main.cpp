@@ -104,7 +104,6 @@ int main() {
 
         camera->draw_world();
         camera->draw_entities();
-        text_center_popup("AL\nAOIUHGEPAEGHEAG\nAIGHPIAEHGPAIEHGAIEUHGPIAUEHGOAIUG\n\n\n\n\nASDF", TK_ALIGN_CENTER + TK_ALIGN_MIDDLE);
 
         terminal_refresh();
         terminal_clear();

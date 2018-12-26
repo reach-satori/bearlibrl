@@ -9,7 +9,6 @@
 
 struct Camera {
         uint pos[2] = {0, 0};
-    public:
         const uint width = CONSOLE_WIDTH;
         const uint height = CONSOLE_HEIGHT;
 

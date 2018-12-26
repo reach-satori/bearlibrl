@@ -24,18 +24,24 @@ void draw_outline(uint x, uint y, uint w, uint h, color_t color) {
     terminal_layer(DEFAULT_LAYER);
 }
 
-void text_center_popup(const char* str, int align) {
+void text_center_popup(const char* str, int align, color_t outline_color) {
     dimensions_t textsize = terminal_measure(str);
     assert(CONSOLE_WIDTH > 10);
     assert(CONSOLE_HEIGHT > 4);
     if (textsize.width > CONSOLE_WIDTH - 10) {
         textsize = terminal_measure_ext(CONSOLE_WIDTH - 10, CONSOLE_HEIGHT-4, str);
     }
-    int width = textsize.width, height = textsize.height;
-    int x = (CONSOLE_WIDTH/2 - width/2)-1;
-    int y = (CONSOLE_HEIGHT/2 - height/2)-1;
-    terminal_clear_area(x, y, width+2, height+2);//+2 means it clears the outline area as well
-    draw_outline(x, y, width+2, height+2, 0xffff0000);//same here
-    terminal_print_ext(x+1, y+1, width, height, align, str);// +1 in x y so it doesn;t go on top of the outline, not sure why
+    int w = textsize.width, h = textsize.height;
+    int x = (CONSOLE_WIDTH/2 - w/2)-1;
+    int y = (CONSOLE_HEIGHT/2 - h/2)-1;
 
+    outlined_textbox(x, y, w+2, h+2, align, str, outline_color);
 }
+
+//attn: width and height include outline space!
+void outlined_textbox(uint x, uint y, uint w, uint h, int align, const char* str, color_t outline_color) {
+    terminal_clear_area(x, y, w, h);
+    draw_outline(x, y, w, h, outline_color);
+    terminal_print_ext(x+1, y+1, w-2, h-2, align, str);
+}
+
