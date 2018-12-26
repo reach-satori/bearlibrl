@@ -2,9 +2,8 @@
 #include "typedefs.h"
 #include "consts.h"
 #include "BearLibTerminal.h"
-#include "poscomp.h"
-#include <stdlib.h>
-#include "stdio.h"
+#include "fdecs.h"
+#include <memory>
 
 
 struct Camera {

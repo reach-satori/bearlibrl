@@ -1,5 +1,5 @@
 #pragma once
-#include "basecomp.h"
+#include "compbase.h"
 #include "comptags.h"
 #include "typedefs.h"
 #include "BearLibTerminal.h"

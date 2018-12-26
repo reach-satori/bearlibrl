@@ -2,11 +2,11 @@
 #include <set>
 #include <memory>
 #include <map>
-#include "basecomp.h"
-#include "comptags.h"
 #include "typedefs.h"
-#include "poscomp.h"
-#include "actcomp.h"
+#include "compbase.h"
+#include "comptags.h"
+#include "comppos.h"
+#include "compact.h"
 
 
 struct Entity {

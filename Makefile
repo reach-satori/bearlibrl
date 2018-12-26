@@ -18,4 +18,4 @@ build/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm $(EXE) $(OBJ)
+	rm $(EXE) $(OBJ) $(DEP)

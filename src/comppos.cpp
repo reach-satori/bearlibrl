@@ -1,4 +1,4 @@
-#include "poscomp.h"
+#include "comppos.h"
 #include "globals.h"
 
 

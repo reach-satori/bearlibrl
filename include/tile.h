@@ -1,6 +1,6 @@
 #pragma once
-#include "tiletags.h"
 #include "typedefs.h"
+#include "tiletags.h"
 #include <vector>
 #include <map>
 

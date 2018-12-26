@@ -1,6 +1,5 @@
 #pragma once
-#include "basecomp.h"
-#include "typedefs.h"
+#include "compbase.h"
 #include "comptags.h"
 
 struct Actional: public BaseComponent {

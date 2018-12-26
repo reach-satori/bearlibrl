@@ -10,14 +10,15 @@
 #include "map.h"
 
 #include "entity.h"
-#include "poscomp.h"
-#include "actcomp.h"
-#include "hpcomp.h"
+#include "compcarr.h"
+#include "compinv.h"
+#include "comppos.h"
+#include "compact.h"
+#include "comphp.h"
 
 #include "input.h"
 #include "camera.h"
 #include "menus.h"
-
 #include "globals.h"
 #include "consts.h"
 
@@ -35,7 +36,6 @@ void tick_game() {
                 continue;
             lowest_tick = act->tick < lowest_tick ? act->tick : lowest_tick;
         }
-
 
         //every entity with an action component takes their action, from fastest to slowest
         for (auto ent: *cent) {
