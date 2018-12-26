@@ -4,14 +4,16 @@
 #include "entity.h"
 #include "compcarr.h"
 #include <memory>
-#include <vector>
+#include <set>
+#include <cassert>
 
 struct Inventorial : public BaseComponent {
     float maxweight;
     float currload = 0;
-    std::vector<std::shared_ptr<Entity>> inventory = std::vector<std::shared_ptr<Entity>>();
+    std::set<std::shared_ptr<Entity>> inventory = std::set<std::shared_ptr<Entity>>();
 
-    int pickup(std::shared_ptr<Entity> picked_up);
+    int add_to_inventory(std::shared_ptr<Entity> picked_up);
+    int remove_from_inventory(std::shared_ptr<Entity> item);
     Inventorial(void);
     Inventorial(float maxweight);
 };

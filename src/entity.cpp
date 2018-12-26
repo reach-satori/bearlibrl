@@ -1,15 +1,15 @@
 #include "entity.h"
 
-Entity::Entity() : components(std::map<uint, std::shared_ptr<BaseComponent>>()) {}
+Entity::Entity() : components(std::map<uint, std::shared_ptr<BaseComponent>>()) {
+}
 
 void Entity::add_component(std::shared_ptr<BaseComponent> comp) {
-    //parent is weak_ptr
-    comp->parent = std::make_shared<Entity>(*this);
+    //parent is  raw ptr
+    comp->parent = this;
     //add component
     auto compin = std::make_pair(comp->tag, comp);
     components.insert(compin);
     //add tag to taglist
-    //add parent weak_ptr to component "parent" field
 }
 
 std::shared_ptr<Positional> Entity::get_positional(void){

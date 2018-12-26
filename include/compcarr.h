@@ -8,7 +8,7 @@
 //stuff initialization will have to include "picking up"
 struct Carrial : BaseComponent {
     float weight;
-    std::weak_ptr<Inventorial> invptr = std::weak_ptr<Inventorial>();
+    Inventorial *invptr = nullptr;
 
     Carrial(void);
     Carrial(float weight);

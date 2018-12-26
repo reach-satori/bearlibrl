@@ -22,7 +22,6 @@
 #include "globals.h"
 #include "consts.h"
 
-#define FRAMEWAIT 60
 
 void tick_game() {
     auto pact = player->get_action();
@@ -77,13 +76,23 @@ int main() {
     //pointer to player is a global
     player->add_component(std::make_shared<Positional>(5, 5,0x40));
     player->add_component(std::make_shared<Actional>(1000));
+    auto inv = std::make_shared<Inventorial>();
+    player->add_component(inv);
     //another one
     auto other_entity = std::make_shared<Entity>();
     other_entity->add_component(std::make_shared<Positional>(13, 5, 0x21));
     other_entity->add_component(std::make_shared<Actional>(500));
+    other_entity->add_component(std::make_shared<Carrial>());
+    inv->add_to_inventory(other_entity);
 
     cent->insert(player);
     cent->insert(other_entity);
+
+    //initializing an entity:
+    //make_shared
+    //add components
+    //add to their respective entity set (usually the global cent?)
+
 
     //main loop
     int key=0;
