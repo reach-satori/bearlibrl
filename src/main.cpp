@@ -16,6 +16,7 @@
 
 #include "input.h"
 #include "camera.h"
+#include "menus.h"
 
 #include "globals.h"
 #include "consts.h"
@@ -56,12 +57,13 @@ void tick_game() {
 }
 
 int main() {
+    //init  (terminal doesn't pop up until first refresh call)
     terminal_open();
-
+    terminal_layer(DEFAULT_LAYER);
+    terminal_color(0xffffffff);
     char buffer[256];
     std::snprintf(buffer, 256, "input.events=keypress; window.size=%dx%d", CONSOLE_WIDTH, CONSOLE_HEIGHT);
     terminal_set(buffer);
-
     terminal_refresh();
 
     //map creation
@@ -72,11 +74,12 @@ int main() {
 
 
     //initializing entities here for now
+    //pointer to player is a global
     player->add_component(std::make_shared<Positional>(5, 5,0x40));
     player->add_component(std::make_shared<Actional>(1000));
     //another one
     auto other_entity = std::make_shared<Entity>();
-    other_entity->add_component(std::make_shared<Positional>(13, 13, 0x21));
+    other_entity->add_component(std::make_shared<Positional>(13, 5, 0x21));
     other_entity->add_component(std::make_shared<Actional>(500));
 
     cent->insert(player);
@@ -101,6 +104,7 @@ int main() {
 
         camera->draw_world();
         camera->draw_entities();
+        text_center_popup("AL\nAOIUHGEPAEGHEAG\nAIGHPIAEHGPAIEHGAIEUHGPIAUEHGOAIUG\n\n\n\n\nASDF", TK_ALIGN_CENTER + TK_ALIGN_MIDDLE);
 
         terminal_refresh();
         terminal_clear();

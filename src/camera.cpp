@@ -27,7 +27,6 @@ void Camera::draw_entities(void) {
 void Camera::set_pos(int x, int y) {
     pos[0] = clamp(x, 0, pos[0] + width);
     pos[1] = clamp(y, 0, pos[1] + height);
-    printf("camera position set: xpos:%d, ypos:%d, camx after:%d, camy after:%d\n", x, y, pos[0], pos[1]);
 }
 
 //returns true if within some margin of the center of the camera (either horizontally or vertically)
