@@ -7,6 +7,7 @@
 #include "entity.h"
 #include "level.h"
 #include "typedefs.h"
+#include "consts.h"
 
 
 class LevelManager {
@@ -22,9 +23,11 @@ class LevelManager {
         Level *get_change_currlvl(void) const;
         void add_entity_to_currlvl(std::shared_ptr<Entity> ent);
         void add_entity_to_lvl(std::shared_ptr<Entity> ent, uint lvl);
-        void add_lvl(std::unique_ptr<Level> lvl);
+        uint add_lvl(std::unique_ptr<Level> lvl);
         void clear_lvl (uint tag);
-        void switch_lvl (uint tag);
+        void move_to_lvl (uint tag);
         bool entity_check (std::shared_ptr<Entity>) const;
+        bool level_check (uint tag) const;
         void annihilate_entity (std::shared_ptr<Entity> ent);
+
 };

@@ -1,2 +1,5 @@
-#define T_FLOOR 1
-#define T_WALL 2
+#pragma once
+enum TILE_TAG {
+    T_FLOOR,
+    T_WALL
+};

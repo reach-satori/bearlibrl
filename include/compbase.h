@@ -2,13 +2,14 @@
 #include <memory>
 #include "typedefs.h"
 #include "fdecs.h"
+#include "comptags.h"
 
 
 struct BaseComponent {
-    const uint tag;
+    UNIQUE_COMPONENT_TAG tag;
     std::weak_ptr<Entity> parent;
 
-    BaseComponent(uint tag);
+    BaseComponent(UNIQUE_COMPONENT_TAG tag);
     virtual ~BaseComponent() = default;
 };
 

@@ -9,7 +9,7 @@
 
 #include "typedefs.h"
 
-//entity
+// entity
 #include "entity.h"
 
 // components
@@ -19,6 +19,7 @@
 #include "compact.h"
 #include "comphp.h"
 
+// stuff
 #include "tile.h"
 #include "level.h"
 #include "input.h"
@@ -60,8 +61,7 @@ void tick_game() {
     //player action comes right after this?
 }
 
-int main() {
-    //init  (terminal doesn't pop up until first refresh call)
+void terminal_init() {
     terminal_open();
     terminal_layer(DEFAULT_LAYER);
     terminal_color(0xffffffff);
@@ -69,22 +69,37 @@ int main() {
     std::snprintf(buffer, 256, "input.events=keypress; window.size=%dx%d", CONSOLE_WIDTH, CONSOLE_HEIGHT);
     terminal_set(buffer);
     terminal_refresh();
+}
 
-    //map creation
+int main() {
+
+    terminal_init();
+
+    //levelmanager initiation initiates a
+    //map creation (idk where to move this)
     auto cmap = levelmanager->get_change_currlvl();
-    cmap->create_room(  1, 1, 100, 10);
-    cmap->create_room(50, 1, 6, 150);
+    cmap->create_room(  1, 1, 78, 10);
+    cmap->create_room(50, 1, 6, 22);
+    cmap = nullptr;
+
+    auto map2 = std::make_unique<Level>(80, 25); // currently if map size is smaller than the console size, it crashes
+    map2->create_room(1, 1, 9, 9);
+
+    //testing other stuff
+    levelmanager->add_lvl(std::move(map2));
+    /* levelmanager->move_to_lvl(1); */
 
 
     //initializing entities here for now
-    /* auto item = std::make_shared<Entity>(); */
-    /* levelmanager->add_entity_to_currlvl(item); */
-    /* item->add_component(std::make_unique<Positional>(13, 5, 0x21)); */
-    /* item->add_component(std::make_unique<Actional>(500)); */
-    /* item->add_component(std::make_unique<Carrial>()); */
+    auto item = std::make_shared<Entity>();
+    levelmanager->add_entity_to_currlvl(item);
+    item->add_component(std::make_unique<Positional>(13, 5, 0x21));
+    item->add_component(std::make_unique<Actional>(500));
+    item->add_component(std::make_unique<Carrial>());
+    item.reset();
 
     levelmanager->add_entity_to_currlvl(player);
-    player->add_component(std::make_unique<Positional>(5, 5,0x40));
+    player->add_component(std::make_unique<Positional>(30, 10,0x40));
     player->add_component(std::make_unique<Actional>(1000));
     auto inv = std::make_unique<Inventorial>();
     player->add_component(std::move(inv));

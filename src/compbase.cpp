@@ -1,3 +1,3 @@
 #include "compbase.h"
 
-BaseComponent::BaseComponent(uint tag) : tag(tag) {}
+BaseComponent::BaseComponent(UNIQUE_COMPONENT_TAG tag) : tag(tag) {}

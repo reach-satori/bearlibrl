@@ -1,7 +1,7 @@
 #include "entity.h"
 #include "globals.h"
 
-Entity::Entity() : components(std::map<uint, std::unique_ptr<BaseComponent>>()) {
+Entity::Entity() : components(std::map<UNIQUE_COMPONENT_TAG, std::unique_ptr<BaseComponent>>()) {
 }
 
 void Entity::add_component(std::unique_ptr<BaseComponent> comp) {
@@ -12,36 +12,35 @@ void Entity::add_component(std::unique_ptr<BaseComponent> comp) {
 }
 
 
-BaseComponent *Entity::get_change_component(uint tag) {
+BaseComponent *Entity::get_change_component(UNIQUE_COMPONENT_TAG tag) {
     auto it = components.find(tag);
     BaseComponent *out;
     if (it == components.end()) {
         out = nullptr;
     } else {
         //it is iterator to pair
-        //pair is <uint, shared_ptr<bcomp>
+        //pair is <UNIQUE_COMPONENT_TAG, shared_ptr<bcomp>
         out = it->second.get();
     }
     return out;
 }
-BaseComponent const *Entity::get_const_component(uint tag) {
+BaseComponent const *Entity::get_const_component(UNIQUE_COMPONENT_TAG tag) {
     auto it = components.find(tag);
     BaseComponent *out;
     if (it == components.end()) {
         out = nullptr;
     } else {
         //it is iterator to pair
-        //pair is <uint, shared_ptr<bcomp>
+        //pair is <UNIQUE_COMPONENT_TAG, shared_ptr<bcomp>
         out = it->second.get();
     }
     return out;
 }
 
 
-std::set<uint> Entity::get_tags(void)  {
-    std::set<uint> out;
+std::set<UNIQUE_COMPONENT_TAG> Entity::get_tags(void)  {
+    std::set<UNIQUE_COMPONENT_TAG> out;
     if (components.size() == 0) {
-        out.insert(0);
         return out;
     }
     for (auto it = components.begin(); it != components.end(); it++) {

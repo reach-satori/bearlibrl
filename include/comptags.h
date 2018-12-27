@@ -1,6 +1,9 @@
 #pragma once
-#define C_POSITIONAL 1
-#define C_ACT 2
-#define C_VITAL 3
-#define C_INV 4
-#define C_CARR 5
+
+enum UNIQUE_COMPONENT_TAG {
+C_POSITIONAL,
+C_ACT,
+C_VITAL,
+C_INV,
+C_CARR
+};

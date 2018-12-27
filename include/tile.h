@@ -6,11 +6,11 @@
 
 struct Tile {
 
-    uint tag = 0;
+    TILE_TAG tag = T_FLOOR;
     uint character;
     uint passable;
 
-    Tile(uint tag, uint character, bool passable);
+    Tile(TILE_TAG tag, uint character, bool passable);
 };
 
 

@@ -2,7 +2,7 @@
 
 
 LevelManager::LevelManager() {
-    auto lvl0 = std::make_unique<Level>(200, 200);
+    auto lvl0 = std::make_unique<Level>(CONSOLE_WIDTH+1, CONSOLE_HEIGHT+1);
     all_levels.insert(std::make_pair(current_tag, std::move(lvl0)));
     tagged_entities.insert(std::make_pair(current_tag, std::set<std::shared_ptr<Entity>>()));
 }
@@ -26,56 +26,59 @@ Level *LevelManager::get_change_currlvl(void) const {
 }
 
 void LevelManager::add_entity_to_lvl(std::shared_ptr<Entity> ent, uint lvl){
-    //iterator to pair <uint, set<ptr<entity>>, or end() if not found
-    //search: map find method return value
-    auto lvl_entities = tagged_entities.find(lvl);
-    if (lvl_entities == tagged_entities.end()){
-        // no level matching the tag found
-        // TODO: handle case?
+
+    if (!level_check(lvl)){
+        printf("attempted to add entity to non-existing lebel");
         return;
     }
 
-    bool in = entity_check(ent);
-    if (in) {
+    if (entity_check(ent)) {
         printf("attempted to add an already existing entity");
         return;
     }
 
     all_entities.insert(ent);
-    lvl_entities->second.insert(ent);
+    tagged_entities.find(lvl)->second.insert(ent);
 }
 
 void LevelManager::add_entity_to_currlvl(std::shared_ptr<Entity> ent){
     add_entity_to_lvl(ent, current_tag);
 }
 
-void LevelManager::add_lvl(std::unique_ptr<Level> lvl) {
+uint LevelManager::add_lvl(std::unique_ptr<Level> lvl) {
 
     //unique ptr makes things easier here
     auto newtag = (all_levels.rbegin()->first) + 1;
+    assert(level_check(newtag) == false); // this will never return false
     auto pair = std::make_pair( newtag, std::move(lvl));
     assert(all_levels.insert(std::move(pair)).second == true);
     tagged_entities.emplace(newtag, std::set<std::shared_ptr<Entity>>());
 
+    return newtag;
 }
 
 void LevelManager::clear_lvl (uint tag) {
-    auto it = tagged_entities.find(tag);
-    if (it == tagged_entities.end()){
-        //tag not found
-        //TODO: handle it
+    if (tag == current_tag){
+        printf("attempted to clear current level");
         return;
     }
 
-    for (auto& ent: it->second) {
+    if (!level_check(tag)){
+        printf("attempted to clear a level that didn't exist");
+        return;
+    }
+
+    for (auto& ent: tagged_entities.find(tag)->second) {
         all_entities.erase(ent);
     }
     tagged_entities.erase(tag);
     all_levels.erase(tag);
 }
 
-void LevelManager::switch_lvl (uint tag) {
-    current_tag=tag;
+//this can only move to an existing level
+void LevelManager::move_to_lvl (uint tag) {
+    if (level_check(tag))
+        current_tag=tag;
     //something tells me i'll be back to this function often
 }
 
@@ -99,6 +102,17 @@ bool LevelManager::entity_check (std::shared_ptr<Entity> ent) const {
     //so we can return just one of em: true if it's in, false if it's not
     return (in_tagged_entities);
 }
+
+bool LevelManager::level_check (uint tag) const {
+    bool in_all_lvls = (all_levels.find(tag) != all_levels.end());
+    bool in_tag_lvls = (tagged_entities.find(tag) != tagged_entities.end());
+
+    assert(! (in_tag_lvls && !in_all_lvls));
+    assert(! (!in_tag_lvls && in_all_lvls));
+
+    return in_tag_lvls;
+}
+
 
 void LevelManager::annihilate_entity (std::shared_ptr<Entity> ent) {
 }
