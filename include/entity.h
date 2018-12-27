@@ -20,4 +20,5 @@ struct Entity : public std::enable_shared_from_this<Entity> {
         //used when there is no intention to change entity, just look at it
         BaseComponent const *get_const_component(uint tag);
         BaseComponent *get_change_component(uint tag);
+        void annihilate(void);
 };

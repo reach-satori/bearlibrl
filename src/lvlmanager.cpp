@@ -8,15 +8,19 @@ LevelManager::LevelManager() {
 }
 
 std::set<std::shared_ptr<Entity>> const *LevelManager::get_current_entities() const {
+    assert(tagged_entities.find(current_tag) != tagged_entities.end() &&  "attempted to check nonexisting current level for entities: current level should always exist, so something has gone wrong!");
     return &tagged_entities.find(current_tag)->second;
 }
 
 Level const *LevelManager::get_const_currlvl(void) const {
+
+    assert(all_levels.find(current_tag) != all_levels.end() && "Unique_ptr to current map not found where it should be \n or perhaps it has the incorrect tag");
     Level const * out = all_levels.find(current_tag)->second.get();
     return out;
 }
 
 Level *LevelManager::get_change_currlvl(void) const {
+    assert(all_levels.find(current_tag) != all_levels.end() && "Unique_ptr to current map not found where it should be \n or perhaps it has the incorrect tag");
     Level *out = all_levels.find(current_tag)->second.get();
     return out;
 }
@@ -31,14 +35,14 @@ void LevelManager::add_entity_to_lvl(std::shared_ptr<Entity> ent, uint lvl){
         return;
     }
 
-    //pair <iterator<ptr<entity>>, bool>, bool false if there was a duplicate(and insertion failed)
-    //search: set return value
-    if (!all_entities.insert(ent).second) {
-        //duplicate entity found in all_entities:
-        //TODO: handle case
+    bool in = entity_check(ent);
+    if (in) {
+        printf("attempted to add an already existing entity");
         return;
     }
-    lvl_entities->second.insert(ent);// if above block doesn't return, duplicate tag not found in all_entities, therefore we're cleared to add it to tagged_entities
+
+    all_entities.insert(ent);
+    lvl_entities->second.insert(ent);
 }
 
 void LevelManager::add_entity_to_currlvl(std::shared_ptr<Entity> ent){
@@ -50,7 +54,7 @@ void LevelManager::add_lvl(std::unique_ptr<Level> lvl) {
     //unique ptr makes things easier here
     auto newtag = (all_levels.rbegin()->first) + 1;
     auto pair = std::make_pair( newtag, std::move(lvl));
-    all_levels.insert(std::move(pair));
+    assert(all_levels.insert(std::move(pair)).second == true);
     tagged_entities.emplace(newtag, std::set<std::shared_ptr<Entity>>());
 
 }
@@ -75,4 +79,27 @@ void LevelManager::switch_lvl (uint tag) {
     //something tells me i'll be back to this function often
 }
 
+bool LevelManager::entity_check (std::shared_ptr<Entity> ent) const {
+    //check that the entity is either in neither entity set or in both
+    //returns true if entity is in, false if not, asserts out if neither option
+    bool in_all_entities = (all_entities.find(ent) != all_entities.end());
+
+    bool in_tagged_entities = false;
+    for (auto lvl = tagged_entities.rbegin(); lvl != tagged_entities.rend(); lvl++) {
+        if (lvl->second.find(ent) != lvl->second.end()){
+            in_tagged_entities = true;
+            break;
+        }
+    }
+
+    assert(! (in_tagged_entities && !in_all_entities));
+    assert(! (!in_tagged_entities && in_all_entities));
+
+    //due to the assertions above in_tagged_entities and in_all_entities are guaranteed to be the same
+    //so we can return just one of em: true if it's in, false if it's not
+    return (in_tagged_entities);
+}
+
+void LevelManager::annihilate_entity (std::shared_ptr<Entity> ent) {
+}
 

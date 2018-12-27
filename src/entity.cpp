@@ -1,4 +1,5 @@
 #include "entity.h"
+#include "globals.h"
 
 Entity::Entity() : components(std::map<uint, std::unique_ptr<BaseComponent>>()) {
 }
@@ -47,4 +48,12 @@ std::set<uint> Entity::get_tags(void)  {
         out.insert(it->first);
     }
     return out;
+}
+
+//to arbitrarily destroy an entity call this
+//if it's getting cleared as part of a level clear etc this should not be used
+void Entity::annihilate(void) {
+    auto ptr = shared_from_this();
+    levelmanager->annihilate_entity(ptr);
+
 }

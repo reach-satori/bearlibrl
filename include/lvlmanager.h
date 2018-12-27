@@ -1,6 +1,8 @@
+#pragma once
 #include <set>
 #include <map>
 #include <memory>
+#include <cassert>
 
 #include "entity.h"
 #include "level.h"
@@ -23,5 +25,6 @@ class LevelManager {
         void add_lvl(std::unique_ptr<Level> lvl);
         void clear_lvl (uint tag);
         void switch_lvl (uint tag);
-
+        bool entity_check (std::shared_ptr<Entity>) const;
+        void annihilate_entity (std::shared_ptr<Entity> ent);
 };
