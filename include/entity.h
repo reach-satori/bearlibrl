@@ -9,14 +9,12 @@
 #include "compact.h"
 
 
-struct Entity {
-        std::map<uint, std::shared_ptr<BaseComponent>> components;
+struct Entity : public std::enable_shared_from_this<Entity> {
+        std::map<uint, std::unique_ptr<BaseComponent>> components;
 
         Entity(void);
-        void add_component(std::shared_ptr<BaseComponent> comp);
+        void add_component(std::unique_ptr<BaseComponent> comp);
         std::set<uint> get_tags(void);
-        std::shared_ptr<Positional> get_positional(void);
-        std::shared_ptr<Actional> get_action(void);
 
-        std::shared_ptr<BaseComponent> search_tags_for(uint tag);
+        BaseComponent *search_tags_for(uint tag);
 };

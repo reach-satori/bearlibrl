@@ -1,38 +1,25 @@
 #include "entity.h"
 
-Entity::Entity() : components(std::map<uint, std::shared_ptr<BaseComponent>>()) {
+Entity::Entity() : components(std::map<uint, std::unique_ptr<BaseComponent>>()) {
 }
 
-void Entity::add_component(std::shared_ptr<BaseComponent> comp) {
-    //parent is  raw ptr
-    comp->parent = this;
+void Entity::add_component(std::unique_ptr<BaseComponent> comp) {
+    //parent is weak ptr
+    comp->parent = shared_from_this();
     //add component
-    auto compin = std::make_pair(comp->tag, comp);
-    components.insert(compin);
-    //add tag to taglist
+    components.insert(std::make_pair(comp->tag, std::move(comp)));
 }
 
-std::shared_ptr<Positional> Entity::get_positional(void){
-    std::shared_ptr<Positional> out;
-    out = std::dynamic_pointer_cast<Positional>(search_tags_for(C_POSITIONAL));
-    return out;
-}
 
-std::shared_ptr<Actional> Entity::get_action(void) {
-    std::shared_ptr<Actional> out;
-    out = std::dynamic_pointer_cast<Actional>(search_tags_for(C_ACT));
-    return out;
-}
-
-std::shared_ptr<BaseComponent> Entity::search_tags_for(uint tag) {
+BaseComponent *Entity::search_tags_for(uint tag) {
     auto it = components.find(tag);
-    std::shared_ptr<BaseComponent> out;
+    BaseComponent *out;
     if (it == components.end()) {
         out = nullptr;
     } else {
         //it is iterator to pair
         //pair is <uint, shared_ptr<bcomp>
-        out = std::shared_ptr<BaseComponent>(it->second);
+        out = it->second.get();
     }
     return out;
 }

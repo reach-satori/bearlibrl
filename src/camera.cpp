@@ -13,7 +13,7 @@ void Camera::draw_world(void) {
 }
 void Camera::draw_entities(void) {
     for (auto& ent : *cent) {
-        auto posin = ent->get_positional();
+        Positional *posin = dynamic_cast<Positional*>(ent->search_tags_for(C_POSITIONAL));
         if (posin == nullptr)
             continue;
         if (!on_camera(posin))
@@ -28,7 +28,7 @@ void Camera::set_pos(int x, int y) {
 }
 
 //returns true if within some margin of the center of the camera (either horizontally or vertically)
-bool Camera::in_camera_center(std::shared_ptr<Positional> posin) {
+bool Camera::in_camera_center(Positional* posin) {
     uint objx = posin->pos[0];
     uint objy = posin->pos[1];
     bool horcenter = false, vertcenter = false;
@@ -43,13 +43,13 @@ bool Camera::in_camera_center(std::shared_ptr<Positional> posin) {
     return (horcenter && vertcenter);
 }
 
-bool Camera::on_camera(std::shared_ptr<Positional> posin) {
+bool Camera::on_camera(Positional* posin) {
     uint x = posin->pos[0];
     uint y = posin->pos[1];
     return x >= pos[0] && x < pos[0] + width && y >= pos[1] && y < pos[1] + height;
 }
 
-void Camera::center(std::shared_ptr<Positional> posin) {
+void Camera::center(Positional *posin) {
     if (!in_camera_center(posin)) {
         set_pos(posin->pos[0]-width/2, posin->pos[1]-height/2);
     }

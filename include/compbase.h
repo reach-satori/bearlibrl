@@ -6,7 +6,7 @@
 
 struct BaseComponent {
     const uint tag;
-    Entity *parent;
+    std::weak_ptr<Entity> parent;
 
     BaseComponent(uint tag);
     virtual ~BaseComponent() = default;
