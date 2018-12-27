@@ -13,7 +13,7 @@ Level::Level(uint width, uint height) : width(width), height(height) {
 
 Level::Level() : Level::Level(80, 25) {};
 
-bool Level::is_passable(uint x, uint y) {
+bool Level::is_passable(uint x, uint y) const {
     bool out = true;
     if (x <= 0 || x >= width || y <= 0 || y >= height)
         out = false;

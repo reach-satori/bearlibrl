@@ -4,14 +4,26 @@ Entity::Entity() : components(std::map<uint, std::unique_ptr<BaseComponent>>()) 
 }
 
 void Entity::add_component(std::unique_ptr<BaseComponent> comp) {
-    //parent is weak ptr
+    //parent is weak ptr (implictly converted)
     comp->parent = shared_from_this();
     //add component
     components.insert(std::make_pair(comp->tag, std::move(comp)));
 }
 
 
-BaseComponent *Entity::search_tags_for(uint tag) {
+BaseComponent *Entity::get_change_component(uint tag) {
+    auto it = components.find(tag);
+    BaseComponent *out;
+    if (it == components.end()) {
+        out = nullptr;
+    } else {
+        //it is iterator to pair
+        //pair is <uint, shared_ptr<bcomp>
+        out = it->second.get();
+    }
+    return out;
+}
+BaseComponent const *Entity::get_const_component(uint tag) {
     auto it = components.find(tag);
     BaseComponent *out;
     if (it == components.end()) {

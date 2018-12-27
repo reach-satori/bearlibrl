@@ -17,7 +17,7 @@ uint Positional::y(void) {
 }
 
 void Positional::move(uint x, uint y) {
-    if (cmap->is_passable(x, y)) {
+    if (levelmanager->get_const_currlvl()->is_passable(x, y)) {
         pos[0] = x;
         pos[1] = y;
     }

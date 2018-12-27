@@ -24,21 +24,21 @@
 
 
 void tick_game() {
-    Actional *pact = dynamic_cast<Actional*>(player->search_tags_for(C_ACT));
+    Actional *pact = dynamic_cast<Actional*>(player->get_change_component(C_ACT));
     while(pact->tick > 0) {
 
         //get lowest tick (action that comes soonest)
         int lowest_tick = 1000;
-        for (auto ent: *cent) {
-            Actional *act = dynamic_cast<Actional*>(ent->search_tags_for(C_ACT));
+        for (const auto& ent: *levelmanager->get_current_entities()) {
+            Actional const *act = dynamic_cast<Actional const *>(ent->get_const_component(C_ACT));
             if (act == nullptr)
                 continue;
             lowest_tick = act->tick < lowest_tick ? act->tick : lowest_tick;
         }
 
         //every entity with an action component takes their action, from fastest to slowest
-        for (auto ent: *cent) {
-            Actional *act = dynamic_cast<Actional*>(ent->search_tags_for(C_ACT));
+        for (const auto& ent: *levelmanager->get_current_entities()) {
+            Actional *act = dynamic_cast<Actional*>(ent->get_change_component(C_ACT));
             if (act == nullptr)
                 continue;
 
@@ -66,31 +66,32 @@ int main() {
     terminal_refresh();
 
     //map creation
-    cmap = std::make_shared<Level>(200, 200);
+    auto cmap = levelmanager->get_change_currlvl();
     cmap->create_room(  1, 1, 100, 10);
     cmap->create_room(50, 1, 6, 150);
 
+    auto map2 = std::make_unique<Level>();
+    map2->create_room(  1, 1, 30, 10);
+    levelmanager->add_lvl(std::move(map2));
 
     //initializing entities here for now
-    auto other_entity = std::make_shared<Entity>();
-    cent->insert(other_entity);
-    other_entity->add_component(std::make_unique<Positional>(13, 5, 0x21));
-    other_entity->add_component(std::make_unique<Actional>(500));
-    other_entity->add_component(std::make_unique<Carrial>());
+    auto item = std::make_shared<Entity>();
+    levelmanager->add_entity_to_currlvl(item);
+    item->add_component(std::make_unique<Positional>(13, 5, 0x21));
+    item->add_component(std::make_unique<Actional>(500));
+    item->add_component(std::make_unique<Carrial>());
 
-    auto item2 = std::make_shared<Entity>();
-    cent->insert(item2);
-    item2->add_component(std::make_unique<Positional>(13, 5, 0x21));
-    item2->add_component(std::make_unique<Actional>(500));
-    item2->add_component(std::make_unique<Carrial>());
+    /* auto item2 = std::make_shared<Entity>(); */
+    /* item2->add_component(std::make_unique<Positional>(13, 5, 0x21)); */
+    /* item2->add_component(std::make_unique<Actional>(500)); */
+    /* item2->add_component(std::make_unique<Carrial>()); */
+    levelmanager->add_entity_to_currlvl(player);
 
-    //pointer to player is a global
+    /* //pointer to player is a global */
     player->add_component(std::make_unique<Positional>(5, 5,0x40));
     player->add_component(std::make_unique<Actional>(1000));
     auto inv = std::make_unique<Inventorial>();
-    cent->insert(player);
     player->add_component(std::move(inv));
-
 
 
 
@@ -100,7 +101,7 @@ int main() {
 
         if (game_running) {
             tick_game(); // deals with entities that have an action component
-            camera->center(dynamic_cast<Positional*>(player->search_tags_for(C_POSITIONAL)));
+            camera->center(dynamic_cast<Positional const *>(player->get_const_component(C_POSITIONAL)));
         }
 
         game_running = false;

@@ -12,7 +12,7 @@ struct Level {
 
     Level();
     Level(uint width, uint height);
-    bool is_passable(uint x, uint y);
+    bool is_passable(uint x, uint y) const;
     void create_room(uint xi, uint yi, uint w, uint h);
 };
 

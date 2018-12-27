@@ -13,7 +13,7 @@ struct Inventorial : public BaseComponent {
     std::set<std::shared_ptr<Entity>> inventory = std::set<std::shared_ptr<Entity>>();
 
     int add_to_inventory(std::shared_ptr<Entity> item);
-    int remove_from_inventory(Entity* item);
+    int remove_from_inventory(std::shared_ptr<Entity> item);
     Inventorial(void);
     Inventorial(float maxweight);
 };
