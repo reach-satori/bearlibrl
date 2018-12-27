@@ -2,20 +2,25 @@
 #include <algorithm>
 #include <set>
 #include <cassert>
+
 #include "BearLibTerminal.h"
+
+/////////////////////
 
 #include "typedefs.h"
 
-#include "tile.h"
-#include "level.h"
-
+//entity
 #include "entity.h"
+
+// components
 #include "compcarr.h"
 #include "compinv.h"
 #include "comppos.h"
 #include "compact.h"
 #include "comphp.h"
 
+#include "tile.h"
+#include "level.h"
 #include "input.h"
 #include "camera.h"
 #include "menus.h"
@@ -70,24 +75,15 @@ int main() {
     cmap->create_room(  1, 1, 100, 10);
     cmap->create_room(50, 1, 6, 150);
 
-    auto map2 = std::make_unique<Level>();
-    map2->create_room(  1, 1, 30, 10);
-    levelmanager->add_lvl(std::move(map2));
 
     //initializing entities here for now
-    auto item = std::make_shared<Entity>();
-    levelmanager->add_entity_to_currlvl(item);
-    item->add_component(std::make_unique<Positional>(13, 5, 0x21));
-    item->add_component(std::make_unique<Actional>(500));
-    item->add_component(std::make_unique<Carrial>());
+    /* auto item = std::make_shared<Entity>(); */
+    /* levelmanager->add_entity_to_currlvl(item); */
+    /* item->add_component(std::make_unique<Positional>(13, 5, 0x21)); */
+    /* item->add_component(std::make_unique<Actional>(500)); */
+    /* item->add_component(std::make_unique<Carrial>()); */
 
-    /* auto item2 = std::make_shared<Entity>(); */
-    /* item2->add_component(std::make_unique<Positional>(13, 5, 0x21)); */
-    /* item2->add_component(std::make_unique<Actional>(500)); */
-    /* item2->add_component(std::make_unique<Carrial>()); */
     levelmanager->add_entity_to_currlvl(player);
-
-    /* //pointer to player is a global */
     player->add_component(std::make_unique<Positional>(5, 5,0x40));
     player->add_component(std::make_unique<Actional>(1000));
     auto inv = std::make_unique<Inventorial>();

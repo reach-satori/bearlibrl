@@ -48,8 +48,11 @@ void LevelManager::add_entity_to_currlvl(std::shared_ptr<Entity> ent){
 void LevelManager::add_lvl(std::unique_ptr<Level> lvl) {
 
     //unique ptr makes things easier here
-    auto pair = std::make_pair( all_levels.rbegin()->first , std::move(lvl));
+    auto newtag = (all_levels.rbegin()->first) + 1;
+    auto pair = std::make_pair( newtag, std::move(lvl));
     all_levels.insert(std::move(pair));
+    tagged_entities.emplace(newtag, std::set<std::shared_ptr<Entity>>());
+
 }
 
 void LevelManager::clear_lvl (uint tag) {
@@ -67,7 +70,8 @@ void LevelManager::clear_lvl (uint tag) {
     all_levels.erase(tag);
 }
 
-void switch_lvl (uint tag) {
+void LevelManager::switch_lvl (uint tag) {
+    current_tag=tag;
     //something tells me i'll be back to this function often
 }
 
