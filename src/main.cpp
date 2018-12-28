@@ -42,8 +42,17 @@ void tick_game() {
             lowest_tick = act->tick < lowest_tick ? act->tick : lowest_tick;
         }
 
+        //make sure player is the last one checked by making a vector out of the set and placing the player last
+        auto entset = *levelmanager->get_current_entities();
+        bool noplayer = entset.find(player) == entset.end();
+        if (!noplayer)
+            entset.erase(player);
+        std::vector<std::shared_ptr<Entity>> vec(entset.begin(), entset.end());
+        if (!noplayer)
+            vec.push_back(player);
+
         //every entity with an action component takes their action, from fastest to slowest
-        for (const auto& ent: *levelmanager->get_current_entities()) {
+        for (const auto& ent: vec) {
             Actional *act = dynamic_cast<Actional*>(ent->get_change_component(C_ACT));
             if (act == nullptr)
                 continue;
@@ -51,6 +60,7 @@ void tick_game() {
             act->tick -= lowest_tick;
             if (act != pact && act->tick <= 0 ) {
                 act->tick += act->speed;
+                act->take_action();
                 //do action with AI here
             }
             if (pact == act && act->tick <= 0)
@@ -58,6 +68,7 @@ void tick_game() {
         }
     }
     pact->tick += pact->speed;
+    pact->take_action();
     //player action comes right after this?
 }
 
@@ -82,11 +93,11 @@ int main() {
     cmap->create_room(50, 1, 6, 22);
     cmap = nullptr;
 
-    auto map2 = std::make_unique<Level>(80, 25); // currently if map size is smaller than the console size, it crashes
-    map2->create_room(1, 1, 9, 9);
+    /* auto map2 = std::make_unique<Level>(80, 25); // currently if map size is smaller than the console size, it crashes */
+    /* map2->create_room(1, 1, 9, 9); */
 
     //testing other stuff
-    levelmanager->add_lvl(std::move(map2));
+    /* levelmanager->add_lvl(std::move(map2)); */
     /* levelmanager->move_to_lvl(1); */
 
 
@@ -111,8 +122,9 @@ int main() {
     while (key != TK_CLOSE) {
 
         if (game_running) {
-            tick_game(); // deals with entities that have an action component
-            camera->center(dynamic_cast<Positional const *>(player->get_const_component(C_POSITIONAL)));
+            tick_game(); //o deals with entities that have an action component
+            auto pos = dynamic_cast<Positional const *>(player->get_const_component(C_POSITIONAL))->get_pos();
+            camera->center(pos.first, pos.second);
         }
 
         game_running = false;

@@ -49,6 +49,7 @@ std::set<UNIQUE_COMPONENT_TAG> Entity::get_tags(void)  {
     return out;
 }
 
+
 //to arbitrarily destroy an entity call this
 //if it's getting cleared as part of a level clear etc this should not be used
 void Entity::annihilate(void) {

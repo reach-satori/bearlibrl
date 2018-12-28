@@ -15,7 +15,7 @@ struct Camera {
         void draw_world(void) const; // draws full console-size map every time, menus and such go on top with layers
         void draw_entities(void) const;
         void set_pos(int x, int y);
-        void center(Positional const *posin);
-        bool in_camera_center(Positional const * posin) const ;
-        bool on_camera(Positional const * posin) const;
+        void center(int x, int y);
+        bool in_camera_center(int x, int y) const ;
+        bool on_camera(int x, int y) const;
 };

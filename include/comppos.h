@@ -16,5 +16,5 @@ struct Positional: public BaseComponent {
     uint x(void);
     uint y(void);
     void move(uint x, uint y);
-    void draw();
+    std::pair<int, int> get_pos(void) const;
 };

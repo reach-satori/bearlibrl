@@ -23,8 +23,8 @@ void Positional::move(uint x, uint y) {
     }
 }
 
-void Positional::draw() {
-    terminal_put(pos[0], pos[1], codepoint);
+std::pair<int, int> Positional::get_pos(void) const {
+    return std::make_pair(pos[0], pos[1]);
 }
 
 

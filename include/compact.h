@@ -10,4 +10,5 @@ struct Actional: public BaseComponent {
     Actional(int spd);
     Actional();
     void add_to_tick(int speedin);
+    void take_action(void);
 };

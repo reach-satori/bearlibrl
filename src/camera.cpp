@@ -14,7 +14,7 @@ void Camera::draw_world(void) const {
                       x + currx < 0 ||
                       y + curry >= lvl->height ||
                       y + curry < 0
-                      ) ? 0x2588 : lvl->tiles[x+pos[0]][y+pos[1]].second->character;
+                      ) ? 0x20 : lvl->tiles[x+pos[0]][y+pos[1]].second->character;
             terminal_put(x, y, c);
         }
     }
@@ -24,8 +24,8 @@ void Camera::draw_entities(void) const {
         Positional const *posin = dynamic_cast<Positional const *>(ent->get_const_component(C_POSITIONAL));
         if (posin == nullptr)
             continue;
-        if (!on_camera(posin) && ent == player){
-            on_camera(posin);
+        if (!on_camera(posin->pos[0], posin->pos[1]) && ent == player){
+            on_camera(posin->pos[0], posin->pos[1]);
             continue;
         }
         terminal_put(posin->pos[0]-pos[0], posin->pos[1]-pos[1], posin->codepoint);
@@ -42,29 +42,25 @@ void Camera::set_pos(int x, int y) {
 }
 
 //returns true if within some margin of the center of the camera (either horizontally or vertically)
-bool Camera::in_camera_center(Positional const * posin) const {
-    const int objx = posin->pos[0];
-    const int objy = posin->pos[1];
+bool Camera::in_camera_center(int x, int y) const {
     bool horcenter = false, vertcenter = false;
 
-    if (objx >= pos[0] + (int)width/5 && objx <= pos[0] + 4*(int)width/5){
+    if (x >= pos[0] + (int)width/5 && x <= pos[0] + 4*(int)width/5){
         horcenter = true;
     }
-    if (objy >= pos[1] + (int)height/4 && objy <= pos[1] + 3*(int)height/4){
+    if (y >= pos[1] + (int)height/4 && y <= pos[1] + 3*(int)height/4){
         vertcenter = true;
     }
 
     return (horcenter && vertcenter);
 }
 
-bool Camera::on_camera(Positional const * posin) const {
-    const int x = posin->pos[0];
-    const int y = posin->pos[1];
+bool Camera::on_camera(int x, int y) const {
     return x >= pos[0] && x < pos[0] + width && y >= pos[1] && y < pos[1] + height;
 }
 
-void Camera::center(Positional const *posin) {
-    if (!in_camera_center(posin)) {
-        set_pos(posin->pos[0]-width/2, posin->pos[1]-height/2);
+void Camera::center(int x, int y) {
+    if (!in_camera_center(x, y)) {
+        set_pos(x-width/2, y-height/2);
     }
 }
