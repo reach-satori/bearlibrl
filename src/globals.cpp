@@ -13,4 +13,5 @@ std::shared_ptr<Camera> camera = std::make_shared<Camera>();
 
 std::unique_ptr<LevelManager> levelmanager = std::make_unique<LevelManager>();
 
+int key;
 

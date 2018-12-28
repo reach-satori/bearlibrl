@@ -8,6 +8,8 @@ void Camera::draw_world(void) const {
     Level const * lvl = levelmanager->get_const_currlvl();
     const int currx = pos[0];
     const int curry = pos[1];
+    //TODO: optimize this by making the check that decides if the tile is inside or outside the "map area" in advance, rather than inside the inner loop
+    //that way you'd separate it out into two loops, one that just places nothing and one that draws the map
     for (uint x = 0; x < width; x++) {
         for (uint y = 0; y < height; y++) {
             uint c = (x + currx >= lvl->width ||
@@ -33,6 +35,7 @@ void Camera::draw_entities(void) const {
 }
 
 void Camera::set_pos(int x, int y) {
+    //commented out: locks the camera to the inside of the map
     /* auto lvlwidth = levelmanager->get_const_currlvl()->width; */
     /* auto lvlheight = levelmanager->get_const_currlvl()->height; */
     /* pos[0] = clamp(x, 0, lvlwidth - width); */

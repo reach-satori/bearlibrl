@@ -1,16 +1,37 @@
 #include "compact.h"
+#include "globals.h"
 
-
-Actional::Actional(int spd) : BaseComponent(C_ACT), base_speed(spd), speed(spd), tick(spd) {}
-
-Actional::Actional() : Actional(1000) {}
+Actional::Actional(int spd, COMPONENT_SUBTAG subtag) : BaseComponent(C_ACT, subtag), base_speed(spd), speed(spd), tick(spd) {}
 
 void Actional::add_to_tick(int speedin) {
     tick += speedin;
 }
 
-void Actional::take_action(void) {
-    printf("action taken from %p\n", this);
+PlayerActional::PlayerActional(int spd) : Actional(spd, C_ACT_PLAYER) {}
+
+void PlayerActional::take_action(void) {
+    Positional *pos = dynamic_cast<Positional*>(parent.lock()->get_change_component(C_POSITIONAL));
+
+    uint x = pos->pos[0];
+    uint y = pos->pos[1];
+    switch(key) {
+        case TK_UP    :
+            pos->move(x, y-1);
+            break;
+        case TK_DOWN    :
+            pos->move(x, y+1);
+            break;
+        case TK_LEFT    :
+            pos->move(x-1, y);
+            break;
+        case TK_RIGHT    :
+            pos->move(x+1, y);
+            break;
+    }
+
+    key = 0;
+
 }
+
 
 

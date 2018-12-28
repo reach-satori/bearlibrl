@@ -43,11 +43,11 @@ void tick_game() {
         }
 
         //make sure player is the last one checked by making a vector out of the set and placing the player last
-        auto entset = *levelmanager->get_current_entities();
-        bool noplayer = entset.find(player) == entset.end();
+        std::set<std::shared_ptr<Entity>> entset = *levelmanager->get_current_entities();
+        bool noplayer = (entset.find(player) == entset.end());
         if (!noplayer)
             entset.erase(player);
-        std::vector<std::shared_ptr<Entity>> vec(entset.begin(), entset.end());
+        std::vector<std::shared_ptr<Entity>> vec(entset.begin(), entset.end()); // sorted : - )
         if (!noplayer)
             vec.push_back(player);
 
@@ -58,18 +58,15 @@ void tick_game() {
                 continue;
 
             act->tick -= lowest_tick;
-            if (act != pact && act->tick <= 0 ) {
-                act->tick += act->speed;
+            if (act->tick <= 0){
                 act->take_action();
-                //do action with AI here
+                if (act == pact) break;
+                else act->tick += act->speed;
+                //we have to add the player speed outside the outer loop otherwise it loops forever
             }
-            if (pact == act && act->tick <= 0)
-                break;
         }
     }
     pact->tick += pact->speed;
-    pact->take_action();
-    //player action comes right after this?
 }
 
 void terminal_init() {
@@ -86,14 +83,14 @@ int main() {
 
     terminal_init();
 
-    //levelmanager initiation initiates a
+    //levelmanager initiation initiates a level
     //map creation (idk where to move this)
     auto cmap = levelmanager->get_change_currlvl();
     cmap->create_room(  1, 1, 78, 10);
     cmap->create_room(50, 1, 6, 22);
     cmap = nullptr;
 
-    /* auto map2 = std::make_unique<Level>(80, 25); // currently if map size is smaller than the console size, it crashes */
+    /* auto map2 = std::make_unique<Level>(80, 25); */
     /* map2->create_room(1, 1, 9, 9); */
 
     //testing other stuff
@@ -102,38 +99,37 @@ int main() {
 
 
     //initializing entities here for now
-    auto item = std::make_shared<Entity>();
-    levelmanager->add_entity_to_currlvl(item);
-    item->add_component(std::make_unique<Positional>(13, 5, 0x21));
-    item->add_component(std::make_unique<Actional>(500));
-    item->add_component(std::make_unique<Carrial>());
-    item.reset();
+    /* auto item = std::make_shared<Entity>(); */
+    /* levelmanager->add_entity_to_currlvl(item); */
+    /* item->add_component(std::make_unique<Positional>(13, 5, 0x21)); */
+    /* item->add_component(std::make_unique<Actional>(500)); */
+    /* item->add_component(std::make_unique<Carrial>()); */
+    /* item.reset(); */
 
     levelmanager->add_entity_to_currlvl(player);
     player->add_component(std::make_unique<Positional>(30, 10,0x40));
-    player->add_component(std::make_unique<Actional>(1000));
+    player->add_component(std::make_unique<PlayerActional>(1000));
     auto inv = std::make_unique<Inventorial>();
     player->add_component(std::move(inv));
 
 
 
     //main loop
-    int key=0;
     while (key != TK_CLOSE) {
-
-        if (game_running) {
-            tick_game(); //o deals with entities that have an action component
-            auto pos = dynamic_cast<Positional const *>(player->get_const_component(C_POSITIONAL))->get_pos();
-            camera->center(pos.first, pos.second);
-        }
 
         game_running = false;
         while (terminal_has_input()) {
             key = terminal_read(); // get our input in non-blocking way
             game_running = true;
         }
-        process_input(key);
+
+        if (game_running) {
+            tick_game(); //o deals with entities that have an action component
+            auto pos = dynamic_cast<Positional const *>(player->get_const_component(C_POSITIONAL))->get_pos();
+            camera->center(pos.first, pos.second);
+        }
         key=0;
+
 
         camera->draw_world();
         camera->draw_entities();
