@@ -1,7 +1,8 @@
 TODO: in rough order of priority
     equipment
     entity initialization system
+    FOV, pathfinding
     text system backbone
-    drawing layering system (decision?) (partially done)
-    start menus, menus in general
     input system
+    start menus, menus in general
+    drawing layering system (decision?)

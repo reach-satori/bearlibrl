@@ -3,9 +3,8 @@
 
 Actional::Actional(int spd, COMPONENT_SUBTAG subtag) : BaseComponent(C_ACT, subtag), base_speed(spd), speed(spd), tick(spd) {}
 
-void Actional::add_to_tick(int speedin) {
-    tick += speedin;
-}
+//////////
+//////////
 
 PlayerActional::PlayerActional(int spd) : Actional(spd, C_ACT_PLAYER) {}
 
@@ -31,6 +30,16 @@ void PlayerActional::take_action(void) {
 
     key = 0;
 
+}
+
+//////////
+//////////
+
+
+EmptyActional::EmptyActional(int spd) : Actional(spd, C_EMPTY) {}
+
+void EmptyActional::take_action(void) {
+    printf("empty action taken\n");
 }
 
 

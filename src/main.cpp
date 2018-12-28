@@ -90,21 +90,13 @@ int main() {
     cmap->create_room(50, 1, 6, 22);
     cmap = nullptr;
 
-    /* auto map2 = std::make_unique<Level>(80, 25); */
-    /* map2->create_room(1, 1, 9, 9); */
-
-    //testing other stuff
-    /* levelmanager->add_lvl(std::move(map2)); */
-    /* levelmanager->move_to_lvl(1); */
-
-
     //initializing entities here for now
-    /* auto item = std::make_shared<Entity>(); */
-    /* levelmanager->add_entity_to_currlvl(item); */
-    /* item->add_component(std::make_unique<Positional>(13, 5, 0x21)); */
-    /* item->add_component(std::make_unique<Actional>(500)); */
-    /* item->add_component(std::make_unique<Carrial>()); */
-    /* item.reset(); */
+    auto item = std::make_shared<Entity>();
+    levelmanager->add_entity_to_currlvl(item);
+    item->add_component(std::make_unique<Positional>(13, 5, 0x21));
+    item->add_component(std::make_unique<EmptyActional>(500));
+    item->add_component(std::make_unique<Carrial>());
+    item.reset();
 
     levelmanager->add_entity_to_currlvl(player);
     player->add_component(std::make_unique<Positional>(30, 10,0x40));
@@ -119,14 +111,17 @@ int main() {
 
         game_running = false;
         while (terminal_has_input()) {
+
             key = terminal_read(); // get our input in non-blocking way
             game_running = true;
+            levelmanager->get_change_currlvl()->all_nonvisible();
         }
 
         if (game_running) {
             tick_game(); //o deals with entities that have an action component
             auto pos = dynamic_cast<Positional const *>(player->get_const_component(C_POSITIONAL))->get_pos();
             camera->center(pos.first, pos.second);
+            levelmanager->get_change_currlvl()->do_fov(pos.first, pos.second, 8);
         }
         key=0;
 

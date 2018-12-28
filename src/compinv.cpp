@@ -1,6 +1,7 @@
 #include "compinv.h"
 
 Inventorial::Inventorial(float maxweight) : BaseComponent(C_INV, C_EMPTY), maxweight(maxweight) {}
+Inventorial::Inventorial(float maxweight, COMPONENT_SUBTAG subtag) : BaseComponent(C_INV, subtag), maxweight(maxweight) {}
 Inventorial::Inventorial(void) : Inventorial(50.f) {}
 
 //THIS FUNCTION TAKES OWNERSHIP OF ITEM

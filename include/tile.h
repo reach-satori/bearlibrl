@@ -5,10 +5,10 @@
 #include <map>
 
 struct Tile {
-
     TILE_TAG tag = T_FLOOR;
     uint character;
-    uint passable;
+    bool visible = false;
+    bool passable = true;
 
     Tile(TILE_TAG tag, uint character, bool passable);
 };

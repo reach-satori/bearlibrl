@@ -5,7 +5,7 @@
 Camera::Camera() {};
 
 void Camera::draw_world(void) const {
-    Level const * lvl = levelmanager->get_const_currlvl();
+    Level * lvl = levelmanager->get_change_currlvl();
     const int currx = pos[0];
     const int curry = pos[1];
     //TODO: optimize this by making the check that decides if the tile is inside or outside the "map area" in advance, rather than inside the inner loop
@@ -16,7 +16,8 @@ void Camera::draw_world(void) const {
                       x + currx < 0 ||
                       y + curry >= lvl->height ||
                       y + curry < 0
-                      ) ? 0x20 : lvl->tiles[x+pos[0]][y+pos[1]].second->character;
+                      ) ? 0x20 :
+                        lvl->tiles[x+currx][y+curry].second.visible ? lvl->tiles[x+currx][y+curry].second.character : 0x70;
             terminal_put(x, y, c);
         }
     }

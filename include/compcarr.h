@@ -1,7 +1,7 @@
 #pragma once
 #include "compbase.h"
 #include "comptags.h"
-#include "fdecs.h"
+#include "slottags.h"
 
 
 //items never begin inside inventories
@@ -12,4 +12,13 @@ struct Carrial : BaseComponent {
 
     Carrial(void);
     Carrial(float weight);
+    Carrial(float weight, COMPONENT_SUBTAG subtag);
+};
+
+struct EquipCarrial : Carrial {
+    EQUIP_SLOT_TAG slot;
+    EquipCarrial(float weight);
+    bool equipped = false;
+
+    EquipCarrial();
 };
