@@ -24,6 +24,8 @@ BaseComponent *Entity::get_change_component(COMPONENT_TAG tag) {
     }
     return out;
 }
+
+
 BaseComponent const *Entity::get_const_component(COMPONENT_TAG tag) {
     auto it = components.find(tag);
     BaseComponent *out;

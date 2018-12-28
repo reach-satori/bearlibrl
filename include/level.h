@@ -26,6 +26,8 @@ struct Level {
         uint yy);
     void do_fov(uint x, uint y, uint radius);
     void all_nonvisible();
+    bool is_visible(uint x, uint y);
+    uint get_character(uint x, uint y);
 };
 
 Tile* get_tile_ptr(uint tag);

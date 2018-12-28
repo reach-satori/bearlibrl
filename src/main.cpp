@@ -30,13 +30,13 @@
 
 
 void tick_game() {
-    Actional *pact = dynamic_cast<Actional*>(player->get_change_component(C_ACT));
+    auto pact = player->get_change_component<Actional>(C_ACT);
     while(pact->tick > 0) {
 
         //get lowest tick (action that comes soonest)
         int lowest_tick = 1000;
         for (const auto& ent: *levelmanager->get_current_entities()) {
-            Actional const *act = dynamic_cast<Actional const *>(ent->get_const_component(C_ACT));
+            auto act = ent->get_const_component<Actional>(C_ACT);
             if (act == nullptr)
                 continue;
             lowest_tick = act->tick < lowest_tick ? act->tick : lowest_tick;
@@ -53,7 +53,7 @@ void tick_game() {
 
         //every entity with an action component takes their action, from fastest to slowest
         for (const auto& ent: vec) {
-            Actional *act = dynamic_cast<Actional*>(ent->get_change_component(C_ACT));
+            auto act = ent->get_change_component<Actional>(C_ACT);
             if (act == nullptr)
                 continue;
 
@@ -111,16 +111,17 @@ int main() {
 
         game_running = false;
         while (terminal_has_input()) {
-
             key = terminal_read(); // get our input in non-blocking way
             game_running = true;
-            levelmanager->get_change_currlvl()->all_nonvisible();
         }
 
+        //stuff that should happen once per "turn"(player action)
         if (game_running) {
             tick_game(); //o deals with entities that have an action component
-            auto pos = dynamic_cast<Positional const *>(player->get_const_component(C_POSITIONAL))->get_pos();
+            auto pos = player->get_const_component<Positional>(C_POSITIONAL)->get_pos();
             camera->center(pos.first, pos.second);
+
+            levelmanager->get_change_currlvl()->all_nonvisible();
             levelmanager->get_change_currlvl()->do_fov(pos.first, pos.second, 8);
         }
         key=0;

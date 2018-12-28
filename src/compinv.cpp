@@ -6,7 +6,7 @@ Inventorial::Inventorial(void) : Inventorial(50.f) {}
 
 //THIS FUNCTION TAKES OWNERSHIP OF ITEM
 int Inventorial::add_to_inventory(std::shared_ptr<Entity> item) {
-    Carrial *pupptr = dynamic_cast<Carrial*>(item->get_change_component(C_CARR));
+    auto pupptr = parent.lock()->get_change_component<Carrial>(C_CARR);
     if (pupptr == nullptr)
         return -1; // means the entity on which pickup was attempted has no Carrial component, early return
     if (pupptr->weight + currload > maxweight)
@@ -23,7 +23,7 @@ int Inventorial::add_to_inventory(std::shared_ptr<Entity> item) {
 }
 
 int Inventorial::remove_from_inventory(std::shared_ptr<Entity> item) {
-    auto pupptr = std::shared_ptr<Carrial>(dynamic_cast<Carrial*>(item->get_change_component(C_CARR)));
+    auto pupptr = parent.lock()->get_change_component<Carrial>(C_CARR);
     if (pupptr == nullptr)
         return -1; // means the entity on which drop was attempted has no Carrial component, early return
     if (pupptr->invptr.expired())

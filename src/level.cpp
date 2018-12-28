@@ -15,6 +15,13 @@ Level::Level(uint width, uint height) : width(width), height(height) {
 
 Level::Level() : Level::Level(80, 25) {};
 
+bool Level::is_visible(uint x, uint y) {
+    return tiles[x][y].second.visible;
+}
+uint Level::get_character(uint x, uint y) {
+    return tiles[x][y].second.character;
+}
+
 bool Level::is_passable(uint x, uint y) const {
     bool out = true;
     if (x <= 0 || x >= width-1 || y <= 0 || y >= height-1)

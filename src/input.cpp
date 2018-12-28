@@ -5,7 +5,7 @@
 //probably we will need to revamp this completely later on with a full-fledged input system
 void process_input(int key) {
 
-        Positional *pos = dynamic_cast<Positional*>(player->get_change_component(C_POSITIONAL));
+        auto pos = player->get_change_component<Positional>(C_POSITIONAL);
         assert(pos != nullptr);
 
         uint x = pos->pos[0];

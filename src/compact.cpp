@@ -9,7 +9,8 @@ Actional::Actional(int spd, COMPONENT_SUBTAG subtag) : BaseComponent(C_ACT, subt
 PlayerActional::PlayerActional(int spd) : Actional(spd, C_ACT_PLAYER) {}
 
 void PlayerActional::take_action(void) {
-    Positional *pos = dynamic_cast<Positional*>(parent.lock()->get_change_component(C_POSITIONAL));
+
+    auto pos = parent.lock()->get_change_component<Positional>(C_POSITIONAL);
 
     uint x = pos->pos[0];
     uint y = pos->pos[1];
