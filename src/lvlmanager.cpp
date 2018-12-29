@@ -2,14 +2,14 @@
 
 
 LevelManager::LevelManager() {
-    auto lvl0 = std::make_unique<Level>(CONSOLE_WIDTH+1, CONSOLE_HEIGHT+1);
+    auto lvl0 = std::make_unique<Level>(200, 200);
     all_levels.insert(std::make_pair(current_tag, std::move(lvl0)));
     tagged_entities.insert(std::make_pair(current_tag, std::set<std::shared_ptr<Entity>>()));
 }
 
-std::set<std::shared_ptr<Entity>> const *LevelManager::get_current_entities() const {
+std::set<std::shared_ptr<Entity>> const &LevelManager::get_current_entities() const {
     assert(tagged_entities.find(current_tag) != tagged_entities.end() &&  "attempted to check nonexisting current level for entities: current level should always exist, so something has gone wrong!");
-    return &tagged_entities.find(current_tag)->second;
+    return tagged_entities.find(current_tag)->second;
 }
 
 Level const *LevelManager::get_const_currlvl(void) const {
@@ -41,7 +41,7 @@ void LevelManager::add_entity_to_lvl(std::shared_ptr<Entity> ent, uint lvl){
     tagged_entities.find(lvl)->second.insert(ent);
 }
 
-void LevelManager::add_entity_to_currlvl(std::shared_ptr<Entity> ent){
+void LevelManager::add_entity_to_currlvl(std::shared_ptr<Entity>& ent){
     add_entity_to_lvl(ent, current_tag);
 }
 
@@ -82,7 +82,7 @@ void LevelManager::move_to_lvl (uint tag) {
     //something tells me i'll be back to this function often
 }
 
-bool LevelManager::entity_check (std::shared_ptr<Entity> ent) const {
+bool LevelManager::entity_check (std::shared_ptr<Entity> const & ent) const {
     //check that the entity is either in neither entity set or in both
     //returns true if entity is in, false if not, asserts out if neither option
     bool in_all_entities = (all_entities.find(ent) != all_entities.end());
@@ -111,9 +111,5 @@ bool LevelManager::level_check (uint tag) const {
     assert(! (!in_tag_lvls && in_all_lvls));
 
     return in_tag_lvls;
-}
-
-
-void LevelManager::annihilate_entity (std::shared_ptr<Entity> ent) {
 }
 

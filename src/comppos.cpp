@@ -16,13 +16,6 @@ uint Positional::y(void) {
     return pos[1];
 }
 
-void Positional::move(uint x, uint y) {
-    if (levelmanager->get_const_currlvl()->is_passable(x, y)) {
-        pos[0] = x;
-        pos[1] = y;
-    }
-}
-
 std::pair<int, int> Positional::get_pos(void) const {
     return std::make_pair(pos[0], pos[1]);
 }

@@ -1,8 +1,10 @@
 #pragma once
 #include <map>
 #include <vector>
+#include <memory>
 #include <tile.h>
 #include "util.h"
+#include "fdecs.h"
 
 
 struct Level {
@@ -28,6 +30,5 @@ struct Level {
     void all_nonvisible();
     bool is_visible(uint x, uint y);
     uint get_character(uint x, uint y);
+    std::vector<std::shared_ptr<Entity>> get_entities_in_spot(int, int) const;
 };
-
-Tile* get_tile_ptr(uint tag);

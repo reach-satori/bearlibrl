@@ -2,6 +2,7 @@
 #include "compbase.h"
 #include "comptags.h"
 #include "entity.h"
+#include "events.h"
 
 struct Actional: public BaseComponent {
     int base_speed;

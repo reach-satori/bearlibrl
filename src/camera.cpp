@@ -24,8 +24,9 @@ void Camera::draw_world(void) const {
         }
     }
 }
+
 void Camera::draw_entities(void) const {
-    for (const auto& ent : *levelmanager->get_current_entities()) {
+    for (const auto& ent : levelmanager->get_current_entities()) {
         auto posin = ent->get_component<Positional>(C_POSITIONAL);
         if (posin == nullptr)
             continue;
@@ -38,11 +39,6 @@ void Camera::draw_entities(void) const {
 }
 
 void Camera::set_pos(int x, int y) {
-    //commented out: locks the camera to the inside of the map
-    /* auto lvlwidth = levelmanager->get_const_currlvl()->width; */
-    /* auto lvlheight = levelmanager->get_const_currlvl()->height; */
-    /* pos[0] = clamp(x, 0, lvlwidth - width); */
-    /* pos[1] = clamp(y, 0, lvlheight - height); */
     pos[0] = x;
     pos[1] = y;
 }

@@ -10,23 +10,31 @@ PlayerActional::PlayerActional(int spd) : Actional(spd, C_ACT_PLAYER) {}
 
 void PlayerActional::take_action(void) {
 
-    auto pos = parent.lock()->get_component<Positional>(C_POSITIONAL);
+    Entity *ent = parent.lock().get();
+    Positional* const pos = ent->get_component<Positional>(C_POSITIONAL);
 
     uint x = pos->pos[0];
     uint y = pos->pos[1];
     switch(key) {
         case TK_UP    :
-            pos->move(x, y-1);
+            move(ent, x, y-1);
             break;
         case TK_DOWN    :
-            pos->move(x, y+1);
+            move(ent, x, y+1);
             break;
         case TK_LEFT    :
-            pos->move(x-1, y);
+            move(ent, x-1, y);
             break;
         case TK_RIGHT    :
-            pos->move(x+1, y);
+            move(ent, x+1, y);
             break;
+        case TK_G :
+            auto ents = levelmanager->get_const_currlvl()->get_entities_in_spot(x, y);
+            for( auto it = ents.begin(); it != ents.end(); it++){
+                item_pickup(ent, *it);
+            }
+            break;
+
     }
 
     key = 0;

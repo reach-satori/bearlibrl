@@ -22,7 +22,6 @@
 // stuff
 #include "tile.h"
 #include "level.h"
-#include "input.h"
 #include "camera.h"
 #include "menus.h"
 #include "globals.h"
@@ -35,7 +34,7 @@ void tick_game() {
 
         //get lowest tick (action that comes soonest)
         int lowest_tick = 1000;
-        for (const auto& ent: *levelmanager->get_current_entities()) {
+        for (const auto& ent: levelmanager->get_current_entities()) {
             auto act = ent->get_component<Actional>(C_ACT);
             if (act == nullptr)
                 continue;
@@ -43,7 +42,7 @@ void tick_game() {
         }
 
         //make sure player is the last one checked by making a vector out of the set and placing the player last
-        std::set<std::shared_ptr<Entity>> entset = *levelmanager->get_current_entities();
+        std::set<std::shared_ptr<Entity>> entset = levelmanager->get_current_entities();
         bool noplayer = (entset.find(player) == entset.end());
         if (!noplayer)
             entset.erase(player);

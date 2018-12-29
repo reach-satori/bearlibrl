@@ -1,4 +1,5 @@
 #pragma once
+#include <set>
 
 enum COMPONENT_TAG {
     C_EMPTY,
@@ -12,3 +13,4 @@ enum COMPONENT_TAG {
     C_CARR,
     C_CARR_EQUIP,
 };
+

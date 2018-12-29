@@ -119,3 +119,16 @@ void Level::all_nonvisible() {
 }
 
 
+std::vector<std::shared_ptr<Entity>> Level::get_entities_in_spot(int x, int y) const {
+    auto out = std::vector<std::shared_ptr<Entity>>();
+    for (auto& i : levelmanager->get_current_entities()) {
+        auto pos = i->get_component<Positional const>(C_POSITIONAL);
+        if (pos == nullptr)
+            break;
+        if (pos->pos[0] == x && pos->pos[1] == y)
+            out.push_back(i);
+    }
+    return out;
+}
+
+

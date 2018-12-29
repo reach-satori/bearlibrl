@@ -1,8 +1,8 @@
 #include "entity.h"
 #include "globals.h"
 
-
-std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
+//im sure there's a better way to do this, but for now I just have this
+static std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
     std::set<COMPONENT_TAG> out{t};
     switch (t){
         case C_ACT:
@@ -19,7 +19,8 @@ std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
             ;
     }
     return out;
-}
+};
+
 
 Entity::Entity() : components(std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>>()) {
 }
@@ -35,7 +36,6 @@ void Entity::add_component(std::unique_ptr<BaseComponent> comp) {
 BaseComponent *Entity::get_base_component(COMPONENT_TAG tag) {
     auto ent_tags = get_tags();
     auto tags_to_check = get_inheritors(tag);
-    COMPONENT_TAG right_tag = C_EMPTY;
 
     for (const auto& t : tags_to_check) {
         auto a = ent_tags.find(t);
@@ -57,10 +57,3 @@ std::set<COMPONENT_TAG> Entity::get_tags(void)  {
 }
 
 
-//to arbitrarily destroy an entity call this
-//if it's getting cleared as part of a level clear etc this should not be used
-void Entity::annihilate(void) {
-    auto ptr = shared_from_this();
-    levelmanager->annihilate_entity(ptr);
-
-}
