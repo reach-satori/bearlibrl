@@ -9,8 +9,7 @@ Carrial::Carrial(void) : Carrial(1.f) {}
 
 /////////////
 
-EquipCarrial::EquipCarrial(float weight) : Carrial(weight, C_CARR_EQUIP) {}
-
+EquipCarrial::EquipCarrial(float weight) : Carrial(weight, C_CARR_EQUIP) {};
 
 
 

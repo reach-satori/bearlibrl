@@ -36,3 +36,25 @@ int Inventorial::remove_from_inventory(std::shared_ptr<Entity>& item) {
     droptr->invptr = std::weak_ptr<Entity>();
     return 0;
 }
+
+int EquipInventorial::inner_equip_item(std::shared_ptr<Entity>& equipped) {
+    auto eqpptr = equipped->get_component<EquipCarrial>(C_CARR_EQUIP);
+    auto eqslot = eqpptr->slot;
+    auto matchingslots = slotlist.find(eqslot);
+    if (eqpptr == nullptr)
+        return -1; //tried to equip an unequippable entity
+    if (matchingslots == slotlist.end())
+        return -2; // you don't have appropriate limbs to wear the item
+    if (equipped->get_component<Carrial>(C_CARR_EQUIP)->parent.lock() != parent.lock())
+        return -3; // equipped item is not in the owner's inventory
+    auto eqrange = slotlist.equal_range(eqslot);
+    std::multimap<EQUIP_SLOT_TAG, bool>::iterator it;
+    for (it = eqrange.first; it != eqrange.second; it++ ) {
+        if (!it->second) break;
+    }
+    if (it == eqrange.second)
+        return -4; // no free slots of the correct type
+
+    return 0;
+
+}

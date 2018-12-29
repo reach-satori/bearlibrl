@@ -102,30 +102,26 @@ int main() {
     auto inv = std::make_unique<Inventorial>();
     player->add_component(std::move(inv));
 
-
-
     //main loop
     while (input.last_key != TK_CLOSE) {
 
-        game_running = false;
         while (terminal_has_input()) {
             input.read_key();
-            game_running = true;
         }
 
         //stuff that should happen once per "turn"(player action)
-        if (game_running) {
-            tick_game(); //o deals with entities that have an action component
+        if (input.game_running) {
+            tick_game(); //deals with entities that have an action component
             auto pos = player->get_component<Positional>(C_POSITIONAL)->get_pos();
-            camera->center(pos.first, pos.second);
+            camera.center(pos.first, pos.second);
 
+            //fov
             levelmanager->get_change_currlvl().all_nonvisible();
             levelmanager->get_change_currlvl().do_fov(pos.first, pos.second, 8);
         }
 
-
-        camera->draw_world();
-        camera->draw_entities();
+        camera.draw_world();
+        camera.draw_entities();
 
         terminal_refresh();
         terminal_clear();

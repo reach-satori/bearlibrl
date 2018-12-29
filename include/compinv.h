@@ -22,7 +22,6 @@ struct Inventorial : public BaseComponent {
 };
 
 struct EquipInventorial : public Inventorial {
-
     //slot, equipped yes/no
     std::multimap<EQUIP_SLOT_TAG, bool> slotlist{
         std::make_pair(ES_HEAD, false),
@@ -35,4 +34,5 @@ struct EquipInventorial : public Inventorial {
         std::make_pair(ES_NECK, false),
     };
     EquipInventorial(float weight);
+    int inner_equip_item(std::shared_ptr<Entity>& equipped);
 };

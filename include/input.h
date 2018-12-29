@@ -5,6 +5,7 @@
 enum COMMAND_DOMAIN {
     CMD_DEFAULT,
     CMD_PICKUP,
+    CMD_MAINMENU
 };
 
 enum COMMAND_TAG {
@@ -17,7 +18,7 @@ enum COMMAND_TAG {
     MOVE_SE,
     MOVE_E,
     MOVE_W,
-    PICKUP_ITEM
+    PICKUP_OPEN
 };
 
 struct Command {
@@ -26,12 +27,14 @@ struct Command {
     bool ctrl;
     COMMAND_TAG cmd;
     Command(bool, bool, bool, COMMAND_TAG);
+    bool right_modcomb(bool, bool, bool);
 };
 
 struct CommandManager {
     std::unordered_map<COMMAND_DOMAIN, std::unordered_multimap<uint, Command>> cmdlists;
     std::stack<COMMAND_DOMAIN> domainstack;
     int last_key;
+    bool game_running = true;
 
     void add_command(COMMAND_DOMAIN dmn, uint key, Command cmd);
     COMMAND_TAG get_next_cmd();

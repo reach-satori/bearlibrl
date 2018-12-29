@@ -45,7 +45,7 @@ void PlayerActional::take_action(void) {
         case MOVE_SE    :
             move(ent, x+1, y+1);
             break;
-        case PICKUP_ITEM :
+        case PICKUP_OPEN :
             auto ents = levelmanager->get_const_currlvl().get_entities_in_spot(x, y);
             for( auto it = ents.begin(); it != ents.end(); it++){
                 item_pickup(ent, *it);
@@ -54,7 +54,6 @@ void PlayerActional::take_action(void) {
 
     }
 
-    input.last_key = 0;
 
 }
 
