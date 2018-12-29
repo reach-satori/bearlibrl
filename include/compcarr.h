@@ -12,7 +12,7 @@ struct Carrial : BaseComponent {
 
     Carrial(void);
     Carrial(float weight);
-    Carrial(float weight, COMPONENT_SUBTAG subtag);
+    Carrial(float weight, COMPONENT_TAG tag);
 };
 
 struct EquipCarrial : Carrial {

@@ -2,7 +2,7 @@
 #include "globals.h"
 
 
-Positional::Positional(uint x, uint y, uint codepoint) : BaseComponent(C_POSITIONAL, C_EMPTY), pos{x, y}, codepoint(codepoint) {}
+Positional::Positional(uint x, uint y, uint codepoint) : BaseComponent(C_POSITIONAL), pos{x, y}, codepoint(codepoint) {}
 
 Positional::Positional(void) : Positional(5, 5, 0xBF) {}
 

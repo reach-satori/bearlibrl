@@ -18,7 +18,7 @@ struct Inventorial : public BaseComponent {
     int remove_from_inventory(std::shared_ptr<Entity> item);
     Inventorial(void);
     Inventorial(float maxweight);
-    Inventorial(float maxweight, COMPONENT_SUBTAG tag);
+    Inventorial(float maxweight, COMPONENT_TAG tag);
 };
 
 struct EquipInventorial : public Inventorial {

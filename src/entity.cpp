@@ -1,6 +1,26 @@
 #include "entity.h"
 #include "globals.h"
 
+
+std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
+    std::set<COMPONENT_TAG> out{t};
+    switch (t){
+        case C_ACT:
+            out.insert(C_ACT_PLAYER);
+            out.insert(C_ACT_EMPTY);
+            break;
+        case C_INV:
+            out.insert(C_INV_EQUIP);
+            break;
+        case C_CARR:
+            out.insert(C_CARR_EQUIP);
+            break;
+        default:
+            ;
+    }
+    return out;
+}
+
 Entity::Entity() : components(std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>>()) {
 }
 
@@ -12,31 +32,16 @@ void Entity::add_component(std::unique_ptr<BaseComponent> comp) {
 }
 
 
-BaseComponent *Entity::get_change_component(COMPONENT_TAG tag) {
-    auto it = components.find(tag);
-    BaseComponent *out;
-    if (it == components.end()) {
-        out = nullptr;
-    } else {
-        //it is iterator to pair
-        //pair is <COMPONENT_TAG, shared_ptr<bcomp>
-        out = it->second.get();
-    }
-    return out;
-}
+BaseComponent *Entity::get_base_component(COMPONENT_TAG tag) {
+    auto ent_tags = get_tags();
+    auto tags_to_check = get_inheritors(tag);
+    COMPONENT_TAG right_tag = C_EMPTY;
 
-
-BaseComponent const *Entity::get_const_component(COMPONENT_TAG tag) {
-    auto it = components.find(tag);
-    BaseComponent *out;
-    if (it == components.end()) {
-        out = nullptr;
-    } else {
-        //it is iterator to pair
-        //pair is <COMPONENT_TAG, shared_ptr<bcomp>
-        out = it->second.get();
+    for (const auto& t : tags_to_check) {
+        auto a = ent_tags.find(t);
+        if (a != ent_tags.end()) return components.find(*a)->second.get();
     }
-    return out;
+    return nullptr;
 }
 
 

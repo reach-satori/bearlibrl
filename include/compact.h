@@ -8,7 +8,7 @@ struct Actional: public BaseComponent {
     int speed;
     int tick;
 
-    Actional(int spd, COMPONENT_SUBTAG subtag);
+    Actional(int spd, COMPONENT_TAG tag);
     virtual void take_action(void) = 0;
 };
 

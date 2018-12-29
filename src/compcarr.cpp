@@ -2,8 +2,8 @@
 
 
 
-Carrial::Carrial(float weight) : BaseComponent(C_CARR, C_EMPTY), weight(weight) {}
-Carrial::Carrial(float weight, COMPONENT_SUBTAG subtag) : BaseComponent(C_CARR, subtag), weight(weight) {}
+Carrial::Carrial(float weight) : BaseComponent(C_CARR), weight(weight) {}
+Carrial::Carrial(float weight, COMPONENT_TAG tag) : BaseComponent(tag), weight(weight) {}
 
 Carrial::Carrial(void) : Carrial(1.f) {}
 

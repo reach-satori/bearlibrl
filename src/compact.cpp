@@ -1,7 +1,7 @@
 #include "compact.h"
 #include "globals.h"
 
-Actional::Actional(int spd, COMPONENT_SUBTAG subtag) : BaseComponent(C_ACT, subtag), base_speed(spd), speed(spd), tick(spd) {}
+Actional::Actional(int spd, COMPONENT_TAG tag) : BaseComponent(tag), base_speed(spd), speed(spd), tick(spd) {}
 
 //////////
 //////////
@@ -10,7 +10,7 @@ PlayerActional::PlayerActional(int spd) : Actional(spd, C_ACT_PLAYER) {}
 
 void PlayerActional::take_action(void) {
 
-    auto pos = parent.lock()->get_change_component<Positional>(C_POSITIONAL);
+    auto pos = parent.lock()->get_component<Positional>(C_POSITIONAL);
 
     uint x = pos->pos[0];
     uint y = pos->pos[1];
@@ -37,7 +37,7 @@ void PlayerActional::take_action(void) {
 //////////
 
 
-EmptyActional::EmptyActional(int spd) : Actional(spd, C_EMPTY) {}
+EmptyActional::EmptyActional(int spd) : Actional(spd, C_ACT_EMPTY) {}
 
 void EmptyActional::take_action(void) {
     printf("empty action taken\n");

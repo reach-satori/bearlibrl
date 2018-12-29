@@ -7,10 +7,9 @@
 
 struct BaseComponent {
     COMPONENT_TAG tag;
-    COMPONENT_SUBTAG subtag;
     std::weak_ptr<Entity> parent;
 
-    BaseComponent(COMPONENT_TAG tag, COMPONENT_SUBTAG subtag);
+    BaseComponent(COMPONENT_TAG tag);
     virtual ~BaseComponent() = default;
 };
 

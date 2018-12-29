@@ -26,7 +26,7 @@ void Camera::draw_world(void) const {
 }
 void Camera::draw_entities(void) const {
     for (const auto& ent : *levelmanager->get_current_entities()) {
-        auto posin = ent->get_const_component<Positional>(C_POSITIONAL);
+        auto posin = ent->get_component<Positional>(C_POSITIONAL);
         if (posin == nullptr)
             continue;
         if (!on_camera(posin->pos[0], posin->pos[1]) && ent == player){

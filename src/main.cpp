@@ -30,13 +30,13 @@
 
 
 void tick_game() {
-    auto pact = player->get_change_component<Actional>(C_ACT);
+    auto pact = player->get_component<Actional>(C_ACT);
     while(pact->tick > 0) {
 
         //get lowest tick (action that comes soonest)
         int lowest_tick = 1000;
         for (const auto& ent: *levelmanager->get_current_entities()) {
-            auto act = ent->get_const_component<Actional>(C_ACT);
+            auto act = ent->get_component<Actional>(C_ACT);
             if (act == nullptr)
                 continue;
             lowest_tick = act->tick < lowest_tick ? act->tick : lowest_tick;
@@ -53,7 +53,7 @@ void tick_game() {
 
         //every entity with an action component takes their action, from fastest to slowest
         for (const auto& ent: vec) {
-            auto act = ent->get_change_component<Actional>(C_ACT);
+            auto act = ent->get_component<Actional>(C_ACT);
             if (act == nullptr)
                 continue;
 
@@ -118,7 +118,7 @@ int main() {
         //stuff that should happen once per "turn"(player action)
         if (game_running) {
             tick_game(); //o deals with entities that have an action component
-            auto pos = player->get_const_component<Positional>(C_POSITIONAL)->get_pos();
+            auto pos = player->get_component<Positional>(C_POSITIONAL)->get_pos();
             camera->center(pos.first, pos.second);
 
             levelmanager->get_change_currlvl()->all_nonvisible();
