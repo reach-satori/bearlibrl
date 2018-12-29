@@ -15,20 +15,37 @@ void PlayerActional::take_action(void) {
 
     uint x = pos->pos[0];
     uint y = pos->pos[1];
-    switch(input.last_key) {
-        case TK_UP    :
+    COMMAND_TAG cmd = input.get_next_cmd();
+
+    //big switch
+    switch(cmd) {
+        case NONE      :
+            break;
+        case MOVE_N    :
             move(ent, x, y-1);
             break;
-        case TK_DOWN    :
+        case MOVE_S    :
             move(ent, x, y+1);
             break;
-        case TK_LEFT    :
+        case MOVE_W    :
             move(ent, x-1, y);
             break;
-        case TK_RIGHT    :
+        case MOVE_E    :
             move(ent, x+1, y);
             break;
-        case TK_G :
+        case MOVE_NE    :
+            move(ent, x+1, y-1);
+            break;
+        case MOVE_NW    :
+            move(ent, x-1, y-1);
+            break;
+        case MOVE_SW    :
+            move(ent, x-1, y+1);
+            break;
+        case MOVE_SE    :
+            move(ent, x+1, y+1);
+            break;
+        case PICKUP_ITEM :
             auto ents = levelmanager->get_const_currlvl().get_entities_in_spot(x, y);
             for( auto it = ents.begin(); it != ents.end(); it++){
                 item_pickup(ent, *it);
@@ -48,7 +65,6 @@ void PlayerActional::take_action(void) {
 EmptyActional::EmptyActional(int spd) : Actional(spd, C_ACT_EMPTY) {}
 
 void EmptyActional::take_action(void) {
-    printf("empty action taken\n");
 }
 
 

@@ -29,11 +29,17 @@ CommandManager::CommandManager() {
     add_command(CMD_DEFAULT, TK_KP_3, Command(false, false, false, MOVE_SE));
     add_command(CMD_DEFAULT, TK_KP_6, Command(false, false, false, MOVE_E));
     add_command(CMD_DEFAULT, TK_KP_4, Command(false, false, false, MOVE_W));
+    add_command(CMD_DEFAULT, TK_G, Command(false, false, false, PICKUP_ITEM));
 }
 
-COMMAND_TAG CommandManager::cmd_from_key(uint key) {
+COMMAND_TAG CommandManager::get_next_cmd() {
     auto& dmnmap = cmdlists.find(domainstack.top())->second;
-    return dmnmap.find(key)->second.cmd;
+    auto cmds = dmnmap.find(last_key);
+    return cmds == dmnmap.end() ? NONE : cmds->second.cmd;
+}
+
+void CommandManager::read_key() {
+    last_key = terminal_read();
 }
 
 

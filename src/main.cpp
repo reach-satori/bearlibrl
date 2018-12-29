@@ -109,7 +109,7 @@ int main() {
 
         game_running = false;
         while (terminal_has_input()) {
-            input.last_key = terminal_read(); // get our input in non-blocking way
+            input.read_key();
             game_running = true;
         }
 

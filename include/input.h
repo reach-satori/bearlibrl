@@ -8,6 +8,7 @@ enum COMMAND_DOMAIN {
 };
 
 enum COMMAND_TAG {
+    NONE,
     MOVE_N,
     MOVE_NW,
     MOVE_NE,
@@ -33,7 +34,8 @@ struct CommandManager {
     int last_key;
 
     void add_command(COMMAND_DOMAIN dmn, uint key, Command cmd);
-    COMMAND_TAG cmd_from_key(uint key);
+    COMMAND_TAG get_next_cmd();
+    void read_key();
     CommandManager();
 
 };
