@@ -5,7 +5,7 @@ Inventorial::Inventorial(float maxweight, COMPONENT_TAG tag) : BaseComponent(tag
 Inventorial::Inventorial(void) : Inventorial(50.f) {}
 
 //THIS FUNCTION TAKES OWNERSHIP OF ITEM
-int Inventorial::add_to_inventory(std::shared_ptr<Entity> item) {
+int Inventorial::add_to_inventory(std::shared_ptr<Entity>& item) {
     auto pupptr = item->get_component<Carrial>(C_CARR);
     if (pupptr == nullptr)
         return -1; // means the entity on which pickup was attempted has no Carrial component, early return
@@ -22,17 +22,17 @@ int Inventorial::add_to_inventory(std::shared_ptr<Entity> item) {
     return 0;
 }
 
-int Inventorial::remove_from_inventory(std::shared_ptr<Entity> item) {
-    auto pupptr = parent.lock()->get_component<Carrial>(C_CARR);
-    if (pupptr == nullptr)
+int Inventorial::remove_from_inventory(std::shared_ptr<Entity>& item) {
+    auto droptr = item->get_component<Carrial>(C_CARR);
+    if (droptr == nullptr)
         return -1; // means the entity on which drop was attempted has no Carrial component, early return
-    if (pupptr->invptr.expired())
+    if (droptr->invptr.expired())
         return -2; // entity not in an inventory to be removed from
-    if (pupptr->invptr.lock() != parent.lock()) {
+    if (droptr->invptr.lock() != parent.lock()) {
         return -3; // entity is in an inventory, but not this one
     }
 
-    inventory.erase(pupptr->invptr.lock());
-    pupptr->invptr = std::weak_ptr<Entity>();
+    inventory.erase(item);
+    droptr->invptr = std::weak_ptr<Entity>();
     return 0;
 }

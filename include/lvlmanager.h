@@ -19,10 +19,10 @@ class LevelManager {
     public:
         LevelManager();
         std::set<std::shared_ptr<Entity>> const &get_current_entities(void) const;
-        Level const *get_const_currlvl(void) const;
-        Level *get_change_currlvl(void) const;
+        Level const &get_const_currlvl(void) const;
+        Level &get_change_currlvl(void) const;
         void add_entity_to_currlvl(std::shared_ptr<Entity>& ent);
-        void add_entity_to_lvl(std::shared_ptr<Entity> ent, uint lvl);
+        void add_entity_to_lvl(std::shared_ptr<Entity>& ent, uint lvl);
         uint add_lvl(std::unique_ptr<Level> lvl);
         void clear_lvl (uint tag);
         void move_to_lvl (uint tag);

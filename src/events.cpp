@@ -7,13 +7,13 @@ void move(Entity * ent, int x, int y) {
         printf("Entity with no positional component attempted to move\n");
         return;
     }
-    if (levelmanager->get_const_currlvl()->is_passable(x, y)){
+    if (levelmanager->get_const_currlvl().is_passable(x, y)){
         pos->pos[0] = x;
         pos->pos[1] = y;
     }
 }
 
-void item_pickup(Entity* carrier, std::shared_ptr<Entity> item) {
+void item_pickup(Entity* carrier, std::shared_ptr<Entity>& item) {
     auto inv = carrier->get_component<Inventorial>(C_INV);
     if (inv == nullptr) {
         printf("Entity with no inventory component attempted to pick an item up\n");

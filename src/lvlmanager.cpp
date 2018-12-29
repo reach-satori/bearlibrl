@@ -12,20 +12,20 @@ std::set<std::shared_ptr<Entity>> const &LevelManager::get_current_entities() co
     return tagged_entities.find(current_tag)->second;
 }
 
-Level const *LevelManager::get_const_currlvl(void) const {
+Level const &LevelManager::get_const_currlvl(void) const {
 
     assert(all_levels.find(current_tag) != all_levels.end() && "Unique_ptr to current map not found where it should be \n or perhaps it has the incorrect tag");
-    Level const * out = all_levels.find(current_tag)->second.get();
+    Level const& out = *all_levels.find(current_tag)->second.get();
     return out;
 }
 
-Level *LevelManager::get_change_currlvl(void) const {
+Level &LevelManager::get_change_currlvl(void) const {
     assert(all_levels.find(current_tag) != all_levels.end() && "Unique_ptr to current map not found where it should be \n or perhaps it has the incorrect tag");
-    Level *out = all_levels.find(current_tag)->second.get();
+    Level& out = *all_levels.find(current_tag)->second.get();
     return out;
 }
 
-void LevelManager::add_entity_to_lvl(std::shared_ptr<Entity> ent, uint lvl){
+void LevelManager::add_entity_to_lvl(std::shared_ptr<Entity>& ent, uint lvl){
 
     if (!level_check(lvl)){
         printf("attempted to add entity to non-existing lebel");

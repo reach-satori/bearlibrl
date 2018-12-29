@@ -15,7 +15,7 @@ void PlayerActional::take_action(void) {
 
     uint x = pos->pos[0];
     uint y = pos->pos[1];
-    switch(key) {
+    switch(input.last_key) {
         case TK_UP    :
             move(ent, x, y-1);
             break;
@@ -29,7 +29,7 @@ void PlayerActional::take_action(void) {
             move(ent, x+1, y);
             break;
         case TK_G :
-            auto ents = levelmanager->get_const_currlvl()->get_entities_in_spot(x, y);
+            auto ents = levelmanager->get_const_currlvl().get_entities_in_spot(x, y);
             for( auto it = ents.begin(); it != ents.end(); it++){
                 item_pickup(ent, *it);
             }
@@ -37,7 +37,7 @@ void PlayerActional::take_action(void) {
 
     }
 
-    key = 0;
+    input.last_key = 0;
 
 }
 

@@ -84,10 +84,9 @@ int main() {
 
     //levelmanager initiation initiates a level
     //map creation (idk where to move this)
-    auto cmap = levelmanager->get_change_currlvl();
-    cmap->create_room(  1, 1, 78, 10);
-    cmap->create_room(50, 1, 6, 22);
-    cmap = nullptr;
+    auto& cmap = levelmanager->get_change_currlvl();
+    cmap.create_room(  1, 1, 78, 10);
+    cmap.create_room(50, 1, 6, 22);
 
     //initializing entities here for now
     auto item = std::make_shared<Entity>();
@@ -106,11 +105,11 @@ int main() {
 
 
     //main loop
-    while (key != TK_CLOSE) {
+    while (input.last_key != TK_CLOSE) {
 
         game_running = false;
         while (terminal_has_input()) {
-            key = terminal_read(); // get our input in non-blocking way
+            input.last_key = terminal_read(); // get our input in non-blocking way
             game_running = true;
         }
 
@@ -120,10 +119,9 @@ int main() {
             auto pos = player->get_component<Positional>(C_POSITIONAL)->get_pos();
             camera->center(pos.first, pos.second);
 
-            levelmanager->get_change_currlvl()->all_nonvisible();
-            levelmanager->get_change_currlvl()->do_fov(pos.first, pos.second, 8);
+            levelmanager->get_change_currlvl().all_nonvisible();
+            levelmanager->get_change_currlvl().do_fov(pos.first, pos.second, 8);
         }
-        key=0;
 
 
         camera->draw_world();
