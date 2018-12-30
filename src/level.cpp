@@ -8,26 +8,35 @@ constexpr int Level::multipliers[4][8];
 //constructor just makes a solid wall map of widthxheight
 //widthxheight map, each 'tile' is really a map of tiletag:tile* (pointers to just one immutable tile instance per tile
 Level::Level(uint width, uint height) : width(width), height(height) {
-    std::pair<uint, Tile> outermost = std::make_pair(T_WALL, WallTile());
-    std::vector<std::pair<uint, Tile>> col(height, outermost);
-    tiles = std::vector<std::vector<std::pair<uint, Tile>>>(width, col);
+    Tile outermost = WallTile();
+    std::vector<Tile> col(height, outermost);
+    tiles = std::vector<std::vector<Tile>>(width, col);
 };
 
 Level::Level() : Level::Level(80, 25) {};
 
 bool Level::is_visible(uint x, uint y) {
-    return tiles[x][y].second.visible;
+    return tiles[x][y].visible;
 }
 uint Level::get_character(uint x, uint y) {
-    return tiles[x][y].second.character;
+    return tiles[x][y].character;
 }
+
+void Level::randomize() {
+    for (uint x = 0; x < width; x++) {
+        for (uint y = 0; y < height ; y++) {
+            if (rand() % 15 == 1) tiles[x][y] = WallTile(); else tiles[x][y] = FloorTile();
+        }
+    }
+}
+
 
 bool Level::is_passable(uint x, uint y) const {
     bool out = true;
     if (x <= 0 || x >= width-1 || y <= 0 || y >= height-1)
         out = false;
 
-    if (!tiles[x][y].second.passable)
+    if (!tiles[x][y].passable)
         out = false;
 
     return out;
@@ -36,7 +45,7 @@ bool Level::is_passable(uint x, uint y) const {
 void Level::create_room(uint xi, uint yi, uint w, uint h) {
     for (uint x = xi; x < xi + w; x++) {
         for (uint y = yi; y < yi + h; y++) {
-            tiles[x][y] = std::make_pair(T_FLOOR, FloorTile());
+            tiles[x][y] = FloorTile();
         }
     }
 }
@@ -76,7 +85,7 @@ void Level::cast_light( uint x, uint y, uint radius, uint row,
 
             uint radius2 = radius * radius;
             if ((uint)(dx * dx + dy * dy) < radius2) {
-                tiles[ax][ay].second.visible = true;
+                tiles[ax][ay].visible = true;
             }
 
             if (blocked) {
@@ -109,7 +118,7 @@ void Level::do_fov(uint x, uint y, uint radius) {
 void Level::all_nonvisible() {
     for (uint x = 0; x < width; x++) {
         for (uint y = 0; y < height ; y++) {
-            tiles[x][y].second.visible = false;
+            tiles[x][y].visible = false;
         }
     }
 }

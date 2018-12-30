@@ -30,41 +30,34 @@
 
 void tick_game() {
     auto pact = player->get_component<Actional>(C_ACT);
-    while(pact->tick > 0) {
 
+    //we want shared pointer copies here: it guarantees entities are not
+    //destroyed until the end of tick_game, and no dangling pointers get accessed
+    auto entset = levelmanager->get_current_entities();
+    while(true) {
+
+        auto acts = levelmanager->get_current_components<Actional>(C_ACT);
         //get lowest tick (action that comes soonest)
         int lowest_tick = 1000;
-        for (const auto& ent: levelmanager->get_current_entities()) {
-            auto act = ent->get_component<Actional>(C_ACT);
-            if (act == nullptr)
-                continue;
+        for (const auto& act: acts) {
             lowest_tick = act->tick < lowest_tick ? act->tick : lowest_tick;
         }
 
-        //make sure player is the last one checked by making a vector out of the set and placing the player last
-        std::set<std::shared_ptr<Entity>> entset = levelmanager->get_current_entities();
-        bool noplayer = (entset.find(player) == entset.end());
-        if (!noplayer)
-            entset.erase(player);
-        std::vector<std::shared_ptr<Entity>> vec(entset.begin(), entset.end()); // sorted : - )
-        if (!noplayer)
-            vec.push_back(player);
+        //player should be last
+        acts.erase(std::remove(acts.begin(), acts.end(), pact), acts.end());
+        acts.push_back(pact);
 
         //every entity with an action component takes their action, from fastest to slowest
-        for (const auto& ent: vec) {
-            auto act = ent->get_component<Actional>(C_ACT);
-            if (act == nullptr)
-                continue;
-
+        for (auto act: acts) {
             act->tick -= lowest_tick;
             if (act->tick <= 0){
                 act->take_action();
-                if (act == pact) break;
-                else act->tick += act->speed;
-                //we have to add the player speed outside the outer loop otherwise it loops forever
+                act->tick += act->speed;
+                if (act == pact) goto turn_end;
             }
         }
     }
+    turn_end:
     pact->tick += pact->speed;
 }
 
@@ -87,6 +80,7 @@ int main() {
     auto& cmap = levelmanager->get_change_currlvl();
     cmap.create_room(  1, 1, 78, 10);
     cmap.create_room(50, 1, 6, 22);
+    cmap.randomize();
 
     //initializing entities here for now
     auto item = std::make_shared<Entity>();
@@ -117,7 +111,7 @@ int main() {
 
             //fov
             levelmanager->get_change_currlvl().all_nonvisible();
-            levelmanager->get_change_currlvl().do_fov(pos.first, pos.second, 8);
+            levelmanager->get_change_currlvl().do_fov(pos.first, pos.second, 60);
         } else {
             //this is a little ugly but i want every command in one place (inside player action component)
             player->get_component<Actional>(C_ACT)->take_action();
@@ -125,10 +119,11 @@ int main() {
 
         camera.draw_world();
         camera.draw_entities();
+        draw_menus();
 
         terminal_refresh();
         terminal_clear();
-        terminal_delay(1000/FRAMEWAIT);
+        /* terminal_delay(1000/FRAMEWAIT); */
     }
 
     terminal_close();

@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <cstdlib>
 #include <tile.h>
 #include "util.h"
 #include "fdecs.h"
@@ -10,7 +11,7 @@
 struct Level {
     uint width;
     uint height;
-    std::vector<std::vector<std::pair<uint, Tile>>> tiles;
+    std::vector<std::vector<Tile>> tiles;
 
     static int constexpr multipliers[4][8] = {
         {1, 0, 0, -1, -1, 0, 0, 1},
@@ -27,6 +28,7 @@ struct Level {
         float start_slope, float end_slope, uint xx, uint xy, uint yx,
         uint yy);
     void do_fov(uint x, uint y, uint radius);
+    void randomize();
     void all_nonvisible();
     bool is_visible(uint x, uint y);
     uint get_character(uint x, uint y);

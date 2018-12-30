@@ -5,8 +5,8 @@
 #include "events.h"
 
 struct Actional: public BaseComponent {
-    int base_speed;
-    int speed;
+    uint base_speed;
+    uint speed;
     int tick;
 
     Actional(int spd, COMPONENT_TAG tag);

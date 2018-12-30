@@ -16,7 +16,9 @@ void PlayerActional::take_action(void) {
         uint x = pos->pos[0];
         uint y = pos->pos[1];
         //big switch
-        switch( input.get_next_cmd() ) {
+        input.last_key = 0;
+        input.game_running = false;
+        switch( input.last_cmd ) {
             case NONE      :
                 printf("NONE in player\n");
                 break;
@@ -49,7 +51,7 @@ void PlayerActional::take_action(void) {
         }
 
     } else {
-        switch (input.check_next_cmd()) {
+        switch (input.last_cmd) {
             case TEST:
                 printf("test success\n");
                 break;
@@ -57,9 +59,11 @@ void PlayerActional::take_action(void) {
                 printf("exit menu\n");
                 break;
             default:
-                printf("nothing to be done\n");
+                ;
         }
     }
+    //not sure if i need this
+    input.last_cmd = NONE;
 }
 
 //////////

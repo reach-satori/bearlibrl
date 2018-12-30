@@ -39,6 +39,7 @@ struct CommandManager {
     std::unordered_map<COMMAND_DOMAIN, std::unordered_multimap<uint, Command>> cmdlists;
     std::stack<COMMAND_DOMAIN> domainstack;
     int last_key;
+    int last_cmd = NONE;
     bool game_running = false;
 
     void add_command(COMMAND_DOMAIN dmn, uint key, Command cmd);

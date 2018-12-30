@@ -1,4 +1,5 @@
 #include "menus.h"
+#include "globals.h"
 
 
 void draw_outline(uint x, uint y, uint w, uint h, color_t color) {
@@ -43,5 +44,20 @@ void outlined_textbox(uint x, uint y, uint w, uint h, int align, const char* str
     terminal_clear_area(x, y, w, h);
     draw_outline(x, y, w, h, outline_color);
     terminal_print_ext(x+1, y+1, w-2, h-2, align, str);
+}
+
+void current_menu() {
+    if (input.domainstack.top() == CMD_PICKUP) {
+        text_center_popup("text box text item pickup box text box", 0, 0xff00ffff);
+
+    }
+
+}
+
+void draw_menus() {
+    /* logbox(); */
+    /* statbox(); */
+    current_menu();
+
 }
 

@@ -25,7 +25,6 @@ CommandManager::CommandManager() {
     cmdlists.insert(std::make_pair(CMD_PICKUP, std::unordered_multimap<uint, Command>()));
 
     add_command(CMD_DEFAULT, TK_KP_8, Command(false, false, false, MOVE_N));
-    add_command(CMD_DEFAULT, TK_ESCAPE, Command(false, false, false, TEST));
     add_command(CMD_DEFAULT, TK_KP_7, Command(false, false, false, MOVE_NW));
     add_command(CMD_DEFAULT, TK_KP_9, Command(false, false, false, MOVE_NE));
     add_command(CMD_DEFAULT, TK_KP_2, Command(false, false, false, MOVE_S));
@@ -51,13 +50,6 @@ CommandManager::CommandManager() {
     add_command(CMD_PICKUP, TK_ESCAPE, Command(false, false, false, EXIT_MENU));
 }
 
-COMMAND_TAG CommandManager::get_next_cmd() {
-    auto cmd = check_next_cmd();
-    last_key = 0;
-    game_running=false;
-    return cmd;
-}
-
 COMMAND_TAG CommandManager::check_next_cmd() {
     auto& dmnmap = cmdlists.find(domainstack.top())->second;
     auto cmds = dmnmap.find(last_key);
@@ -75,8 +67,8 @@ void CommandManager::read_key() {
     shift = terminal_check(TK_SHIFT);
     ctrl = terminal_check(TK_CONTROL);
     alt = terminal_check(TK_ALT);
-    auto cmd = check_next_cmd();
-    switch (cmd) {
+    last_cmd = check_next_cmd();
+    switch (last_cmd) {
         case EXIT_MENU:
             game_running = false;
             domainstack.pop();
