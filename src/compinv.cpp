@@ -18,6 +18,7 @@ int Inventorial::add_to_inventory(std::shared_ptr<Entity>& item) {
 
     //items inside an inventory hold a weak pointer to the entity whose inventory they're in
     pupptr->invptr = parent;
+    currload += pupptr->weight;
     inventory.insert(item);
     return 0;
 }
@@ -33,9 +34,23 @@ int Inventorial::remove_from_inventory(std::shared_ptr<Entity>& item) {
     }
 
     inventory.erase(item);
+    currload -= droptr->weight;
     droptr->invptr = std::weak_ptr<Entity>();
     return 0;
 }
+
+void Inventorial::refresh_weight() {
+    float out = 0;
+    for (const auto& it : inventory) {
+        auto comp = it->get_component<Carrial>(C_CARR);
+        assert(comp != nullptr);
+        out += comp->weight;
+    }
+    currload = out;
+}
+
+
+///////////////////////
 
 int EquipInventorial::inner_equip_item(std::shared_ptr<Entity>& equipped) {
     auto eqpptr = equipped->get_component<EquipCarrial>(C_CARR_EQUIP);

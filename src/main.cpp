@@ -113,7 +113,7 @@ int main() {
         if (input.game_running) {
             tick_game(); //deals with entities that have an action component
             auto pos = player->get_component<Positional>(C_POSITIONAL)->get_pos();
-            camera.center(pos.first, pos.second);
+            camera.center_on_player();
 
             //fov
             levelmanager->get_change_currlvl().all_nonvisible();

@@ -41,10 +41,6 @@ void Level::create_room(uint xi, uint yi, uint w, uint h) {
     }
 }
 
-Tile* get_tile_ptr(uint tag) {
-    return alltiles.find(tag)->second;
-}
-
 //copypasted wholesale from
 //http://www.roguebasin.com/index.php?title=C%2B%2B_shadowcasting_implementation
 //fov algorithm by mr bjorn bergstrom

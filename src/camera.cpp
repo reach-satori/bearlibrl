@@ -66,3 +66,7 @@ void Camera::center(int x, int y) {
         set_pos(x-width/2, y-height/2);
     }
 }
+void Camera::center_on_player(){
+    auto pos = player->get_component<Positional>(C_POSITIONAL)->get_pos();
+    center(pos.first, pos.second);
+}

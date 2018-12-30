@@ -16,6 +16,7 @@ struct Camera {
         void draw_entities(void) const;
         void set_pos(int x, int y);
         void center(int x, int y);
+        void center_on_player();
         bool in_camera_center(int x, int y) const ;
         bool on_camera(int x, int y) const;
 };

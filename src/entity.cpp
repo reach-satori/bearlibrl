@@ -22,6 +22,7 @@ static std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
 };
 
 
+
 Entity::Entity() : components(std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>>()) {
 }
 

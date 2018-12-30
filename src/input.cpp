@@ -7,7 +7,7 @@ Command::Command(bool shift, bool alt, bool ctrl, COMMAND_TAG cmd) :
     ctrl(ctrl),
     cmd(cmd) {};
 
-bool Command::right_modcomb(bool ishift, bool ialt, bool ictrl) {
+bool Command::right_modcomb(bool ishift, bool ialt, bool ictrl) const {
     return ishift == shift && ialt == alt && ictrl == ctrl;
 }
 
@@ -48,17 +48,42 @@ CommandManager::CommandManager() {
 }
 
 COMMAND_TAG CommandManager::get_next_cmd() {
+    auto cmd = check_next_cmd();
+
+    last_key = 0;
+    game_running=false;
+
+    return cmd;
+}
+
+COMMAND_TAG CommandManager::check_next_cmd() {
     auto& dmnmap = cmdlists.find(domainstack.top())->second;
     auto cmds = dmnmap.find(last_key);
-    last_key = 0;
 
-    game_running=false;
-    return cmds == dmnmap.end() ? NONE : cmds->second.cmd;
+    if (cmds == dmnmap.end()) return NONE;
+
+    auto its = dmnmap.equal_range(cmds->first);
+    for (auto it = its.first; it != its.second; it++) {
+        if (it->second.right_modcomb(shift, alt, ctrl)) return it->second.cmd;
+    }
+    return NONE;
 }
 
 void CommandManager::read_key() {
     last_key = terminal_read();
-    game_running = true;
+    shift = terminal_check(TK_SHIFT);
+    ctrl = terminal_check(TK_CONTROL);
+    alt = terminal_check(TK_ALT);
+    auto cmd = check_next_cmd();
+    switch (cmd) {
+        case NONE:
+            game_running = false;
+            break;
+        default:
+            printf("not NONE\n");
+            game_running = true;
+            break;
+    }
 }
 
 
