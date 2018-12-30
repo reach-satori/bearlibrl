@@ -118,6 +118,9 @@ int main() {
             //fov
             levelmanager->get_change_currlvl().all_nonvisible();
             levelmanager->get_change_currlvl().do_fov(pos.first, pos.second, 8);
+        } else {
+            //this is a little ugly but i want every command in one place (inside player action component)
+            player->get_component<Actional>(C_ACT)->take_action();
         }
 
         camera.draw_world();

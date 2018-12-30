@@ -25,6 +25,7 @@ CommandManager::CommandManager() {
     cmdlists.insert(std::make_pair(CMD_PICKUP, std::unordered_multimap<uint, Command>()));
 
     add_command(CMD_DEFAULT, TK_KP_8, Command(false, false, false, MOVE_N));
+    add_command(CMD_DEFAULT, TK_ESCAPE, Command(false, false, false, TEST));
     add_command(CMD_DEFAULT, TK_KP_7, Command(false, false, false, MOVE_NW));
     add_command(CMD_DEFAULT, TK_KP_9, Command(false, false, false, MOVE_NE));
     add_command(CMD_DEFAULT, TK_KP_2, Command(false, false, false, MOVE_S));
@@ -45,21 +46,21 @@ CommandManager::CommandManager() {
     add_command(CMD_DEFAULT, TK_RIGHT, Command(false, false, false, MOVE_E));
     add_command(CMD_DEFAULT, TK_DOWN, Command(false, false, false, MOVE_S));
     add_command(CMD_DEFAULT, TK_G, Command(false, false, false, PICKUP_OPEN));
+
+    add_command(CMD_PICKUP, TK_ENTER, Command(false, false, false, TEST));
+    add_command(CMD_PICKUP, TK_ESCAPE, Command(false, false, false, EXIT_MENU));
 }
 
 COMMAND_TAG CommandManager::get_next_cmd() {
     auto cmd = check_next_cmd();
-
     last_key = 0;
     game_running=false;
-
     return cmd;
 }
 
 COMMAND_TAG CommandManager::check_next_cmd() {
     auto& dmnmap = cmdlists.find(domainstack.top())->second;
     auto cmds = dmnmap.find(last_key);
-
     if (cmds == dmnmap.end()) return NONE;
 
     auto its = dmnmap.equal_range(cmds->first);
@@ -76,11 +77,19 @@ void CommandManager::read_key() {
     alt = terminal_check(TK_ALT);
     auto cmd = check_next_cmd();
     switch (cmd) {
+        case EXIT_MENU:
+            game_running = false;
+            domainstack.pop();
+            break;
+        case PICKUP_OPEN:
+            printf("menu open\n");
+            game_running = false;
+            domainstack.push(CMD_PICKUP);
+            break;
         case NONE:
             game_running = false;
             break;
         default:
-            printf("not NONE\n");
             game_running = true;
             break;
     }

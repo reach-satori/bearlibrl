@@ -1,5 +1,6 @@
 #pragma once
 #include <set>
+#include <vector>
 #include <memory>
 #include <map>
 #include "typedefs.h"

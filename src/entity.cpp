@@ -45,7 +45,6 @@ BaseComponent *Entity::get_base_component(COMPONENT_TAG tag) {
     return nullptr;
 }
 
-
 std::set<COMPONENT_TAG> Entity::get_tags(void)  {
     std::set<COMPONENT_TAG> out;
     if (components.size() == 0) {

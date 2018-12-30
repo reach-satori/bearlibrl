@@ -10,6 +10,7 @@ enum COMMAND_DOMAIN {
 
 enum COMMAND_TAG {
     NONE,
+    TEST,
     MOVE_N,
     MOVE_NW,
     MOVE_NE,
@@ -18,7 +19,8 @@ enum COMMAND_TAG {
     MOVE_SE,
     MOVE_E,
     MOVE_W,
-    PICKUP_OPEN
+    PICKUP_OPEN,
+    EXIT_MENU
 };
 
 struct Command {
