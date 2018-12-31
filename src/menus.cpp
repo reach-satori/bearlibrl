@@ -1,9 +1,37 @@
 #include "menus.h"
 #include "globals.h"
 
+static txtlog glog;
+
+void txtlog::log(std::string str) {
+    if (txt.size() > maxsize) {
+        txt.erase(txt.begin(), txt.begin()+1000);
+    }
+    txt.push_back(str);
+}
+
+std::string const * txtlog::retrieve_last_n(int n) const {
+    return &txt.at(txt.size()-n);
+}
+
+std::string txt( const char* fmt, ... ) {
+    char buf[1024];
+    va_list argptr;
+    va_start(argptr, fmt);
+    vsnprintf(buf, 1024, fmt, argptr);
+    va_end(argptr);
+    return std::string(buf);
+}
+
+void tolog(const char* in) {
+    glog.log(in);
+}
+
+void You(const char* in) {
+    tolog(txt("%s %s", "You", in).c_str());
+}
 
 void draw_outline(uint x, uint y, uint w, uint h, color_t color) {
-
     color_t cstorage = terminal_state(TK_COLOR);
     terminal_color(color);
     terminal_layer(TEXTBOXES_LAYER);
@@ -46,18 +74,44 @@ void outlined_textbox(uint x, uint y, uint w, uint h, int align, const char* str
     terminal_print_ext(x+1, y+1, w-2, h-2, align, str);
 }
 
-void current_menu() {
-    if (input.domainstack.top() == CMD_PICKUP) {
-        text_center_popup("text box text item pickup box text box", 0, 0xff00ffff);
-
+void pickup_menu() {
+    static auto ppos = player->get_component<Positional>(C_POSITIONAL);
+    static std::vector<Carrial*> items = levelmanager->get_change_currlvl().get_components_in_spot<Carrial>(ppos->x(), ppos->y(), C_CARR);
+    if (input.last_cmd == PICKUP_OPEN && items.empty()) {
+        tolog("Nothing to pick up there.");
+        input.domainstack.pop();
     }
+}
+
+void inventory_menu() {
 
 }
 
+void current_menu() {
+    switch (input.domainstack.top()) {
+        case CMD_PICKUP:
+            pickup_menu();
+            break;
+        case CMD_INVENTORY:
+            inventory_menu();
+            break;
+    }
+}
+
+void logbox() {
+    static constexpr auto boxheight = 8;
+    static constexpr auto startheight = CONSOLE_HEIGHT-boxheight;
+    std::string const *t = glog.retrieve_last_n(boxheight - 2);
+    terminal_clear_area(0, startheight, CONSOLE_WIDTH, boxheight);
+    for (int i = 0; i < boxheight-2 ; i++) {
+        terminal_print(3, startheight + 1 + i, (t+i)->c_str());
+    }
+    draw_outline(0, startheight, CONSOLE_WIDTH, 8, 0xffffffff);
+}
+
 void draw_menus() {
-    /* logbox(); */
+    logbox();
     /* statbox(); */
     current_menu();
-
 }
 

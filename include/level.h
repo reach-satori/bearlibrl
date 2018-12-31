@@ -6,6 +6,8 @@
 #include <tile.h>
 #include "util.h"
 #include "fdecs.h"
+#include "comptags.h"
+#include "entity.h"
 
 
 struct Level {
@@ -32,5 +34,16 @@ struct Level {
     void all_nonvisible();
     bool is_visible(uint x, uint y);
     uint get_character(uint x, uint y);
+
     std::vector<std::shared_ptr<Entity>> get_entities_in_spot(int, int) const;
+
+    template <typename T>
+    std::vector<T*> get_components_in_spot(int x, int y, COMPONENT_TAG tag) {
+        std::vector<T*> out;
+        for (auto const& et : get_entities_in_spot(x, y)) {
+            T* comp = et->get_component<T>(tag);
+            if (comp != nullptr) out.push_back(comp);
+        }
+        return out;
+    }
 };

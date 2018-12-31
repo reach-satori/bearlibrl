@@ -7,6 +7,7 @@ LevelManager::LevelManager() {
     tagged_entities.insert(std::make_pair(current_tag, std::set<std::shared_ptr<Entity>>()));
 }
 
+
 std::set<std::shared_ptr<Entity>> const &LevelManager::get_current_entities() const {
     assert(tagged_entities.find(current_tag) != tagged_entities.end() &&  "attempted to check nonexisting current level for entities: current level should always exist, so something has gone wrong!");
     return tagged_entities.find(current_tag)->second;

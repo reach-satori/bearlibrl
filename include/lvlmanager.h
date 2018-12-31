@@ -28,14 +28,15 @@ class LevelManager {
         void move_to_lvl (uint tag);
         bool entity_check (std::shared_ptr<Entity> const &) const;
         bool level_check (uint tag) const;
+
         template <typename T>
-            std::vector<T*> get_current_components(COMPONENT_TAG tag) {
-                auto out = std::vector<T*>();
-                for (const auto& e : get_current_entities()) {
-                    auto ptr = e->get_component<T>(tag);
-                    if (ptr == nullptr) break; else out.push_back(ptr);
-                }
-                return out;
+        std::vector<T*> get_current_components(COMPONENT_TAG tag) {
+            auto out = std::vector<T*>();
+            for (const auto& e : get_current_entities()) {
+                auto ptr = e->get_component<T>(tag);
+                if (ptr == nullptr) break; else out.push_back(ptr);
             }
+            return out;
+        }
 
 };

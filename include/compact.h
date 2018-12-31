@@ -3,6 +3,7 @@
 #include "comptags.h"
 #include "entity.h"
 #include "events.h"
+#include "menus.h"
 
 struct Actional: public BaseComponent {
     uint base_speed;

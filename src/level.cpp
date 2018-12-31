@@ -25,7 +25,7 @@ uint Level::get_character(uint x, uint y) {
 void Level::randomize() {
     for (uint x = 0; x < width; x++) {
         for (uint y = 0; y < height ; y++) {
-            if (rand() % 15 == 1) tiles[x][y] = WallTile(); else tiles[x][y] = FloorTile();
+            if (rand() % 9 == 1) tiles[x][y] = WallTile(); else tiles[x][y] = FloorTile();
         }
     }
 }

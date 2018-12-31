@@ -5,7 +5,7 @@
 enum COMMAND_DOMAIN {
     CMD_DEFAULT,
     CMD_PICKUP,
-    CMD_MAINMENU
+    CMD_INVENTORY
 };
 
 enum COMMAND_TAG {
@@ -20,7 +20,11 @@ enum COMMAND_TAG {
     MOVE_E,
     MOVE_W,
     PICKUP_OPEN,
-    EXIT_MENU
+    INVENTORY_OPEN,
+    MENU_CANCEL,
+    MENU_UP,
+    MENU_DOWN,
+    MENU_CONFIRM
 };
 
 struct Command {

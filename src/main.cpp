@@ -58,7 +58,7 @@ void tick_game() {
         }
     }
     turn_end:
-    pact->tick += pact->speed;
+    ;
 }
 
 void terminal_init() {
@@ -85,8 +85,8 @@ int main() {
     //initializing entities here for now
     auto item = std::make_shared<Entity>();
     levelmanager->add_entity_to_currlvl(item);
-    item->add_component(std::make_unique<Positional>(13, 5, 0x21));
-    item->add_component(std::make_unique<EmptyActional>(500));
+    item->add_component(std::make_unique<Positional>(17, 6, 0x21));
+    item->add_component(std::make_unique<EmptyActional>(2000));
     item->add_component(std::make_unique<Carrial>());
     item.reset();
 
@@ -124,6 +124,8 @@ int main() {
         terminal_refresh();
         terminal_clear();
         /* terminal_delay(1000/FRAMEWAIT); */
+        //not sure if i need this
+        input.last_cmd = NONE;
     }
 
     terminal_close();

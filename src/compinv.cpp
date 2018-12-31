@@ -29,9 +29,9 @@ int Inventorial::remove_from_inventory(std::shared_ptr<Entity>& item) {
         return -1; // means the entity on which drop was attempted has no Carrial component, early return
     if (droptr->invptr.expired())
         return -2; // entity not in an inventory to be removed from
-    if (droptr->invptr.lock() != parent.lock()) {
+    if (droptr->invptr.lock() != parent.lock())
         return -3; // entity is in an inventory, but not this one
-    }
+
 
     inventory.erase(item);
     currload -= droptr->weight;

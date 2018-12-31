@@ -52,18 +52,16 @@ void PlayerActional::take_action(void) {
 
     } else {
         switch (input.last_cmd) {
-            case TEST:
-                printf("test success\n");
+            case MENU_CANCEL:
+                printf("menu action\n");
+                tolog("menu action");
                 break;
-            case EXIT_MENU:
-                printf("exit menu\n");
+            case PICKUP_OPEN:
                 break;
             default:
                 ;
         }
     }
-    //not sure if i need this
-    input.last_cmd = NONE;
 }
 
 //////////
