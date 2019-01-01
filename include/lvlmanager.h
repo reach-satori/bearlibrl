@@ -21,16 +21,16 @@ class LevelManager {
         std::set<std::shared_ptr<Entity>> const &get_current_entities(void) const;
         Level const &get_const_currlvl(void) const;
         Level &get_change_currlvl(void) const;
-        void add_entity_to_currlvl(std::shared_ptr<Entity>& ent);
-        void add_entity_to_lvl(std::shared_ptr<Entity>& ent, uint lvl);
+        bool entity_check (std::shared_ptr<Entity> const &) const;
+        bool level_check (uint tag) const;
+        void add_entity_to_currlvl(const std::shared_ptr<Entity>& ent);
+        void add_entity_to_lvl(const std::shared_ptr<Entity>& ent, uint lvl);
         uint add_lvl(std::unique_ptr<Level> lvl);
         void clear_lvl (uint tag);
         void move_to_lvl (uint tag);
-        bool entity_check (std::shared_ptr<Entity> const &) const;
-        bool level_check (uint tag) const;
 
         template <typename T>
-        std::vector<T*> get_current_components(COMPONENT_TAG tag) {
+        std::vector<T*> get_current_components(COMPONENT_TAG tag) const {
             auto out = std::vector<T*>();
             for (const auto& e : get_current_entities()) {
                 auto ptr = e->get_component<T>(tag);

@@ -6,6 +6,19 @@ Inventorial::Inventorial(void) : Inventorial(50.f) {}
 
 //THIS FUNCTION TAKES OWNERSHIP OF ITEM
 int Inventorial::add_to_inventory(std::shared_ptr<Entity>& item) {
+    auto check = inv_add_check(item);
+    if (check == 0) {
+        auto pupptr = item->get_component<Carrial>(C_CARR);
+        //items inside an inventory hold a weak pointer to the entity whose inventory they're in
+        pupptr->invptr = parent;
+        currload += pupptr->weight;
+        inventory.insert(item);
+    }
+    return check;
+}
+
+//redundant checks
+int Inventorial::inv_add_check(std::shared_ptr<Entity> const & item) const {
     auto pupptr = item->get_component<Carrial>(C_CARR);
     if (pupptr == nullptr)
         return -1; // means the entity on which pickup was attempted has no Carrial component, early return
@@ -15,11 +28,6 @@ int Inventorial::add_to_inventory(std::shared_ptr<Entity>& item) {
         return -3; // already in THIS inventory
     if (!pupptr->invptr.expired())
         return -4; // already in an inventory
-
-    //items inside an inventory hold a weak pointer to the entity whose inventory they're in
-    pupptr->invptr = parent;
-    currload += pupptr->weight;
-    inventory.insert(item);
     return 0;
 }
 
@@ -69,7 +77,6 @@ int EquipInventorial::inner_equip_item(std::shared_ptr<Entity>& equipped) {
     }
     if (it == eqrange.second)
         return -4; // no free slots of the correct type
-
     return 0;
-
 }
+

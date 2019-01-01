@@ -8,16 +8,13 @@ Positional::Positional(void) : Positional(5, 5, 0xBF) {}
 
 Positional::~Positional(void) {}
 
-uint Positional::x(void) {
+uint Positional::x(void) const {
     return pos[0];
 }
 
-uint Positional::y(void) {
+uint Positional::y(void) const {
     return pos[1];
 }
 
-std::pair<int, int> Positional::get_pos(void) const {
-    return std::make_pair(pos[0], pos[1]);
-}
 
 

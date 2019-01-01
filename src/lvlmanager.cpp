@@ -26,7 +26,7 @@ Level &LevelManager::get_change_currlvl(void) const {
     return out;
 }
 
-void LevelManager::add_entity_to_lvl(std::shared_ptr<Entity>& ent, uint lvl){
+void LevelManager::add_entity_to_lvl(const std::shared_ptr<Entity>& ent, uint lvl){
 
     if (!level_check(lvl)){
         printf("attempted to add entity to non-existing lebel");
@@ -42,7 +42,7 @@ void LevelManager::add_entity_to_lvl(std::shared_ptr<Entity>& ent, uint lvl){
     tagged_entities.find(lvl)->second.insert(ent);
 }
 
-void LevelManager::add_entity_to_currlvl(std::shared_ptr<Entity>& ent){
+void LevelManager::add_entity_to_currlvl(const std::shared_ptr<Entity>& ent){
     add_entity_to_lvl(ent, current_tag);
 }
 

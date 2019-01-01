@@ -1,7 +1,43 @@
 #include "compact.h"
 #include "globals.h"
 
+static void player_move(int x, int y) {
+    move(player.get(), x, y);
+};
+
+static void player_pickup_open() {
+    Positional const * ppos = player->get_component<Positional const>(C_POSITIONAL);
+    std::vector<Carrial const *> items = levelmanager->get_const_currlvl().get_components_in_spot<Carrial const>(ppos->x(), ppos->y(), C_CARR);
+
+    if (items.empty()) { // no item on the ground
+        tolog("Nothing to pick up there.");
+        input.domainstack.pop();
+
+    } else if (items.size() == 1) { //shortcut the pickup menu if there's only one item to get
+        auto topickup = items[0]->parent.lock();
+        int status = item_pickup(player.get(), topickup);
+        switch (status) {
+            case 0:
+                You("picked up a thing.");
+            case -2:
+                tolog("That's too heavy to pick up.");
+            default:
+                You("can't pick that up.");
+        }
+        input.domainstack.pop();
+
+    } else { // initialize the menu for pick up of multiple items
+        auto const inv = player->get_component<Inventorial const>(C_INV);
+        item_menu_update(items, inv->maxweight, inv->currload);
+    }
+
+};
+
+/////////////////////
+//////////////////////
+
 Actional::Actional(int spd, COMPONENT_TAG tag) : BaseComponent(tag), base_speed(spd), speed(spd), tick(spd) {}
+
 
 ////////////////
 ////////////////
@@ -13,8 +49,8 @@ void PlayerActional::take_action(void) {
         Entity *ent = parent.lock().get();
         Positional const * pos = ent->get_component<Positional const>(C_POSITIONAL);
 
-        uint x = pos->pos[0];
-        uint y = pos->pos[1];
+        uint x = pos->x();
+        uint y = pos->y();
         //big switch
         input.last_key = 0;
         input.game_running = false;
@@ -23,28 +59,28 @@ void PlayerActional::take_action(void) {
                 printf("NONE in player\n");
                 break;
             case MOVE_N    :
-                move(ent, x, y-1);
+                player_move( x, y-1);
                 break;
             case MOVE_S    :
-                move(ent, x, y+1);
+                player_move( x, y+1);
                 break;
             case MOVE_W    :
-                move(ent, x-1, y);
+                player_move( x-1, y);
                 break;
             case MOVE_E    :
-                move(ent, x+1, y);
+                player_move( x+1, y);
                 break;
             case MOVE_NE    :
-                move(ent, x+1, y-1);
+                player_move( x+1, y-1);
                 break;
             case MOVE_NW    :
-                move(ent, x-1, y-1);
+                player_move( x-1, y-1);
                 break;
             case MOVE_SW    :
-                move(ent, x-1, y+1);
+                player_move( x-1, y+1);
                 break;
             case MOVE_SE    :
-                move(ent, x+1, y+1);
+                player_move( x+1, y+1);
                 break;
             default:
                 printf("DEFAULT CASE REACHED IN PLAYER TAKE_ACTION\n");
@@ -53,13 +89,13 @@ void PlayerActional::take_action(void) {
     } else {
         switch (input.last_cmd) {
             case MENU_CANCEL:
-                printf("menu action\n");
-                tolog("menu action");
+                tolog("menu cancel");
                 break;
             case PICKUP_OPEN:
+                player_pickup_open();
                 break;
-            default:
-                ;
+            case NONE:
+                break;
         }
     }
 }

@@ -13,13 +13,14 @@ void move(Entity * ent, int x, int y) {
     }
 }
 
-void item_pickup(Entity* carrier, std::shared_ptr<Entity>& item) {
+int item_pickup(Entity* carrier, std::shared_ptr<Entity>& item) {
     auto inv = carrier->get_component<Inventorial>(C_INV);
     if (inv == nullptr) {
         printf("Entity with no inventory component attempted to pick an item up\n");
-        return;
+        return -5;
     }
-    switch(inv->add_to_inventory(item)) {
+    int status = inv->add_to_inventory(item);
+    switch(status) {
         case -1:
             printf("Something attempted to pick up a non-item\n");
             break;
@@ -36,5 +37,7 @@ void item_pickup(Entity* carrier, std::shared_ptr<Entity>& item) {
             printf("picked up\n");
             break;
     }
+    return status;
+
 }
 

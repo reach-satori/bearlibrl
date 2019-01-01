@@ -17,6 +17,7 @@ struct Inventorial : public BaseComponent {
     int add_to_inventory(std::shared_ptr<Entity>& item);
     int remove_from_inventory(std::shared_ptr<Entity>& item);
     void refresh_weight();
+    int inv_add_check(std::shared_ptr<Entity> const &) const;
     Inventorial(void);
     Inventorial(float maxweight);
     Inventorial(float maxweight, COMPONENT_TAG tag);

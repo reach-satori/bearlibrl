@@ -75,7 +75,6 @@ void CommandManager::read_key() {
             domainstack.pop();
             break;
         case PICKUP_OPEN:
-            printf("menu open\n");
             game_running = false;
             domainstack.push(CMD_PICKUP);
             break;

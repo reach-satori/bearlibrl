@@ -17,6 +17,12 @@ class txtlog {
         std::string const * retrieve_last_n(int n) const;
 };
 
+struct ItemMenu {
+    std::vector<Carrial const *> items;
+    int p_maxweight = 100;
+    int p_currload = 0;
+};
+
 
 void draw_outline(uint x, uint y, uint w, uint h, color_t color);
 void text_center_popup(const char* str, int align, color_t outline_color);
@@ -30,4 +36,5 @@ void tolog(const char* in);
 void item_menu();
 void pickup_menu();
 void inventory_menu();
+void item_menu_update( std::vector<Carrial const *>, int, int );
 

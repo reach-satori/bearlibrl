@@ -14,7 +14,7 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
         Entity(void);
         void add_component(std::unique_ptr<BaseComponent> comp);
-        std::set<COMPONENT_TAG> get_tags(void);
+        std::set<COMPONENT_TAG> get_tags(void) const;
 
         //thanks c++
         template <typename T>
@@ -23,5 +23,5 @@ struct Entity : public std::enable_shared_from_this<Entity> {
         };
 
     private:
-        BaseComponent *get_base_component(COMPONENT_TAG tag);
+        BaseComponent *get_base_component(COMPONENT_TAG tag) const;
 };

@@ -15,10 +15,10 @@ Level::Level(uint width, uint height) : width(width), height(height) {
 
 Level::Level() : Level::Level(80, 25) {};
 
-bool Level::is_visible(uint x, uint y) {
+bool Level::is_visible(uint x, uint y) const {
     return tiles[x][y].visible;
 }
-uint Level::get_character(uint x, uint y) {
+uint Level::get_character(uint x, uint y) const {
     return tiles[x][y].character;
 }
 
@@ -127,7 +127,7 @@ void Level::all_nonvisible() {
 std::vector<std::shared_ptr<Entity>> Level::get_entities_in_spot(int x, int y) const {
     auto out = std::vector<std::shared_ptr<Entity>>();
     for (auto& i : levelmanager->get_current_entities()) {
-        auto pos = i->get_component<Positional const>(C_POSITIONAL);
+        Positional const * pos = i->get_component<Positional const>(C_POSITIONAL);
         if (pos == nullptr)
             break;
         if (pos->pos[0] == x && pos->pos[1] == y)

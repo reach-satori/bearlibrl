@@ -34,7 +34,7 @@ void Entity::add_component(std::unique_ptr<BaseComponent> comp) {
 }
 
 
-BaseComponent *Entity::get_base_component(COMPONENT_TAG tag) {
+BaseComponent *Entity::get_base_component(COMPONENT_TAG tag) const{
     auto ent_tags = get_tags();
     auto tags_to_check = get_inheritors(tag);
 
@@ -45,7 +45,7 @@ BaseComponent *Entity::get_base_component(COMPONENT_TAG tag) {
     return nullptr;
 }
 
-std::set<COMPONENT_TAG> Entity::get_tags(void)  {
+std::set<COMPONENT_TAG> Entity::get_tags(void) const {
     std::set<COMPONENT_TAG> out;
     if (components.size() == 0) {
         return out;

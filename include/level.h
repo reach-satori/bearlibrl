@@ -24,7 +24,6 @@ struct Level {
 
     Level();
     Level(uint width, uint height);
-    bool is_passable(uint x, uint y) const;
     void create_room(uint xi, uint yi, uint w, uint h);
     void cast_light( uint x, uint y, uint radius, uint row,
         float start_slope, float end_slope, uint xx, uint xy, uint yx,
@@ -32,13 +31,14 @@ struct Level {
     void do_fov(uint x, uint y, uint radius);
     void randomize();
     void all_nonvisible();
-    bool is_visible(uint x, uint y);
-    uint get_character(uint x, uint y);
+    bool is_passable(uint x, uint y) const;
+    bool is_visible(uint x, uint y) const;
+    uint get_character(uint x, uint y) const;
 
     std::vector<std::shared_ptr<Entity>> get_entities_in_spot(int, int) const;
 
     template <typename T>
-    std::vector<T*> get_components_in_spot(int x, int y, COMPONENT_TAG tag) {
+    std::vector<T*> get_components_in_spot(int x, int y, COMPONENT_TAG tag) const {
         std::vector<T*> out;
         for (auto const& et : get_entities_in_spot(x, y)) {
             T* comp = et->get_component<T>(tag);

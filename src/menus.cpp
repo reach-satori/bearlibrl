@@ -2,6 +2,13 @@
 #include "globals.h"
 
 static txtlog glog;
+static ItemMenu imenu;
+
+void item_menu_update(std::vector<Carrial const *> items, int max, int curr) {
+    imenu.items = items;
+    imenu.p_maxweight = max;
+    imenu.p_currload = curr;
+}
 
 void txtlog::log(std::string str) {
     if (txt.size() > maxsize) {
@@ -75,12 +82,11 @@ void outlined_textbox(uint x, uint y, uint w, uint h, int align, const char* str
 }
 
 void pickup_menu() {
-    static auto ppos = player->get_component<Positional>(C_POSITIONAL);
-    static std::vector<Carrial*> items = levelmanager->get_change_currlvl().get_components_in_spot<Carrial>(ppos->x(), ppos->y(), C_CARR);
-    if (input.last_cmd == PICKUP_OPEN && items.empty()) {
-        tolog("Nothing to pick up there.");
-        input.domainstack.pop();
-    }
+    constexpr int w = 80, h = 20;
+    constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
+    constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
+    terminal_clear_area(x, y, w, h);
+    draw_outline(x, y, w, h, 0xffffffff);
 }
 
 void inventory_menu() {
@@ -91,9 +97,6 @@ void current_menu() {
     switch (input.domainstack.top()) {
         case CMD_PICKUP:
             pickup_menu();
-            break;
-        case CMD_INVENTORY:
-            inventory_menu();
             break;
     }
 }

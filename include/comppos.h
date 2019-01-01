@@ -13,7 +13,6 @@ struct Positional: public BaseComponent {
     Positional(uint x, uint y, uint codepoint);
     ~Positional(void);
 
-    uint x(void);
-    uint y(void);
-    std::pair<int, int> get_pos(void) const;
+    uint x(void) const;
+    uint y(void) const;
 };

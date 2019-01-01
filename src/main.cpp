@@ -37,6 +37,7 @@ void tick_game() {
     while(true) {
 
         auto acts = levelmanager->get_current_components<Actional>(C_ACT);
+
         //get lowest tick (action that comes soonest)
         int lowest_tick = 1000;
         for (const auto& act: acts) {
@@ -106,12 +107,12 @@ int main() {
         //stuff that should happen once per "turn"(player action)
         if (input.game_running) {
             tick_game(); //deals with entities that have an action component
-            auto pos = player->get_component<Positional>(C_POSITIONAL)->get_pos();
+            Positional const * pos = player->get_component<Positional const>(C_POSITIONAL);
             camera.center_on_player();
 
             //fov
             levelmanager->get_change_currlvl().all_nonvisible();
-            levelmanager->get_change_currlvl().do_fov(pos.first, pos.second, 60);
+            levelmanager->get_change_currlvl().do_fov(pos->x(), pos->y(), 60);
         } else {
             //this is a little ugly but i want every command in one place (inside player action component)
             player->get_component<Actional>(C_ACT)->take_action();
