@@ -47,6 +47,10 @@ int Inventorial::remove_from_inventory(std::shared_ptr<Entity>& item) {
     return 0;
 }
 
+std::vector<std::shared_ptr<Entity>> Inventorial::inv_to_vector() const {
+    return std::vector<std::shared_ptr<Entity>>(inventory.begin(), inventory.end());
+}
+
 void Inventorial::refresh_weight() {
     float out = 0;
     for (const auto& it : inventory) {

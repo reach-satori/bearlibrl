@@ -4,10 +4,21 @@
 static txtlog glog;
 static ItemMenu imenu;
 
-void item_menu_update(std::vector<Carrial const *> items, int max, int curr) {
-    imenu.items = items;
-    imenu.p_maxweight = max;
-    imenu.p_currload = curr;
+void item_menu_update(std::set<std::shared_ptr<Entity>> items, int maxw, int currw) {
+    std::vector<std::weak_ptr<Entity>> wkptrs;
+    for (auto i: items) {
+        if (i->get_component<Carrial>(C_CARR) != nullptr)
+            wkptrs.push_back(std::weak_ptr<Entity>(i));
+    }
+    imenu.items = wkptrs;
+    imenu.p_maxweight = maxw;
+    imenu.p_currload = currw;
+    imenu.currpos = 0;
+}
+
+void menu_control(int in) {
+    imenu.currpos = clamp(imenu.currpos + in, 0, imenu.items.size() - 1);
+    printf("%s, %lu, %d\n", imenu.items[imenu.currpos].lock()->name.c_str(), imenu.items.size(), imenu.currpos);
 }
 
 void txtlog::log(std::string str) {
@@ -87,9 +98,13 @@ void pickup_menu() {
     constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
     terminal_clear_area(x, y, w, h);
     draw_outline(x, y, w, h, 0xffffffff);
-    auto lim = imenu.items.size();
-    for (int i = 1; i < lim+1; i++) {
-        terminal_print(x+1, y+i, "unga bunga item name");
+    auto &items = imenu.items;
+    auto lim = items.size();
+
+    for (int i = 0; i < lim; i++) {
+        auto iname = items[i].lock()->name.c_str();
+        auto toprint = i == imenu.currpos ? txt("[color=yellow]%s[/color]", iname) : txt(iname);
+        terminal_print(x+1, y+i+1, toprint.c_str());
     }
 }
 
@@ -99,8 +114,6 @@ void inventory_menu() {
         constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
         terminal_clear_area(x, y, w, h);
         draw_outline(x, y, w, h, 0xffffffff);
-
-
 }
 
 void current_menu() {
@@ -108,6 +121,10 @@ void current_menu() {
         case CMD_PICKUP:
             pickup_menu();
             break;
+        case CMD_INVENTORY:
+            inventory_menu();
+            break;
+
     }
 }
 

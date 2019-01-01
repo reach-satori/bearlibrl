@@ -24,7 +24,7 @@ enum COMMAND_TAG {
     MENU_CANCEL,
     MENU_UP,
     MENU_DOWN,
-    MENU_CONFIRM
+    PICKUP_CONFIRM
 };
 
 struct Command {

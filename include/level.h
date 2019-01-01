@@ -35,7 +35,7 @@ struct Level {
     bool is_visible(uint x, uint y) const;
     uint get_character(uint x, uint y) const;
 
-    std::vector<std::shared_ptr<Entity>> get_entities_in_spot(int, int) const;
+    std::set<std::shared_ptr<Entity>> get_entities_in_spot(int, int) const;
 
     template <typename T>
     std::vector<T*> get_components_in_spot(int x, int y, COMPONENT_TAG tag) const {

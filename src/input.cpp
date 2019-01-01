@@ -40,15 +40,18 @@ CommandManager::CommandManager() {
     add_command(CMD_DEFAULT , TK_G      , Command(false , false , false , PICKUP_OPEN));
     add_command(CMD_DEFAULT , TK_I      , Command(false , false , false , INVENTORY_OPEN));
 
-    add_command(CMD_PICKUP  , TK_ESCAPE , Command(false , false , false , MENU_CANCEL));
-    add_command(CMD_PICKUP  , TK_DOWN   , Command(false , false , false , MENU_DOWN));
-    add_command(CMD_PICKUP  , TK_UP     , Command(false , false , false , MENU_UP));
-    add_command(CMD_PICKUP  , TK_ENTER  , Command(false , false , false , MENU_CONFIRM));
+    add_command(CMD_PICKUP    , TK_ESCAPE , Command(false , false , false , MENU_CANCEL));
+    add_command(CMD_PICKUP    , TK_DOWN   , Command(false , false , false , MENU_DOWN));
+    add_command(CMD_PICKUP    , TK_UP     , Command(false , false , false , MENU_UP));
+    add_command(CMD_PICKUP    , TK_KP_2   , Command(false , false , false , MENU_DOWN));
+    add_command(CMD_PICKUP    , TK_KP_8   , Command(false , false , false , MENU_UP));
+    add_command(CMD_PICKUP    , TK_ENTER  , Command(false , false , false , PICKUP_CONFIRM));
 
     add_command(CMD_INVENTORY , TK_ESCAPE , Command(false , false , false , MENU_CANCEL));
     add_command(CMD_INVENTORY , TK_DOWN   , Command(false , false , false , MENU_DOWN));
     add_command(CMD_INVENTORY , TK_UP     , Command(false , false , false , MENU_UP));
-    add_command(CMD_INVENTORY , TK_ENTER  , Command(false , false , false , MENU_CONFIRM));
+    add_command(CMD_INVENTORY , TK_KP_2   , Command(false , false , false , MENU_DOWN));
+    add_command(CMD_INVENTORY , TK_KP_8   , Command(false , false , false , MENU_UP));
 }
 
 COMMAND_TAG CommandManager::check_next_cmd() {

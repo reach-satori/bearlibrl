@@ -1,20 +1,29 @@
 #include "compact.h"
 #include "globals.h"
 
+static void player_pickup_confirm() {
+};
+
 static void player_move(int x, int y) {
     move(player.get(), x, y);
 };
 
+static void player_inventory_open() {
+    //walking through the tree to get the player inventory items
+    Inventorial const * inv = player->get_component<Inventorial const>(C_INV);
+    item_menu_update(inv->inventory, inv->maxweight, inv->currload);
+};
+
 static void player_pickup_open() {
     Positional const * ppos = player->get_component<Positional const>(C_POSITIONAL);
-    std::vector<Carrial const *> items = levelmanager->get_const_currlvl().get_components_in_spot<Carrial const>(ppos->x(), ppos->y(), C_CARR);
+    auto items = levelmanager->get_const_currlvl().get_entities_in_spot(ppos->x(), ppos->y());
 
     if (items.empty()) { // no item on the ground
         tolog("Nothing to pick up there.");
         input.domainstack.pop();
 
     } else if (items.size() == 1) { //shortcut the pickup menu if there's only one item to get
-        auto topickup = items[0]->parent.lock();
+        auto topickup = *items.begin();
         int status = item_pickup(player.get(), topickup);
         switch (status) {
             case 0:
@@ -30,7 +39,7 @@ static void player_pickup_open() {
         input.domainstack.pop();
 
     } else { // initialize the menu for pick up of multiple items
-        auto const inv = player->get_component<Inventorial const>(C_INV);
+        auto inv = player->get_component<Inventorial>(C_INV);
         item_menu_update(items, inv->maxweight, inv->currload);
     }
 
@@ -86,18 +95,34 @@ void PlayerActional::take_action(void) {
                 player_move( x+1, y+1);
                 break;
             default:
-                printf("DEFAULT CASE REACHED IN PLAYER TAKE_ACTION\n");
+                printf("reaching this spot means a command that should not have moved game time has\n");
         }
 
     } else {
         switch (input.last_cmd) {
+                //nothing here actually triggers a menu open: they just initialize the necessary data in menus.cpp
+                //the thing that decides what menu gets shown is the command domain in input
             case MENU_CANCEL:
                 break;
             case PICKUP_OPEN:
                 player_pickup_open();
                 break;
+            case INVENTORY_OPEN:
+                player_inventory_open();
+                break;
+            case MENU_UP:
+                menu_control(-1);
+                break;
+            case MENU_DOWN:
+                menu_control(1);
+                break;
+            case PICKUP_CONFIRM:
+                player_pickup_confirm();
+                break;
             case NONE:
                 break;
+            default:
+                printf("reaching this spot means a command that should have moved game time has not\n");
         }
     }
 }

@@ -14,6 +14,7 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
         ENTITY_TAG etag;
         std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>> components;
+        std::string name = "";
 
         Entity(ENTITY_TAG etag);
         void add_component(std::unique_ptr<BaseComponent> comp);

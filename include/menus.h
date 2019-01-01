@@ -18,9 +18,10 @@ class txtlog {
 };
 
 struct ItemMenu {
-    std::vector<Carrial const *> items;
+    std::vector<std::weak_ptr<Entity>> items;
     int p_maxweight = 100;
     int p_currload = 0;
+    int currpos = 0;
 };
 
 
@@ -34,7 +35,8 @@ std::string txt(const char* fmt, ...);
 void You(const char* in);
 void tolog(const char* in);
 void item_menu();
+void menu_control(int in);
 void pickup_menu();
 void inventory_menu();
-void item_menu_update( std::vector<Carrial const *>, int, int );
+void item_menu_update( std::set<std::shared_ptr<Entity>>, int, int );
 
