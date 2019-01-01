@@ -41,7 +41,10 @@ int Inventorial::remove_from_inventory(std::shared_ptr<Entity>& item) {
     if (droptr->invptr.lock() != parent.lock())
         return -3; // entity is in an inventory, but not this one
 
-
+    item->unghost(C_POSITIONAL);
+    auto ownpos = parent.lock()->get_component<Positional>(C_POSITIONAL);
+    assert(ownpos != nullptr && "for now, nothing without a positional component should be able to drop items\n");
+    item->get_component<Positional>(C_POSITIONAL)->setpos(ownpos->x(), ownpos->y());
     inventory.erase(item);
     currload -= droptr->weight;
     droptr->invptr = std::weak_ptr<Entity>();

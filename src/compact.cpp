@@ -1,12 +1,26 @@
 #include "compact.h"
 #include "globals.h"
 
+static void player_drop_item() {
+    std::shared_ptr<Entity> item = retrieve_chosen_item();
+    auto inv = player->get_component<Inventorial>(C_INV);
+    auto status = inv->remove_from_inventory(item);
+    switch(status) {
+        case 0:
+            You(txt("dropped a %s.", item->name.c_str()).c_str());
+            break;
+        default:
+            tolog("Could not drop that item.");
+            break;
+    }
+}
+
 static void player_pickup_confirm() {
     std::shared_ptr<Entity> item = retrieve_chosen_item();
     auto status = item_pickup(player.get(), item);
     switch (status) {
         case 0:
-            You(txt("Picked up a %s.", item->name.c_str()).c_str());
+            You(txt("picked up a %s.", item->name.c_str()).c_str());
             break;
         case -2:
             tolog("That's too heavy to pick up.");
@@ -32,7 +46,7 @@ static void player_pickup_open() {
     auto icarr = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->x(), ppos->y(), C_CARR);
 
     if (icarr.empty()) { // no item on the ground
-        tolog("Nothing to pick up there.");
+        tolog("Nothing to pick up here.");
         input.domainstack.pop();
 
     } else if (icarr.size() == 1) { //shortcut the pickup menu if there's only one item to get
@@ -40,7 +54,7 @@ static void player_pickup_open() {
         int status = item_pickup(player.get(), ent);
         switch (status) {
             case 0:
-                You(txt("Picked up a %s.", ent->name.c_str()).c_str());
+                You(txt("picked up a %s.", ent->name.c_str()).c_str());
                 break;
             case -2:
                 tolog("That's too heavy to pick up.");
@@ -85,8 +99,8 @@ void PlayerActional::take_action(void) {
         input.last_key = 0;
         input.game_running = false;
         switch( input.last_cmd ) {
-            case NONE      :
-                printf("NONE in player\n");
+            case INVENTORY_DROP:
+                player_drop_item();
                 break;
             case MOVE_N    :
                 player_move( x, y-1);
@@ -114,6 +128,9 @@ void PlayerActional::take_action(void) {
                 break;
             case PICKUP_CONFIRM:
                 player_pickup_confirm();
+                break;
+            case NONE      :
+                printf("NONE in player\n");
                 break;
             default:
                 printf("reaching this spot means a command that should not have moved game time has\n");

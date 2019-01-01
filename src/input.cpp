@@ -52,7 +52,9 @@ CommandManager::CommandManager() {
     add_command(CMD_INVENTORY , TK_UP     , Command(false , false , false , MENU_UP));
     add_command(CMD_INVENTORY , TK_KP_2   , Command(false , false , false , MENU_DOWN));
     add_command(CMD_INVENTORY , TK_KP_8   , Command(false , false , false , MENU_UP));
+    add_command(CMD_INVENTORY , TK_ENTER   , Command(false , false , false , INVENTORY_DROP));
 }
+
 
 COMMAND_TAG CommandManager::check_next_cmd() {
     auto& dmnmap = cmdlists.find(domainstack.top())->second;
@@ -79,6 +81,10 @@ void CommandManager::read_key() {
     switch (last_cmd) {
         case MENU_CANCEL:
             game_running = false;
+            domainstack.pop();
+            break;
+        case INVENTORY_DROP:
+            game_running = true;
             domainstack.pop();
             break;
         case PICKUP_OPEN:

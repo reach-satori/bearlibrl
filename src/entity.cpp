@@ -21,6 +21,15 @@ static std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
     return out;
 };
 
+void Entity::unghost(COMPONENT_TAG tag) {
+    BaseComponent* comp = get_base_component(tag);
+    if (comp == nullptr) {
+        printf("unghosting component failed\n");
+        return;
+    }
+    comp->ghosted = false;
+}
+
 std::shared_ptr<Entity> Entity::get_shared() {
     return shared_from_this();
 }

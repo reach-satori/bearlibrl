@@ -20,11 +20,12 @@ enum COMMAND_TAG {
     MOVE_E,
     MOVE_W,
     PICKUP_OPEN,
+    PICKUP_CONFIRM,
     INVENTORY_OPEN,
+    INVENTORY_DROP,
     MENU_CANCEL,
     MENU_UP,
     MENU_DOWN,
-    PICKUP_CONFIRM
 };
 
 struct Command {

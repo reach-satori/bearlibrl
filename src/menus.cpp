@@ -92,7 +92,7 @@ void outlined_textbox(uint x, uint y, uint w, uint h, int align, const char* str
 }
 
 void pickup_menu() {
-    constexpr int w = 80, h = 20;
+    constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * CONSOLE_HEIGHT / 4;
     constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
     constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
     terminal_clear_area(x, y, w, h);

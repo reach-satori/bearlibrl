@@ -1,5 +1,6 @@
-#define CONSOLE_WIDTH 150
-#define CONSOLE_HEIGHT 60
-#define TEXTBOXES_LAYER 200
-#define DEFAULT_LAYER 127
-#define FRAMEWAIT 60
+#pragma once
+constexpr int CONSOLE_WIDTH = 80;
+constexpr int CONSOLE_HEIGHT = 25;
+constexpr int TEXTBOXES_LAYER = 200;
+constexpr int DEFAULT_LAYER = 127;
+constexpr int FRAMEWAIT = 60;

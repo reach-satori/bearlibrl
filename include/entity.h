@@ -20,7 +20,7 @@ struct Entity : public std::enable_shared_from_this<Entity> {
         void add_component(std::unique_ptr<BaseComponent> comp);
         std::set<COMPONENT_TAG> get_tags(void) const;
         std::shared_ptr<Entity> get_shared();
-        /* void unghost(COMPONENT_TAG tag); */
+        void unghost(COMPONENT_TAG tag);
 
         //thanks c++
         template <typename T>
