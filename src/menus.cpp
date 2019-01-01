@@ -18,7 +18,6 @@ void item_menu_update(std::set<std::shared_ptr<Entity>> items, int maxw, int cur
 
 void menu_control(int in) {
     imenu.currpos = clamp(imenu.currpos + in, 0, imenu.items.size() - 1);
-    printf("%s, %lu, %d\n", imenu.items[imenu.currpos].lock()->name.c_str(), imenu.items.size(), imenu.currpos);
 }
 
 void txtlog::log(std::string str) {
@@ -32,11 +31,11 @@ std::string const * txtlog::retrieve_last_n(int n) const {
     return &txt.at(txt.size()-n);
 }
 
-std::string txt( const char* fmt, ... ) {
+std::string txt( std::string fmt, ... ) {
     char buf[1024];
     va_list argptr;
     va_start(argptr, fmt);
-    vsnprintf(buf, 1024, fmt, argptr);
+    vsnprintf(buf, 1024, fmt.c_str(), argptr);
     va_end(argptr);
     return std::string(buf);
 }
@@ -114,6 +113,13 @@ void inventory_menu() {
         constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
         terminal_clear_area(x, y, w, h);
         draw_outline(x, y, w, h, 0xffffffff);
+        auto &items = imenu.items;
+        auto lim = items.size();
+        for (int i = 0; i < lim; i++) {
+            auto iname = items[i].lock()->name.c_str();
+            auto toprint = i == imenu.currpos ? txt("[color=yellow]%s[/color]", iname) : txt(iname);
+            terminal_print(x+1, y+i+1, toprint.c_str());
+    }
 }
 
 void current_menu() {
@@ -124,7 +130,6 @@ void current_menu() {
         case CMD_INVENTORY:
             inventory_menu();
             break;
-
     }
 }
 
@@ -143,5 +148,9 @@ void draw_menus() {
     logbox();
     /* statbox(); */
     current_menu();
+}
+
+std::shared_ptr<Entity> retrieve_chosen_item() {
+    return imenu.items[imenu.currpos].lock();
 }
 

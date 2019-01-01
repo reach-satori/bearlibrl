@@ -13,6 +13,7 @@ int Inventorial::add_to_inventory(std::shared_ptr<Entity>& item) {
         pupptr->invptr = parent;
         currload += pupptr->weight;
         inventory.insert(item);
+        item->get_component<Positional>(C_POSITIONAL)->ghost();
     }
     return check;
 }

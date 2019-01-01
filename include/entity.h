@@ -19,11 +19,15 @@ struct Entity : public std::enable_shared_from_this<Entity> {
         Entity(ENTITY_TAG etag);
         void add_component(std::unique_ptr<BaseComponent> comp);
         std::set<COMPONENT_TAG> get_tags(void) const;
+        std::shared_ptr<Entity> get_shared();
+        /* void unghost(COMPONENT_TAG tag); */
 
         //thanks c++
         template <typename T>
         T *get_component(COMPONENT_TAG tag) {
-            return dynamic_cast<T*>(get_base_component(tag));;
+            BaseComponent* out = get_base_component(tag);
+            if (out == nullptr || out->ghosted) return nullptr;
+            else return dynamic_cast<T*>(out);;
         };
 
     private:

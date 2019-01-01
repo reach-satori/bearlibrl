@@ -86,7 +86,9 @@ int main() {
 
     //initializing entities here for now
     init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
-    init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
+    auto it = init_entity(E_TEST);
+    it->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
+    it->name = "Test object 2";
 
     levelmanager->add_entity_to_currlvl(player);
     player->add_component(std::make_unique<Positional>(30, 10,0x40));

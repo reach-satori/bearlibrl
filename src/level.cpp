@@ -129,7 +129,7 @@ std::set<std::shared_ptr<Entity>> Level::get_entities_in_spot(int x, int y) cons
     for (auto& i : levelmanager->get_current_entities()) {
         Positional const * pos = i->get_component<Positional const>(C_POSITIONAL);
         if (pos == nullptr)
-            break;
+            continue;
         if (pos->pos[0] == x && pos->pos[1] == y)
             out.insert(i);
     }

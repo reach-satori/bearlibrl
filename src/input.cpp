@@ -85,6 +85,10 @@ void CommandManager::read_key() {
             game_running = false;
             domainstack.push(CMD_PICKUP);
             break;
+        case PICKUP_CONFIRM:
+            game_running = true;
+            domainstack.pop();
+            break;
         case INVENTORY_OPEN:
             game_running = false;
             domainstack.push(CMD_INVENTORY);

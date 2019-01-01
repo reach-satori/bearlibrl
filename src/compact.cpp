@@ -2,6 +2,19 @@
 #include "globals.h"
 
 static void player_pickup_confirm() {
+    std::shared_ptr<Entity> item = retrieve_chosen_item();
+    auto status = item_pickup(player.get(), item);
+    switch (status) {
+        case 0:
+            You(txt("Picked up a %s.", item->name.c_str()).c_str());
+            break;
+        case -2:
+            tolog("That's too heavy to pick up.");
+            break;
+        default:
+            You("can't pick that up.");
+            break;
+    }
 };
 
 static void player_move(int x, int y) {
@@ -16,18 +29,18 @@ static void player_inventory_open() {
 
 static void player_pickup_open() {
     Positional const * ppos = player->get_component<Positional const>(C_POSITIONAL);
-    auto items = levelmanager->get_const_currlvl().get_entities_in_spot(ppos->x(), ppos->y());
+    auto icarr = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->x(), ppos->y(), C_CARR);
 
-    if (items.empty()) { // no item on the ground
+    if (icarr.empty()) { // no item on the ground
         tolog("Nothing to pick up there.");
         input.domainstack.pop();
 
-    } else if (items.size() == 1) { //shortcut the pickup menu if there's only one item to get
-        auto topickup = *items.begin();
-        int status = item_pickup(player.get(), topickup);
+    } else if (icarr.size() == 1) { //shortcut the pickup menu if there's only one item to get
+        auto ent = icarr[0]->parent.lock()->get_shared();
+        int status = item_pickup(player.get(), ent);
         switch (status) {
             case 0:
-                You("picked up a thing.");
+                You(txt("Picked up a %s.", ent->name.c_str()).c_str());
                 break;
             case -2:
                 tolog("That's too heavy to pick up.");
@@ -37,10 +50,15 @@ static void player_pickup_open() {
                 break;
         }
         input.domainstack.pop();
-
     } else { // initialize the menu for pick up of multiple items
+        auto items = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->x(), ppos->y(), C_CARR);
+        std::set<std::shared_ptr<Entity>> out;
+        for (auto& it : items) {
+            if (it->parent.lock()->get_component<Positional>(C_POSITIONAL) != nullptr)
+                out.insert(it->parent.lock());
+        }
         auto inv = player->get_component<Inventorial>(C_INV);
-        item_menu_update(items, inv->maxweight, inv->currload);
+        item_menu_update(out, inv->maxweight, inv->currload);
     }
 
 };
@@ -94,6 +112,9 @@ void PlayerActional::take_action(void) {
             case MOVE_SE    :
                 player_move( x+1, y+1);
                 break;
+            case PICKUP_CONFIRM:
+                player_pickup_confirm();
+                break;
             default:
                 printf("reaching this spot means a command that should not have moved game time has\n");
         }
@@ -115,9 +136,6 @@ void PlayerActional::take_action(void) {
                 break;
             case MENU_DOWN:
                 menu_control(1);
-                break;
-            case PICKUP_CONFIRM:
-                player_pickup_confirm();
                 break;
             case NONE:
                 break;

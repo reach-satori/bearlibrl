@@ -21,6 +21,9 @@ static std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
     return out;
 };
 
+std::shared_ptr<Entity> Entity::get_shared() {
+    return shared_from_this();
+}
 
 
 Entity::Entity(ENTITY_TAG tag) : etag(tag), components(std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>>()) {}

@@ -31,12 +31,13 @@ void outlined_textbox(uint x, uint y, uint w, uint h, int align, const char* str
 void draw_menus();
 void logbox();
 void current_menu();
-std::string txt(const char* fmt, ...);
+std::string txt(std::string fmt, ...);
 void You(const char* in);
 void tolog(const char* in);
 void item_menu();
 void menu_control(int in);
 void pickup_menu();
 void inventory_menu();
+std::shared_ptr<Entity> retrieve_chosen_item();
 void item_menu_update( std::set<std::shared_ptr<Entity>>, int, int );
 
