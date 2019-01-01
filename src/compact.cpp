@@ -19,10 +19,13 @@ static void player_pickup_open() {
         switch (status) {
             case 0:
                 You("picked up a thing.");
+                break;
             case -2:
                 tolog("That's too heavy to pick up.");
+                break;
             default:
                 You("can't pick that up.");
+                break;
         }
         input.domainstack.pop();
 
@@ -89,7 +92,6 @@ void PlayerActional::take_action(void) {
     } else {
         switch (input.last_cmd) {
             case MENU_CANCEL:
-                tolog("menu cancel");
                 break;
             case PICKUP_OPEN:
                 player_pickup_open();

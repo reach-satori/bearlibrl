@@ -23,8 +23,7 @@ static std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
 
 
 
-Entity::Entity() : components(std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>>()) {
-}
+Entity::Entity(ENTITY_TAG tag) : etag(tag), components(std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>>()) {}
 
 void Entity::add_component(std::unique_ptr<BaseComponent> comp) {
     //parent is weak ptr (implictly converted)

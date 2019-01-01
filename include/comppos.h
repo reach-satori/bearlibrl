@@ -12,6 +12,7 @@ struct Positional: public BaseComponent {
     Positional(void);
     Positional(uint x, uint y, uint codepoint);
     ~Positional(void);
+    void setpos(int x, int y);
 
     uint x(void) const;
     uint y(void) const;

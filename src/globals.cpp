@@ -1,6 +1,7 @@
 #include "globals.h"
+#include "enttags.h"
 
-std::shared_ptr<Entity> player = std::make_shared<Entity>();
+std::shared_ptr<Entity> player = std::make_shared<Entity>(E_PLAYER);
 
 Camera camera = Camera();
 

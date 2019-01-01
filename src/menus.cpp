@@ -87,9 +87,19 @@ void pickup_menu() {
     constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
     terminal_clear_area(x, y, w, h);
     draw_outline(x, y, w, h, 0xffffffff);
+    auto lim = imenu.items.size();
+    for (int i = 1; i < lim+1; i++) {
+        terminal_print(x+1, y+i, "unga bunga item name");
+    }
 }
 
 void inventory_menu() {
+        constexpr int w = 80; constexpr int h = 20;
+        constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
+        constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
+        terminal_clear_area(x, y, w, h);
+        draw_outline(x, y, w, h, 0xffffffff);
+
 
 }
 

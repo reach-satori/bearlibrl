@@ -69,6 +69,10 @@ void CommandManager::read_key() {
     ctrl = terminal_check(TK_CONTROL);
     alt = terminal_check(TK_ALT);
     last_cmd = check_next_cmd();
+    //here we decide whether the command taken pauses the game or not and whether it changes the command domain
+    //for example, opening a pick up menu and cancelling it after looking at the items does not move gametime
+    //but if you choose an item to pick up it does
+    //(actual action is defined in compact.cpp)
     switch (last_cmd) {
         case MENU_CANCEL:
             game_running = false;
@@ -82,6 +86,8 @@ void CommandManager::read_key() {
             game_running = false;
             domainstack.push(CMD_INVENTORY);
             break;
+        case MENU_UP:
+        case MENU_DOWN:
         case NONE:
             game_running = false;
             break;

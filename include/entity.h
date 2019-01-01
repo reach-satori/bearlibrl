@@ -7,12 +7,15 @@
 #include "compbase.h"
 #include "comptags.h"
 #include "comppos.h"
+#include "enttags.h"
 
 
 struct Entity : public std::enable_shared_from_this<Entity> {
+
+        ENTITY_TAG etag;
         std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>> components;
 
-        Entity(void);
+        Entity(ENTITY_TAG etag);
         void add_component(std::unique_ptr<BaseComponent> comp);
         std::set<COMPONENT_TAG> get_tags(void) const;
 

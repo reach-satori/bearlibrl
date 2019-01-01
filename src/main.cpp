@@ -11,6 +11,7 @@
 
 // entity
 #include "entity.h"
+#include "init_entity.h"
 
 // components
 #include "compcarr.h"
@@ -84,12 +85,8 @@ int main() {
     cmap.randomize();
 
     //initializing entities here for now
-    auto item = std::make_shared<Entity>();
-    levelmanager->add_entity_to_currlvl(item);
-    item->add_component(std::make_unique<Positional>(17, 6, 0x21));
-    item->add_component(std::make_unique<EmptyActional>(2000));
-    item->add_component(std::make_unique<Carrial>());
-    item.reset();
+    init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
+    init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
 
     levelmanager->add_entity_to_currlvl(player);
     player->add_component(std::make_unique<Positional>(30, 10,0x40));
