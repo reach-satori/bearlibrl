@@ -2,11 +2,10 @@
 
 
 LevelManager::LevelManager() {
-    auto lvl0 = std::make_unique<Level>(200, 200);
+    auto lvl0 = std::make_unique<Level>(2, 200, 200);
     all_levels.insert(std::make_pair(current_tag, std::move(lvl0)));
     tagged_entities.insert(std::make_pair(current_tag, std::set<std::shared_ptr<Entity>>()));
 }
-
 
 std::set<std::shared_ptr<Entity>> const &LevelManager::get_current_entities() const {
     assert(tagged_entities.find(current_tag) != tagged_entities.end() &&  "attempted to check nonexisting current level for entities: current level should always exist, so something has gone wrong!");
@@ -14,7 +13,6 @@ std::set<std::shared_ptr<Entity>> const &LevelManager::get_current_entities() co
 }
 
 Level const &LevelManager::get_const_currlvl(void) const {
-
     assert(all_levels.find(current_tag) != all_levels.end() && "Unique_ptr to current map not found where it should be \n or perhaps it has the incorrect tag");
     Level const& out = *all_levels.find(current_tag)->second.get();
     return out;
@@ -27,7 +25,6 @@ Level &LevelManager::get_change_currlvl(void) const {
 }
 
 void LevelManager::add_entity_to_lvl(const std::shared_ptr<Entity>& ent, uint lvl){
-
     if (!level_check(lvl)){
         printf("attempted to add entity to non-existing lebel");
         return;

@@ -5,6 +5,6 @@
 #include <random>
 
 
-void move(Entity * ent, int x, int y);
+void move(Entity * ent, int f, int x, int y);
 int item_pickup(Entity* carrier, std::shared_ptr<Entity>& item);
 int common_attack(Entity* attacker, Entity* attackee);

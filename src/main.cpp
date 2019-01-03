@@ -80,28 +80,30 @@ int main() {
     //levelmanager initiation initiates a level
     //map creation (idk where to move this)
     auto& cmap = levelmanager->get_change_currlvl();
-    cmap.create_room(  1, 1, 78, 10);
-    cmap.create_room(50, 1, 6, 22);
+    cmap.create_room(0, 1, 1, 78, 10);
+    cmap.create_room(0, 50, 1, 6, 22);
     cmap.randomize();
-    cmap.do_fov(30, 10, 10);
+    cmap.do_fov(0, 30, 10, 10);
 
     //initializing entities here for now
-    init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
+    init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(0, 5, 5);
     auto it = init_entity(E_TEST);
-    it->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
+    it->get_component<Positional>(C_POSITIONAL)->setpos(0, 5, 5);
     it->name = "Test object 2";
     it.reset();
 
     levelmanager->add_entity_to_currlvl(player);
-    player->add_component(std::make_unique<Positional>(30, 10,0x40));
+    player->add_component(std::make_unique<Positional>(0, 30, 10, 0x40));
     player->add_component(std::make_unique<PlayerActional>(1000));
     player->add_component(std::make_unique<Offensal>(5, 5, 5, 5));
-    auto inv = std::make_unique<Inventorial>();
+    player->add_component(std::make_unique<Statsal>(10, 10, 10, 10, 10, 10));
+    auto inv = std::make_unique<EquipInventorial>(100);
     player->add_component(std::move(inv));
 
     //main loop
     while (input.last_key != TK_CLOSE) {
 
+    Positional const * p = player->get_component<Positional const>(C_POSITIONAL);
         while (terminal_has_input()) {
             input.read_key();
         }
@@ -113,16 +115,15 @@ int main() {
 
             //fov
             auto& currlvl = levelmanager->get_change_currlvl();
-            Positional const * p = player->get_component<Positional const>(C_POSITIONAL);
             currlvl.all_nonvisible();
-            currlvl.do_fov(p->x(), p->y(), 10);
+            currlvl.do_fov(p->f(), p->x(), p->y(), 10);
         } else {
             //this is a little ugly but i want every command in one place (inside player action component)
             //that includes menu control commands
             player->get_component<Actional>(C_ACT)->take_action();
         }
 
-        camera.draw_world();
+        camera.draw_world(p->f());
         camera.draw_entities();
         draw_menus();
 

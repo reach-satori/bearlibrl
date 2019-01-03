@@ -7,12 +7,12 @@
 
 struct Tile {
     TILE_TAG tag = T_FLOOR;
-    uint character;
     bool visible = false;
-    bool passable = true;
     std::set<std::shared_ptr<Entity>> ents;
+    bool passable() const;
+    uint character() const;
 
-    Tile(TILE_TAG tag, uint character, bool passable);
+    Tile(TILE_TAG tag);
 };
 
 
@@ -21,7 +21,6 @@ struct FloorTile: public Tile {
 };
 
 struct WallTile: public Tile {
-    bool passable = false;
     WallTile();
 };
 

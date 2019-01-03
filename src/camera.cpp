@@ -4,7 +4,7 @@
 
 Camera::Camera() {};
 
-void Camera::draw_world(void) const {
+void Camera::draw_world(int floor) const {
     Level lvl = levelmanager->get_change_currlvl();
     const int camx = pos[0];
     const int camy = pos[1];
@@ -18,7 +18,7 @@ void Camera::draw_world(void) const {
                       x_in_cam < 0 ||
                       y_in_cam >= lvl.height ||
                       y_in_cam < 0)  ? 0x20 :
-                        lvl.is_visible(x_in_cam, y_in_cam) ? lvl.get_character(x_in_cam, y_in_cam) :
+                        lvl.is_visible(floor, x_in_cam, y_in_cam) ? lvl.get_character(floor, x_in_cam, y_in_cam) :
                             0xA0;
             terminal_put(x, y, c);
         }

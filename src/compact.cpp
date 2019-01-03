@@ -4,17 +4,12 @@
 static void player_attack(int x, int y) {
     printf("reached player attack \n");
     auto& currlvl = levelmanager->get_change_currlvl();
-    std::vector<Vital*> vit = currlvl.get_components_in_spot<Vital>(x, y, C_VITAL);
+    auto ppos = player->get_component<Positional>(C_POSITIONAL);
+    std::vector<Vital*> vit = currlvl.get_components_in_spot<Vital>(ppos->f(), x, y, C_VITAL);
     assert(vit.size() < 2);
     if (vit.empty()) {
-        if (currlvl.is_passable(x, y)) {
-            You("swing uselessly at the air.");
-            return;
-        }
-        else {
-            You("bash the wall ineffectually.");
-            return;
-        }
+        You("swing uselessly at the air.");
+        return;
     } else {
         common_attack(player.get(), vit[0]->parent.lock().get());
     }
@@ -55,7 +50,8 @@ static void player_pickup_confirm() {
 };
 
 static void player_move(int x, int y) {
-    move(player.get(), x, y);
+    auto ppos = player->get_component<Positional>(C_POSITIONAL);
+    move(player.get(),ppos->f(), x, y);
 };
 
 static void player_inventory_open() {
@@ -66,7 +62,7 @@ static void player_inventory_open() {
 
 static void player_pickup_open() {
     Positional const * ppos = player->get_component<Positional const>(C_POSITIONAL);
-    auto icarr = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->x(), ppos->y(), C_CARR);
+    auto icarr = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->f(), ppos->x(), ppos->y(), C_CARR);
 
     if (icarr.empty()) { // no item on the ground
         tolog("Nothing to pick up here.");
@@ -92,7 +88,7 @@ static void player_pickup_open() {
         input.domainstack.pop();
     }**/
     else { // initialize the menu for pick up of multiple items
-        auto items = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->x(), ppos->y(), C_CARR);
+        auto items = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->f(), ppos->x(), ppos->y(), C_CARR);
         std::set<std::shared_ptr<Entity>> out;
         for (auto& it : items) {
             if (it->parent.lock()->get_component<Positional>(C_POSITIONAL) != nullptr)
@@ -118,7 +114,7 @@ PlayerActional::PlayerActional(int spd) : Actional(spd, C_ACT_PLAYER) {}
 void PlayerActional::take_action(void) {
     if (input.game_running) {
         Entity *ent = parent.lock().get();
-        Positional const * pos = ent->get_component<Positional const>(C_POSITIONAL);
+        Positional * pos = ent->get_component<Positional>(C_POSITIONAL);
 
         uint x = pos->x();
         uint y = pos->y();
@@ -176,6 +172,8 @@ void PlayerActional::take_action(void) {
                 break;
             case ATK_SE    :
                 player_attack( x+1, y+1);
+                pos->setpos(1, x, y);
+                printf("%d\n", pos->f());
                 break;
             case PICKUP_CONFIRM:
                 player_pickup_confirm();

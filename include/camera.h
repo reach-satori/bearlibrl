@@ -12,7 +12,7 @@ struct Camera {
         const uint height = SCREEN_HEIGHT;
 
         Camera(void);
-        void draw_world(void) const;
+        void draw_world(int floor) const;
         void draw_entities(void) const;
         void set_pos(int x, int y);
         void center(int x, int y);

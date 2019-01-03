@@ -48,7 +48,7 @@ int Inventorial::remove_from_inventory(std::shared_ptr<Entity>& item) {
     item->unghost(C_POSITIONAL);
     auto ownpos = parent.lock()->get_component<Positional>(C_POSITIONAL);
     assert(ownpos != nullptr && "for now, nothing without a positional component should be able to drop items\n");
-    item->get_component<Positional>(C_POSITIONAL)->setpos(ownpos->x(), ownpos->y());
+    item->get_component<Positional>(C_POSITIONAL)->setpos(ownpos->f(), ownpos->x(), ownpos->y());
     inventory.erase(item);
     currload -= droptr->weight;
     droptr->invptr = std::weak_ptr<Entity>();
@@ -71,6 +71,8 @@ void Inventorial::refresh_weight() {
 
 
 ///////////////////////
+
+EquipInventorial::EquipInventorial(float weight) : Inventorial(weight) {}
 
 int EquipInventorial::inner_equip_item(std::shared_ptr<Entity>& equipped) {
     if (!equipped)

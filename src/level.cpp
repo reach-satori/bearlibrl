@@ -6,44 +6,51 @@ constexpr int Level::multipliers[4][8];
 
 //constructor just makes a solid wall map of widthxheight
 //widthxheight map, each 'tile' is really a map of tiletag:tile* (pointers to just one immutable tile instance per tile
-Level::Level(uint width, uint height) : width(width), height(height) {
+Level::Level(uint depth, uint width, uint height) : width(width), height(height), depth(depth) {
     Tile outermost = WallTile();
     std::vector<Tile> col(height, outermost);
-    tiles = std::vector<std::vector<Tile>>(width, col);
+    auto t = std::vector<std::vector<Tile>>(width, col);
+    for (int i=0; i<depth; i++){
+        tiles.push_back(t);
+    }
 };
 
-Level::Level() : Level::Level(80, 25) {};
+Level::Level() : Level::Level(1, 80, 25) {};
 
-bool Level::is_visible(uint x, uint y) const {
-    return tiles[x][y].visible;
+bool Level::is_visible(uint f, uint x, uint y) const {
+    if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return false;
+    return tiles[f][x][y].visible;
 }
-uint Level::get_character(uint x, uint y) const {
-    return tiles[x][y].character;
+
+uint Level::get_character(uint f, uint x, uint y) const {
+    return tiles[f][x][y].character();
+}
+
+bool Level::is_passable(uint f, uint x, uint y) const {
+    if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return false;
+    return tiles[f][x][y].passable();
+}
+
+Tile* Level::at(uint f, uint x, uint y) {
+    if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return nullptr;
+    return &tiles[f][x][y];
 }
 
 void Level::randomize() {
     for (uint x = 0; x < width; x++) {
         for (uint y = 0; y < height ; y++) {
-            if (rand() % 15 == 1) tiles[x][y] = WallTile(); else tiles[x][y] = FloorTile();
+            for (uint f = 0; f < depth ; f++) {
+                if (rand() % 10 == 1) tiles[f][x][y] = WallTile(); else tiles[f][x][y] = FloorTile();
+            }
         }
     }
 }
 
-bool Level::is_passable(uint x, uint y) const {
-    bool out = true;
-    if (x <= 0 || x >= width-1 || y <= 0 || y >= height-1)
-        out = false;
 
-    if (!tiles[x][y].passable)
-        out = false;
-
-    return out;
-}
-
-void Level::create_room(uint xi, uint yi, uint w, uint h) {
+void Level::create_room(uint f, uint xi, uint yi, uint w, uint h) {
     for (uint x = xi; x < xi + w; x++) {
         for (uint y = yi; y < yi + h; y++) {
-            tiles[x][y] = FloorTile();
+            tiles[f][x][y] = FloorTile();
         }
     }
 }
@@ -51,7 +58,7 @@ void Level::create_room(uint xi, uint yi, uint w, uint h) {
 //copypasted wholesale from
 //http://www.roguebasin.com/index.php?title=C%2B%2B_shadowcasting_implementation
 //fov algorithm by mr bjorn bergstrom
-void Level::cast_light( uint x, uint y, uint radius, uint row,
+void Level::cast_light(uint f, uint x, uint y, uint radius, uint row,
         float start_slope, float end_slope, uint xx, uint xy, uint yx,
         uint yy) {
     if (start_slope < end_slope) {
@@ -83,21 +90,21 @@ void Level::cast_light( uint x, uint y, uint radius, uint row,
 
             uint radius2 = radius * radius;
             if ((uint)(dx * dx + dy * dy) < radius2) {
-                tiles[ax][ay].visible = true;
+                tiles[f][ax][ay].visible = true;
             }
 
             if (blocked) {
-                if (!is_passable(ax, ay)) {
+                if (!is_passable(f, ax, ay)) {
                     next_start_slope = r_slope;
                     continue;
                 } else {
                     blocked = false;
                     start_slope = next_start_slope;
                 }
-            } else if (!is_passable(ax, ay)) {
+            } else if (!is_passable(f, ax, ay)) {
                 blocked = true;
                 next_start_slope = r_slope;
-                cast_light(x, y, radius, i + 1, start_slope, l_slope, xx, xy, yx, yy);
+                cast_light(f, x, y, radius, i + 1, start_slope, l_slope, xx, xy, yx, yy);
             }
         }
         if (blocked) {
@@ -106,9 +113,9 @@ void Level::cast_light( uint x, uint y, uint radius, uint row,
     }
 }
 
-void Level::do_fov(uint x, uint y, uint radius) {
+void Level::do_fov(uint f, uint x, uint y, uint radius) {
     for (uint i = 0; i < 8; i++) {
-        cast_light(x, y, radius, 1, 1.0, 0.0, multipliers[0][i],
+        cast_light(f, x, y, radius, 1, 1.0, 0.0, multipliers[0][i],
                 multipliers[1][i], multipliers[2][i], multipliers[3][i]);
     }
 }
@@ -116,14 +123,16 @@ void Level::do_fov(uint x, uint y, uint radius) {
 void Level::all_nonvisible() {
     for (uint x = 0; x < width; x++) {
         for (uint y = 0; y < height ; y++) {
-            tiles[x][y].visible = false;
+            for (uint f = 0; f < depth ; f++) {
+                tiles[f][x][y].visible = false;
+            }
         }
     }
 }
 
-std::set<std::shared_ptr<Entity>> Level::get_entities_in_spot(int x, int y) const {
+std::set<std::shared_ptr<Entity>> Level::get_entities_in_spot(uint f, uint x, uint y) const {
     auto out = std::set<std::shared_ptr<Entity>>();
-    for (auto& ent : tiles[x][y].ents) {
+    for (auto& ent : tiles[f][x][y].ents) {
         if (ent->get_component<Positional>(C_POSITIONAL) != nullptr){
             out.insert(ent);
         }

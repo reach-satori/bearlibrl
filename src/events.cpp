@@ -4,14 +4,14 @@
 //negative return values are for things that aren't expected to happen in normal gameplay, positive for normal stuff
 //I've tried to make 0 the "normal" outcome
 
-void move(Entity * ent, int x, int y) {
+void move(Entity * ent, int f, int x, int y) {
     auto pos = ent->get_component<Positional>(C_POSITIONAL);
     if (!pos) {
         printf("Entity with no positional component attempted to move\n");
         return;
     }
-    if (levelmanager->get_const_currlvl().is_passable(x, y)){
-        pos->setpos(x, y);
+    if (levelmanager->get_const_currlvl().is_passable(f, x, y)){
+        pos->setpos(f, x, y);
     }
 }
 
