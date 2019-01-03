@@ -95,6 +95,7 @@ int main() {
     levelmanager->add_entity_to_currlvl(player);
     player->add_component(std::make_unique<Positional>(30, 10,0x40));
     player->add_component(std::make_unique<PlayerActional>(1000));
+    player->add_component(std::make_unique<Offensal>(5, 5, 5, 5));
     auto inv = std::make_unique<Inventorial>();
     player->add_component(std::move(inv));
 

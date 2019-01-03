@@ -1,10 +1,29 @@
 #include "compact.h"
 #include "globals.h"
 
+static void player_attack(int x, int y) {
+    printf("reached player attack \n");
+    auto& currlvl = levelmanager->get_change_currlvl();
+    std::vector<Vital*> vit = currlvl.get_components_in_spot<Vital>(x, y, C_VITAL);
+    assert(vit.size() < 2);
+    if (vit.empty()) {
+        if (currlvl.is_passable(x, y)) {
+            You("swing uselessly at the air.");
+            return;
+        }
+        else {
+            You("bash the wall ineffectually.");
+            return;
+        }
+    } else {
+        common_attack(player.get(), vit[0]->parent.lock().get());
+    }
+}
+
 static void player_drop_item() {
     std::shared_ptr<Entity> item = retrieve_chosen_item();
     auto inv = player->get_component<Inventorial>(C_INV);
-    auto status = inv->remove_from_inventory(item);
+    int status = inv->remove_from_inventory(item);
     switch(status) {
         case 0:
             You(txt("dropped a %s.", item->name.c_str()).c_str());
@@ -53,7 +72,10 @@ static void player_pickup_open() {
         tolog("Nothing to pick up here.");
         input.domainstack.pop();
 
-    } else if (icarr.size() == 1) { //shortcut the pickup menu if there's only one item to get
+    }
+    /**else if (icarr.size() == 1) { //shortcut the pickup menu if there's only one item to get
+     * currently commented out because this function is only entered if game_running is false, allowing
+     * the player to pick up an item at no turn cost...
         auto ent = icarr[0]->parent.lock()->get_shared();
         int status = item_pickup(player.get(), ent);
         switch (status) {
@@ -68,7 +90,8 @@ static void player_pickup_open() {
                 break;
         }
         input.domainstack.pop();
-    } else { // initialize the menu for pick up of multiple items
+    }**/
+    else { // initialize the menu for pick up of multiple items
         auto items = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->x(), ppos->y(), C_CARR);
         std::set<std::shared_ptr<Entity>> out;
         for (auto& it : items) {
@@ -130,6 +153,30 @@ void PlayerActional::take_action(void) {
             case MOVE_SE    :
                 player_move( x+1, y+1);
                 break;
+            case ATK_N    :
+                player_attack( x, y-1);
+                break;
+            case ATK_S    :
+                player_attack( x, y+1);
+                break;
+            case ATK_W    :
+                player_attack( x-1, y);
+                break;
+            case ATK_E    :
+                player_attack( x+1, y);
+                break;
+            case ATK_NE    :
+                player_attack( x+1, y-1);
+                break;
+            case ATK_NW    :
+                player_attack( x-1, y-1);
+                break;
+            case ATK_SW    :
+                player_attack( x-1, y+1);
+                break;
+            case ATK_SE    :
+                player_attack( x+1, y+1);
+                break;
             case PICKUP_CONFIRM:
                 player_pickup_confirm();
                 break;
@@ -137,7 +184,7 @@ void PlayerActional::take_action(void) {
                 printf("NONE in player\n");
                 break;
             default:
-                break;
+                printf("reaching this spot means a command that should not have moved game time has\n");
         }
 
     } else {
@@ -161,7 +208,7 @@ void PlayerActional::take_action(void) {
             case NONE:
                 break;
             default:
-                break;
+                printf("reaching this spot means a command that should have moved game time has not\n");
         }
     }
 }

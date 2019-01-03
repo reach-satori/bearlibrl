@@ -12,6 +12,8 @@ enum COMPONENT_TAG {
     C_INV_EQUIP,
     C_CARR,
     C_CARR_EQUIP,
+    C_STATS,
+    C_OFFENSE
 };
 
 

@@ -1,6 +1,9 @@
 #include "events.h"
 #include "globals.h"
 
+//negative return values are for things that aren't expected to happen in normal gameplay, positive for normal stuff
+//I've tried to make 0 the "normal" outcome
+
 void move(Entity * ent, int x, int y) {
     auto pos = ent->get_component<Positional>(C_POSITIONAL);
     if (!pos) {
@@ -10,6 +13,30 @@ void move(Entity * ent, int x, int y) {
     if (levelmanager->get_const_currlvl().is_passable(x, y)){
         pos->setpos(x, y);
     }
+}
+
+int common_attack(Entity* attacker, Entity* attackee) {
+    printf("reached common attack\n");
+    if (!(attacker && attackee))
+        return -5;
+    auto atkcomp = attacker->get_component<Offensal>(C_OFFENSE);
+    auto defcomp = attackee->get_component<Vital>(C_VITAL);
+    if (!atkcomp)
+        return -1;
+    if (!defcomp)
+        return -2;
+
+    int hit = atkcomp->hit_roll();
+    if (hit > defcomp->ev){
+        int dmg = atkcomp->dmg_roll();
+        int died = defcomp->take_dmg(dmg);
+        if (died)
+            return 1; //hit and killed
+        else
+            return 0; // hit normally
+    }
+    return 2; //missed
+
 }
 
 int item_pickup(Entity* carrier, std::shared_ptr<Entity>& item) {
@@ -23,7 +50,7 @@ int item_pickup(Entity* carrier, std::shared_ptr<Entity>& item) {
         case -1:
             printf("Something attempted to pick up a non-item\n");
             break;
-        case -2:
+        case 1:
             printf("Attempted to pick up an item over max weight\n");
             break;
         case -3:
@@ -37,6 +64,5 @@ int item_pickup(Entity* carrier, std::shared_ptr<Entity>& item) {
             break;
     }
     return status;
-
 }
 

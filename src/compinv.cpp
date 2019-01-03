@@ -26,7 +26,7 @@ int Inventorial::inv_add_check(std::shared_ptr<Entity> const & item) const {
     if (!pupptr)
         return -1; // means the entity on which pickup was attempted has no Carrial component, early return
     if (pupptr->weight + currload > maxweight)
-        return -2; // over max weight
+        return 1; // over max weight
     if ( pupptr->invptr.lock() == parent.lock() )
         return -3; // already in THIS inventory
     if (!pupptr->invptr.expired())

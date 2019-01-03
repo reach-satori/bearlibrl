@@ -37,6 +37,18 @@ CommandManager::CommandManager() {
     add_command(CMD_DEFAULT   , TK_LEFT   , Command(false , false , false , MOVE_W));
     add_command(CMD_DEFAULT   , TK_RIGHT  , Command(false , false , false , MOVE_E));
     add_command(CMD_DEFAULT   , TK_DOWN   , Command(false , false , false , MOVE_S));
+    add_command(CMD_DEFAULT   , TK_KP_8   , Command(false , false , true , ATK_N));
+    add_command(CMD_DEFAULT   , TK_KP_7   , Command(false , false , true , ATK_NW));
+    add_command(CMD_DEFAULT   , TK_KP_9   , Command(false , false , true , ATK_NE));
+    add_command(CMD_DEFAULT   , TK_KP_2   , Command(false , false , true , ATK_S));
+    add_command(CMD_DEFAULT   , TK_KP_1   , Command(false , false , true , ATK_SW));
+    add_command(CMD_DEFAULT   , TK_KP_3   , Command(false , false , true , ATK_SE));
+    add_command(CMD_DEFAULT   , TK_KP_6   , Command(false , false , true , ATK_E));
+    add_command(CMD_DEFAULT   , TK_KP_4   , Command(false , false , true , ATK_W));
+    add_command(CMD_DEFAULT   , TK_UP     , Command(false , false , true , ATK_N));
+    add_command(CMD_DEFAULT   , TK_LEFT   , Command(false , false , true , ATK_W));
+    add_command(CMD_DEFAULT   , TK_RIGHT  , Command(false , false , true , ATK_E));
+    add_command(CMD_DEFAULT   , TK_DOWN   , Command(false , false , true , ATK_S));
     add_command(CMD_DEFAULT   , TK_G      , Command(false , false , false , PICKUP_OPEN));
     add_command(CMD_DEFAULT   , TK_I      , Command(false , false , false , INVENTORY_OPEN));
 
@@ -85,7 +97,9 @@ void CommandManager::read_key() {
             break;
         case INVENTORY_DROP:
             if (!retrieve_chosen_item()) {
+                printf("input received nullptr when attempting to drop item\nempty inventory?\n");
                 game_running = false;
+                last_cmd = NONE;
             } else {
                 game_running = true;
                 domainstack.pop();

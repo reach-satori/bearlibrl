@@ -12,8 +12,10 @@
 
 struct Entity : public std::enable_shared_from_this<Entity> {
 
+    private:
         ENTITY_TAG etag;
         std::map<COMPONENT_TAG, std::unique_ptr<BaseComponent>> components;
+    public:
         std::string name = "";
 
         Entity(ENTITY_TAG etag);
