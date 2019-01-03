@@ -20,8 +20,10 @@ int Inventorial::add_to_inventory(std::shared_ptr<Entity>& item) {
 
 //redundant checks
 int Inventorial::inv_add_check(std::shared_ptr<Entity> const & item) const {
+    if (!item)
+        return -5;
     auto pupptr = item->get_component<Carrial>(C_CARR);
-    if (pupptr == nullptr)
+    if (!pupptr)
         return -1; // means the entity on which pickup was attempted has no Carrial component, early return
     if (pupptr->weight + currload > maxweight)
         return -2; // over max weight
@@ -33,8 +35,10 @@ int Inventorial::inv_add_check(std::shared_ptr<Entity> const & item) const {
 }
 
 int Inventorial::remove_from_inventory(std::shared_ptr<Entity>& item) {
+    if (!item)
+        return -5;
     auto droptr = item->get_component<Carrial>(C_CARR);
-    if (droptr == nullptr)
+    if (!droptr)
         return -1; // means the entity on which drop was attempted has no Carrial component, early return
     if (droptr->invptr.expired())
         return -2; // entity not in an inventory to be removed from
@@ -69,10 +73,12 @@ void Inventorial::refresh_weight() {
 ///////////////////////
 
 int EquipInventorial::inner_equip_item(std::shared_ptr<Entity>& equipped) {
+    if (!equipped)
+        return -5;
     auto eqpptr = equipped->get_component<EquipCarrial>(C_CARR_EQUIP);
     auto eqslot = eqpptr->slot;
     auto matchingslots = slotlist.find(eqslot);
-    if (eqpptr == nullptr)
+    if (!eqpptr)
         return -1; //tried to equip an unequippable entity
     if (matchingslots == slotlist.end())
         return -2; // you don't have appropriate limbs to wear the item

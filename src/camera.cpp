@@ -19,7 +19,7 @@ void Camera::draw_world(void) const {
                       y_in_cam >= lvl.height ||
                       y_in_cam < 0)  ? 0x20 :
                         lvl.is_visible(x_in_cam, y_in_cam) ? lvl.get_character(x_in_cam, y_in_cam) :
-                            0x70;
+                            0xA0;
             terminal_put(x, y, c);
         }
     }
@@ -28,13 +28,11 @@ void Camera::draw_world(void) const {
 void Camera::draw_entities(void) const {
     for (const auto& ent : levelmanager->get_current_entities()) {
         auto posin = ent->get_component<Positional>(C_POSITIONAL);
-        if (posin == nullptr)
+        if (!posin)
             continue;
-        if (!on_camera(posin->pos[0], posin->pos[1]) && ent == player){
-            on_camera(posin->pos[0], posin->pos[1]);
+        if (!on_camera(posin->x(), posin->y()))
             continue;
-        }
-        terminal_put(posin->pos[0]-pos[0], posin->pos[1]-pos[1], posin->codepoint);
+        terminal_put(posin->x()-pos[0], posin->y()-pos[1], posin->codepoint);
     }
 }
 

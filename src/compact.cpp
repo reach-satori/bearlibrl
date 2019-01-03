@@ -9,6 +9,8 @@ static void player_drop_item() {
         case 0:
             You(txt("dropped a %s.", item->name.c_str()).c_str());
             break;
+        case -5:
+            break;
         default:
             tolog("Could not drop that item.");
             break;
@@ -24,6 +26,8 @@ static void player_pickup_confirm() {
             break;
         case -2:
             tolog("That's too heavy to pick up.");
+            break;
+        case -5:
             break;
         default:
             You("can't pick that up.");
@@ -133,7 +137,7 @@ void PlayerActional::take_action(void) {
                 printf("NONE in player\n");
                 break;
             default:
-                printf("reaching this spot means a command that should not have moved game time has\n");
+                break;
         }
 
     } else {
@@ -157,7 +161,7 @@ void PlayerActional::take_action(void) {
             case NONE:
                 break;
             default:
-                printf("reaching this spot means a command that should have moved game time has not\n");
+                break;
         }
     }
 }

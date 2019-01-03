@@ -23,7 +23,7 @@ static std::set<COMPONENT_TAG> get_inheritors (COMPONENT_TAG t){
 
 void Entity::unghost(COMPONENT_TAG tag) {
     BaseComponent* comp = get_base_component(tag);
-    if (comp == nullptr) {
+    if (!comp) {
         printf("unghosting component failed\n");
         return;
     }

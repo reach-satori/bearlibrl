@@ -25,20 +25,20 @@ CommandManager::CommandManager() {
     cmdlists.insert(std::make_pair(CMD_PICKUP, std::unordered_multimap<uint, Command>()));
     cmdlists.insert(std::make_pair(CMD_INVENTORY, std::unordered_multimap<uint, Command>()));
 
-    add_command(CMD_DEFAULT , TK_KP_8   , Command(false , false , false , MOVE_N));
-    add_command(CMD_DEFAULT , TK_KP_7   , Command(false , false , false , MOVE_NW));
-    add_command(CMD_DEFAULT , TK_KP_9   , Command(false , false , false , MOVE_NE));
-    add_command(CMD_DEFAULT , TK_KP_2   , Command(false , false , false , MOVE_S));
-    add_command(CMD_DEFAULT , TK_KP_1   , Command(false , false , false , MOVE_SW));
-    add_command(CMD_DEFAULT , TK_KP_3   , Command(false , false , false , MOVE_SE));
-    add_command(CMD_DEFAULT , TK_KP_6   , Command(false , false , false , MOVE_E));
-    add_command(CMD_DEFAULT , TK_KP_4   , Command(false , false , false , MOVE_W));
-    add_command(CMD_DEFAULT , TK_UP     , Command(false , false , false , MOVE_N));
-    add_command(CMD_DEFAULT , TK_LEFT   , Command(false , false , false , MOVE_W));
-    add_command(CMD_DEFAULT , TK_RIGHT  , Command(false , false , false , MOVE_E));
-    add_command(CMD_DEFAULT , TK_DOWN   , Command(false , false , false , MOVE_S));
-    add_command(CMD_DEFAULT , TK_G      , Command(false , false , false , PICKUP_OPEN));
-    add_command(CMD_DEFAULT , TK_I      , Command(false , false , false , INVENTORY_OPEN));
+    add_command(CMD_DEFAULT   , TK_KP_8   , Command(false , false , false , MOVE_N));
+    add_command(CMD_DEFAULT   , TK_KP_7   , Command(false , false , false , MOVE_NW));
+    add_command(CMD_DEFAULT   , TK_KP_9   , Command(false , false , false , MOVE_NE));
+    add_command(CMD_DEFAULT   , TK_KP_2   , Command(false , false , false , MOVE_S));
+    add_command(CMD_DEFAULT   , TK_KP_1   , Command(false , false , false , MOVE_SW));
+    add_command(CMD_DEFAULT   , TK_KP_3   , Command(false , false , false , MOVE_SE));
+    add_command(CMD_DEFAULT   , TK_KP_6   , Command(false , false , false , MOVE_E));
+    add_command(CMD_DEFAULT   , TK_KP_4   , Command(false , false , false , MOVE_W));
+    add_command(CMD_DEFAULT   , TK_UP     , Command(false , false , false , MOVE_N));
+    add_command(CMD_DEFAULT   , TK_LEFT   , Command(false , false , false , MOVE_W));
+    add_command(CMD_DEFAULT   , TK_RIGHT  , Command(false , false , false , MOVE_E));
+    add_command(CMD_DEFAULT   , TK_DOWN   , Command(false , false , false , MOVE_S));
+    add_command(CMD_DEFAULT   , TK_G      , Command(false , false , false , PICKUP_OPEN));
+    add_command(CMD_DEFAULT   , TK_I      , Command(false , false , false , INVENTORY_OPEN));
 
     add_command(CMD_PICKUP    , TK_ESCAPE , Command(false , false , false , MENU_CANCEL));
     add_command(CMD_PICKUP    , TK_DOWN   , Command(false , false , false , MENU_DOWN));
@@ -52,7 +52,7 @@ CommandManager::CommandManager() {
     add_command(CMD_INVENTORY , TK_UP     , Command(false , false , false , MENU_UP));
     add_command(CMD_INVENTORY , TK_KP_2   , Command(false , false , false , MENU_DOWN));
     add_command(CMD_INVENTORY , TK_KP_8   , Command(false , false , false , MENU_UP));
-    add_command(CMD_INVENTORY , TK_ENTER   , Command(false , false , false , INVENTORY_DROP));
+    add_command(CMD_INVENTORY , TK_ENTER  , Command(false , false , false , INVENTORY_DROP));
 }
 
 
@@ -84,8 +84,12 @@ void CommandManager::read_key() {
             domainstack.pop();
             break;
         case INVENTORY_DROP:
-            game_running = true;
-            domainstack.pop();
+            if (!retrieve_chosen_item()) {
+                game_running = false;
+            } else {
+                game_running = true;
+                domainstack.pop();
+            }
             break;
         case PICKUP_OPEN:
             game_running = false;

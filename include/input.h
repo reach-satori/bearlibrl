@@ -1,5 +1,6 @@
 #include <unordered_map>
 #include <stack>
+#include "menus.h"
 #include "BearLibTerminal.h"
 
 enum COMMAND_DOMAIN {

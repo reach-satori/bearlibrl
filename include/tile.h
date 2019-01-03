@@ -1,14 +1,16 @@
 #pragma once
 #include "typedefs.h"
 #include "tiletags.h"
-#include <vector>
-#include <map>
+#include <set>
+#include <memory>
+#include "fdecs.h"
 
 struct Tile {
     TILE_TAG tag = T_FLOOR;
     uint character;
     bool visible = false;
     bool passable = true;
+    std::set<std::shared_ptr<Entity>> ents;
 
     Tile(TILE_TAG tag, uint character, bool passable);
 };

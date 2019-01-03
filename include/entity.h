@@ -26,7 +26,7 @@ struct Entity : public std::enable_shared_from_this<Entity> {
         template <typename T>
         T *get_component(COMPONENT_TAG tag) {
             BaseComponent* out = get_base_component(tag);
-            if (out == nullptr || out->ghosted) return nullptr;
+            if (!out || out->ghosted) return nullptr;
             else return dynamic_cast<T*>(out);;
         };
 

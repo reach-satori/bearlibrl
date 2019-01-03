@@ -4,7 +4,7 @@
 static txtlog glog;
 static ItemMenu imenu;
 
-void item_menu_update(std::set<std::shared_ptr<Entity>> items, int maxw, int currw) {
+void item_menu_update(std::set<std::shared_ptr<Entity>> const &items, int maxw, int currw) {
     std::vector<std::weak_ptr<Entity>> wkptrs;
     for (auto i: items) {
         if (i->get_component<Carrial>(C_CARR) != nullptr)
@@ -92,9 +92,9 @@ void outlined_textbox(uint x, uint y, uint w, uint h, int align, const char* str
 }
 
 void pickup_menu() {
-    constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * CONSOLE_HEIGHT / 4;
+    constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * SCREEN_HEIGHT / 4;
     constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
-    constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
+    constexpr int y = (SCREEN_HEIGHT/2 - h/2)-1;
     terminal_clear_area(x, y, w, h);
     draw_outline(x, y, w, h, 0xffffffff);
     auto &items = imenu.items;
@@ -108,9 +108,9 @@ void pickup_menu() {
 }
 
 void inventory_menu() {
-        constexpr int w = 80; constexpr int h = 20;
+        constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * SCREEN_HEIGHT / 4;
         constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
-        constexpr int y = (CONSOLE_HEIGHT/2 - h/2)-1;
+        constexpr int y = (SCREEN_HEIGHT/2 - h/2)-1;
         terminal_clear_area(x, y, w, h);
         draw_outline(x, y, w, h, 0xffffffff);
         auto &items = imenu.items;
@@ -130,18 +130,20 @@ void current_menu() {
         case CMD_INVENTORY:
             inventory_menu();
             break;
+        default:
+            break;
     }
 }
 
 void logbox() {
-    static constexpr auto boxheight = 8;
+    static constexpr auto boxheight = LOGBOX_HEIGHT;
     static constexpr auto startheight = CONSOLE_HEIGHT-boxheight;
     std::string const *t = glog.retrieve_last_n(boxheight - 2);
     terminal_clear_area(0, startheight, CONSOLE_WIDTH, boxheight);
     for (int i = 0; i < boxheight-2 ; i++) {
         terminal_print(3, startheight + 1 + i, (t+i)->c_str());
     }
-    draw_outline(0, startheight, CONSOLE_WIDTH, 8, 0xffffffff);
+    draw_outline(0, startheight, CONSOLE_WIDTH, LOGBOX_HEIGHT, 0xffffffff);
 }
 
 void draw_menus() {
@@ -151,6 +153,8 @@ void draw_menus() {
 }
 
 std::shared_ptr<Entity> retrieve_chosen_item() {
-    return imenu.items[imenu.currpos].lock();
+    if (imenu.items.empty() || imenu.currpos > imenu.items.size()-1) return nullptr;
+    auto chosen = imenu.items[imenu.currpos];
+    return chosen.lock();
 }
 

@@ -34,7 +34,7 @@ class LevelManager {
             auto out = std::vector<T*>();
             for (const auto& e : get_current_entities()) {
                 auto ptr = e->get_component<T>(tag);
-                if (ptr == nullptr) break; else out.push_back(ptr);
+                if (!ptr) continue; else out.push_back(ptr);
             }
             return out;
         }

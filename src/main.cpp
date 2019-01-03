@@ -55,7 +55,7 @@ void tick_game() {
             if (act->tick <= 0){
                 act->take_action();
                 act->tick += act->speed;
-                if (act == pact) goto turn_end;
+                if (act == pact) goto turn_end; // goto to break out of two loops
             }
         }
     }
@@ -83,12 +83,14 @@ int main() {
     cmap.create_room(  1, 1, 78, 10);
     cmap.create_room(50, 1, 6, 22);
     cmap.randomize();
+    cmap.do_fov(30, 10, 10);
 
     //initializing entities here for now
     init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
     auto it = init_entity(E_TEST);
     it->get_component<Positional>(C_POSITIONAL)->setpos(5, 5);
     it->name = "Test object 2";
+    it.reset();
 
     levelmanager->add_entity_to_currlvl(player);
     player->add_component(std::make_unique<Positional>(30, 10,0x40));
@@ -106,14 +108,16 @@ int main() {
         //stuff that should happen once per "turn"(player action)
         if (input.game_running) {
             tick_game(); //deals with entities that have an action component
-            Positional const * pos = player->get_component<Positional const>(C_POSITIONAL);
             camera.center_on_player();
 
             //fov
-            levelmanager->get_change_currlvl().all_nonvisible();
-            levelmanager->get_change_currlvl().do_fov(pos->x(), pos->y(), 60);
+            auto& currlvl = levelmanager->get_change_currlvl();
+            Positional const * p = player->get_component<Positional const>(C_POSITIONAL);
+            currlvl.all_nonvisible();
+            currlvl.do_fov(p->x(), p->y(), 10);
         } else {
             //this is a little ugly but i want every command in one place (inside player action component)
+            //that includes menu control commands
             player->get_component<Actional>(C_ACT)->take_action();
         }
 
@@ -124,7 +128,6 @@ int main() {
         terminal_refresh();
         terminal_clear();
         /* terminal_delay(1000/FRAMEWAIT); */
-        //not sure if i need this
         input.last_cmd = NONE;
     }
 

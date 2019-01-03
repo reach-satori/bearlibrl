@@ -6,14 +6,16 @@
 
 struct Positional: public BaseComponent {
 
-    uint pos[2]; // x, y
-    uint codepoint; // display character
+    private:
+        uint pos[2]; // x, y
+    public:
+        uint codepoint; // display character
 
-    Positional(void);
-    Positional(uint x, uint y, uint codepoint);
-    ~Positional(void);
-    void setpos(int x, int y);
+        Positional(void);
+        Positional(uint x, uint y, uint codepoint);
+        ~Positional(void);
+        void setpos(int x, int y);
 
-    uint x(void) const;
-    uint y(void) const;
+        uint x(void) const;
+        uint y(void) const;
 };

@@ -18,7 +18,7 @@ class txtlog {
 };
 
 struct ItemMenu {
-    std::vector<std::weak_ptr<Entity>> items;
+    std::vector<std::weak_ptr<Entity>> items = std::vector<std::weak_ptr<Entity>>();
     int p_maxweight = 100;
     int p_currload = 0;
     int currpos = 0;
@@ -39,5 +39,5 @@ void menu_control(int in);
 void pickup_menu();
 void inventory_menu();
 std::shared_ptr<Entity> retrieve_chosen_item();
-void item_menu_update( std::set<std::shared_ptr<Entity>>, int, int );
+void item_menu_update( std::set<std::shared_ptr<Entity>> const&, int, int );
 

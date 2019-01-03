@@ -4,7 +4,6 @@
 
 constexpr int Level::multipliers[4][8];
 
-
 //constructor just makes a solid wall map of widthxheight
 //widthxheight map, each 'tile' is really a map of tiletag:tile* (pointers to just one immutable tile instance per tile
 Level::Level(uint width, uint height) : width(width), height(height) {
@@ -25,11 +24,10 @@ uint Level::get_character(uint x, uint y) const {
 void Level::randomize() {
     for (uint x = 0; x < width; x++) {
         for (uint y = 0; y < height ; y++) {
-            if (rand() % 9 == 1) tiles[x][y] = WallTile(); else tiles[x][y] = FloorTile();
+            if (rand() % 15 == 1) tiles[x][y] = WallTile(); else tiles[x][y] = FloorTile();
         }
     }
 }
-
 
 bool Level::is_passable(uint x, uint y) const {
     bool out = true;
@@ -123,15 +121,12 @@ void Level::all_nonvisible() {
     }
 }
 
-
 std::set<std::shared_ptr<Entity>> Level::get_entities_in_spot(int x, int y) const {
     auto out = std::set<std::shared_ptr<Entity>>();
-    for (auto& i : levelmanager->get_current_entities()) {
-        Positional const * pos = i->get_component<Positional const>(C_POSITIONAL);
-        if (pos == nullptr)
-            continue;
-        if (pos->pos[0] == x && pos->pos[1] == y)
-            out.insert(i);
+    for (auto& ent : tiles[x][y].ents) {
+        if (ent->get_component<Positional>(C_POSITIONAL) != nullptr){
+            out.insert(ent);
+        }
     }
     return out;
 }
