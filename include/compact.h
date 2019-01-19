@@ -18,6 +18,7 @@ struct Actional: public BaseComponent {
 
 struct PlayerActional: public Actional {
     PlayerActional(int spd);
+    void check_next_action(void);
     void take_action(void);
 };
 

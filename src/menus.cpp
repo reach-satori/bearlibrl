@@ -3,6 +3,7 @@
 
 static txtlog glog;
 static ItemMenu imenu;
+static CActMenu cactmenu;
 
 void item_menu_update(std::set<std::shared_ptr<Entity>> const &items, int maxw, int currw) {
     std::vector<std::weak_ptr<Entity>> wkptrs;
@@ -16,8 +17,9 @@ void item_menu_update(std::set<std::shared_ptr<Entity>> const &items, int maxw, 
     imenu.currpos = 0;
 }
 
-void menu_control(int in) {
+void menu_scroll(int in) {
     imenu.currpos = clamp(imenu.currpos + in, 0, imenu.items.size() - 1);
+    cactmenu.currpos = clamp(cactmenu.currpos + in, 0, cactmenu.opts.size() - 1);
 }
 
 void txtlog::log(std::string str) {
@@ -122,6 +124,18 @@ void inventory_menu() {
     }
 }
 
+void common_action_menu() {
+        constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * SCREEN_HEIGHT / 4;
+        constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
+        constexpr int y = (SCREEN_HEIGHT/2 - h/2)-1;
+        terminal_clear_area(x, y, w, h);
+        draw_outline(x, y, w, h, 0xffffffff);
+        for (int i = 0; i < cactmenu.opts.size(); i++) {
+            auto toprint = i == cactmenu.currpos ? txt("[color=yellow]%s[/color]", cactmenu.opts[i]) : txt(cactmenu.opts[i]);
+            terminal_print(x+1, y+i+1, toprint.c_str());
+    }
+}
+
 void current_menu() {
     switch (input.domainstack.top()) {
         case CMD_PICKUP:
@@ -129,6 +143,9 @@ void current_menu() {
             break;
         case CMD_INVENTORY:
             inventory_menu();
+            break;
+        case CMD_COMMON_ACTION:
+            common_action_menu();
             break;
         default:
             break;

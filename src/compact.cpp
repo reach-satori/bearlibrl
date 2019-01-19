@@ -54,6 +54,26 @@ static void player_move(int x, int y) {
     move(player.get(),ppos->f(), x, y);
 };
 
+static void player_zmove(int dir) {
+    auto ppos = player->get_component<Positional>(C_POSITIONAL);
+    auto pfloor = ppos->f();
+    auto lvl = levelmanager->get_change_currlvl();
+    auto tile = lvl.at(pfloor, ppos->x(), ppos->y());
+
+    if (tile->tag != T_RAMP) {
+        tolog("No ramps to climb here.");
+        return;
+    } else if
+    (pfloor + dir >= lvl.depth ||
+     pfloor + dir < 0 ||
+     lvl.at(pfloor + dir, ppos->x(), ppos->y())->tag != T_RAMP) {
+        tolog("You can't do that.");
+        return;
+    }
+
+    move(player.get(),ppos->f() + dir, ppos->x(), ppos->y());
+};
+
 static void player_inventory_open() {
     //walking through the tree to get the player inventory items
     Inventorial const * inv = player->get_component<Inventorial const>(C_INV);
@@ -105,7 +125,6 @@ static void player_pickup_open() {
 
 Actional::Actional(int spd, COMPONENT_TAG tag) : BaseComponent(tag), base_speed(spd), speed(spd), tick(spd) {}
 
-
 ////////////////
 ////////////////
 
@@ -148,6 +167,12 @@ void PlayerActional::take_action(void) {
                 break;
             case MOVE_SE    :
                 player_move( x+1, y+1);
+                break;
+            case MOVE_UP    :
+                player_zmove(1);
+                break;
+            case MOVE_DOWN    :
+                player_zmove(-1);
                 break;
             case ATK_N    :
                 player_attack( x, y-1);
@@ -198,10 +223,12 @@ void PlayerActional::take_action(void) {
                 player_inventory_open();
                 break;
             case MENU_UP:
-                menu_control(-1);
+                menu_scroll(-1);
                 break;
             case MENU_DOWN:
-                menu_control(1);
+                menu_scroll(1);
+                break;
+            case COMMON_ACTION_OPEN:
                 break;
             case NONE:
                 break;

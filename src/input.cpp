@@ -1,4 +1,5 @@
 #include "input.h"
+#include "globals.h"
 
 
 Command::Command(bool shift, bool alt, bool ctrl, COMMAND_TAG cmd) :
@@ -24,33 +25,40 @@ CommandManager::CommandManager() {
     cmdlists.insert(std::make_pair(CMD_DEFAULT, std::unordered_multimap<uint, Command>()));
     cmdlists.insert(std::make_pair(CMD_PICKUP, std::unordered_multimap<uint, Command>()));
     cmdlists.insert(std::make_pair(CMD_INVENTORY, std::unordered_multimap<uint, Command>()));
+    cmdlists.insert(std::make_pair(CMD_COMMON_ACTION, std::unordered_multimap<uint, Command>()));
 
-    add_command(CMD_DEFAULT   , TK_KP_8   , Command(false , false , false , MOVE_N));
-    add_command(CMD_DEFAULT   , TK_KP_7   , Command(false , false , false , MOVE_NW));
-    add_command(CMD_DEFAULT   , TK_KP_9   , Command(false , false , false , MOVE_NE));
-    add_command(CMD_DEFAULT   , TK_KP_2   , Command(false , false , false , MOVE_S));
-    add_command(CMD_DEFAULT   , TK_KP_1   , Command(false , false , false , MOVE_SW));
-    add_command(CMD_DEFAULT   , TK_KP_3   , Command(false , false , false , MOVE_SE));
-    add_command(CMD_DEFAULT   , TK_KP_6   , Command(false , false , false , MOVE_E));
-    add_command(CMD_DEFAULT   , TK_KP_4   , Command(false , false , false , MOVE_W));
-    add_command(CMD_DEFAULT   , TK_UP     , Command(false , false , false , MOVE_N));
-    add_command(CMD_DEFAULT   , TK_LEFT   , Command(false , false , false , MOVE_W));
-    add_command(CMD_DEFAULT   , TK_RIGHT  , Command(false , false , false , MOVE_E));
-    add_command(CMD_DEFAULT   , TK_DOWN   , Command(false , false , false , MOVE_S));
-    add_command(CMD_DEFAULT   , TK_KP_8   , Command(false , false , true , ATK_N));
-    add_command(CMD_DEFAULT   , TK_KP_7   , Command(false , false , true , ATK_NW));
-    add_command(CMD_DEFAULT   , TK_KP_9   , Command(false , false , true , ATK_NE));
-    add_command(CMD_DEFAULT   , TK_KP_2   , Command(false , false , true , ATK_S));
-    add_command(CMD_DEFAULT   , TK_KP_1   , Command(false , false , true , ATK_SW));
-    add_command(CMD_DEFAULT   , TK_KP_3   , Command(false , false , true , ATK_SE));
-    add_command(CMD_DEFAULT   , TK_KP_6   , Command(false , false , true , ATK_E));
-    add_command(CMD_DEFAULT   , TK_KP_4   , Command(false , false , true , ATK_W));
-    add_command(CMD_DEFAULT   , TK_UP     , Command(false , false , true , ATK_N));
-    add_command(CMD_DEFAULT   , TK_LEFT   , Command(false , false , true , ATK_W));
-    add_command(CMD_DEFAULT   , TK_RIGHT  , Command(false , false , true , ATK_E));
-    add_command(CMD_DEFAULT   , TK_DOWN   , Command(false , false , true , ATK_S));
-    add_command(CMD_DEFAULT   , TK_G      , Command(false , false , false , PICKUP_OPEN));
-    add_command(CMD_DEFAULT   , TK_I      , Command(false , false , false , INVENTORY_OPEN));
+    //                                              shift    alt     ctrl
+    add_command(CMD_DEFAULT , TK_KP_8   , Command(false , false , false , MOVE_N));
+    add_command(CMD_DEFAULT , TK_KP_7   , Command(false , false , false , MOVE_NW));
+    add_command(CMD_DEFAULT , TK_KP_9   , Command(false , false , false , MOVE_NE));
+    add_command(CMD_DEFAULT , TK_KP_2   , Command(false , false , false , MOVE_S));
+    add_command(CMD_DEFAULT , TK_KP_1   , Command(false , false , false , MOVE_SW));
+    add_command(CMD_DEFAULT , TK_KP_3   , Command(false , false , false , MOVE_SE));
+    add_command(CMD_DEFAULT , TK_KP_6   , Command(false , false , false , MOVE_E));
+    add_command(CMD_DEFAULT , TK_KP_4   , Command(false , false , false , MOVE_W));
+    add_command(CMD_DEFAULT , TK_UP     , Command(false , false , false , MOVE_N));
+    add_command(CMD_DEFAULT , TK_LEFT   , Command(false , false , false , MOVE_W));
+    add_command(CMD_DEFAULT , TK_RIGHT  , Command(false , false , false , MOVE_E));
+    add_command(CMD_DEFAULT , TK_DOWN   , Command(false , false , false , MOVE_S));
+    add_command(CMD_DEFAULT , TK_PERIOD , Command(true  , false , false , MOVE_DOWN));
+    add_command(CMD_DEFAULT , TK_COMMA  , Command(true  , false , false , MOVE_UP));
+    //
+    add_command(CMD_DEFAULT , TK_KP_8   , Command(false , false , true  , ATK_N));
+    add_command(CMD_DEFAULT , TK_KP_7   , Command(false , false , true  , ATK_NW));
+    add_command(CMD_DEFAULT , TK_KP_9   , Command(false , false , true  , ATK_NE));
+    add_command(CMD_DEFAULT , TK_KP_2   , Command(false , false , true  , ATK_S));
+    add_command(CMD_DEFAULT , TK_KP_1   , Command(false , false , true  , ATK_SW));
+    add_command(CMD_DEFAULT , TK_KP_3   , Command(false , false , true  , ATK_SE));
+    add_command(CMD_DEFAULT , TK_KP_6   , Command(false , false , true  , ATK_E));
+    add_command(CMD_DEFAULT , TK_KP_4   , Command(false , false , true  , ATK_W));
+    add_command(CMD_DEFAULT , TK_UP     , Command(false , false , true  , ATK_N));
+    add_command(CMD_DEFAULT , TK_LEFT   , Command(false , false , true  , ATK_W));
+    add_command(CMD_DEFAULT , TK_RIGHT  , Command(false , false , true  , ATK_E));
+    add_command(CMD_DEFAULT , TK_DOWN   , Command(false , false , true  , ATK_S));
+    //
+    add_command(CMD_DEFAULT , TK_G      , Command(false , false , false , PICKUP_OPEN));
+    add_command(CMD_DEFAULT , TK_I      , Command(false , false , false , INVENTORY_OPEN));
+    add_command(CMD_DEFAULT , TK_Y      , Command(false , false , false , COMMON_ACTION_OPEN));
 
     add_command(CMD_PICKUP    , TK_ESCAPE , Command(false , false , false , MENU_CANCEL));
     add_command(CMD_PICKUP    , TK_DOWN   , Command(false , false , false , MENU_DOWN));
@@ -65,6 +73,12 @@ CommandManager::CommandManager() {
     add_command(CMD_INVENTORY , TK_KP_2   , Command(false , false , false , MENU_DOWN));
     add_command(CMD_INVENTORY , TK_KP_8   , Command(false , false , false , MENU_UP));
     add_command(CMD_INVENTORY , TK_ENTER  , Command(false , false , false , INVENTORY_DROP));
+
+    add_command(CMD_COMMON_ACTION , TK_ESCAPE , Command(false , false , false , MENU_CANCEL));
+    add_command(CMD_COMMON_ACTION , TK_DOWN   , Command(false , false , false , MENU_DOWN));
+    add_command(CMD_COMMON_ACTION , TK_UP     , Command(false , false , false , MENU_UP));
+    add_command(CMD_COMMON_ACTION , TK_KP_2   , Command(false , false , false , MENU_DOWN));
+    add_command(CMD_COMMON_ACTION , TK_KP_8   , Command(false , false , false , MENU_UP));
 }
 
 
@@ -86,6 +100,7 @@ void CommandManager::read_key() {
     ctrl = terminal_check(TK_CONTROL);
     alt = terminal_check(TK_ALT);
     last_cmd = check_next_cmd();
+    /* auto pact = player->get_component<PlayerActional>(C_ACT_PLAYER); */
     //here we decide whether the command taken pauses the game or not and whether it changes the command domain
     //for example, opening a pick up menu and cancelling it after looking at the items does not move gametime
     //but if you choose an item to pick up it does
@@ -116,6 +131,10 @@ void CommandManager::read_key() {
         case INVENTORY_OPEN:
             game_running = false;
             domainstack.push(CMD_INVENTORY);
+            break;
+        case COMMON_ACTION_OPEN:
+            game_running = false;
+            domainstack.push(CMD_COMMON_ACTION);
             break;
         case MENU_UP:
         case MENU_DOWN:

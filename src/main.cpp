@@ -54,6 +54,8 @@ void tick_game() {
             act->tick -= lowest_tick;
             if (act->tick <= 0){
                 act->take_action();
+                // might want to move this to inside take_action: that way things can
+                // take a variable amount of "time" (ie some actions are faster than others)
                 act->tick += act->speed;
                 if (act == pact) goto turn_end; // goto to break out of two loops
             }
@@ -76,24 +78,27 @@ void terminal_init() {
 int main() {
 
     terminal_init();
+    Camera camera = Camera();
 
     //levelmanager initiation initiates a level
     //map creation (idk where to move this)
     auto& cmap = levelmanager->get_change_currlvl();
-    cmap.create_room(0, 1, 1, 78, 10);
-    cmap.create_room(0, 50, 1, 6, 22);
     cmap.randomize();
+    cmap.create_room(1, 5, 6, 5, 5, T_AIR);
+    *cmap.at(1, 5, 4) = Tile(T_RAMP);
+    *cmap.at(2, 5, 4) = Tile(T_RAMP);
+    /* *cmap.at(0, 5, 4) = Tile(T_RAMP); */
     cmap.do_fov(0, 30, 10, 10);
 
     //initializing entities here for now
-    init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(0, 5, 5);
+    init_entity(E_TEST)->get_component<Positional>(C_POSITIONAL)->setpos(1, 5, 5);
     auto it = init_entity(E_TEST);
-    it->get_component<Positional>(C_POSITIONAL)->setpos(0, 5, 5);
+    it->get_component<Positional>(C_POSITIONAL)->setpos(1, 5, 5);
     it->name = "Test object 2";
     it.reset();
 
     levelmanager->add_entity_to_currlvl(player);
-    player->add_component(std::make_unique<Positional>(0, 30, 10, 0x40));
+    player->add_component(std::make_unique<Positional>(1, 30, 10, 0x40));
     player->add_component(std::make_unique<PlayerActional>(1000));
     player->add_component(std::make_unique<Offensal>(5, 5, 5, 5));
     player->add_component(std::make_unique<Statsal>(10, 10, 10, 10, 10, 10));
@@ -122,6 +127,7 @@ int main() {
             //that includes menu control commands
             player->get_component<Actional>(C_ACT)->take_action();
         }
+        input.last_cmd = NONE;
 
         camera.draw_world(p->f());
         camera.draw_entities();
@@ -129,8 +135,7 @@ int main() {
 
         terminal_refresh();
         terminal_clear();
-        /* terminal_delay(1000/FRAMEWAIT); */
-        input.last_cmd = NONE;
+        terminal_delay(1000/FRAMEWAIT);
     }
 
     terminal_close();

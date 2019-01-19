@@ -23,6 +23,13 @@ struct ItemMenu {
     int p_currload = 0;
     int currpos = 0;
 };
+struct CActMenu {
+    const std::vector<const char*> opts = {
+        "Jump",
+        "Do nothing"
+    };
+    int currpos = 0;
+};
 
 
 void draw_outline(uint x, uint y, uint w, uint h, color_t color);
@@ -35,9 +42,10 @@ std::string txt(std::string fmt, ...);
 void You(const char* in);
 void tolog(const char* in);
 void item_menu();
-void menu_control(int in);
+void menu_scroll(int in);
 void pickup_menu();
 void inventory_menu();
+void common_action_menu();
 std::shared_ptr<Entity> retrieve_chosen_item();
 void item_menu_update( std::set<std::shared_ptr<Entity>> const&, int, int );
 

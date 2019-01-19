@@ -1,26 +1,18 @@
 #pragma once
 #include "typedefs.h"
 #include "tiletags.h"
-#include <set>
-#include <memory>
 #include "fdecs.h"
+#include "BearLibTerminal.h"
+#include <set>
+#include <map>
+#include <memory>
 
 struct Tile {
     TILE_TAG tag = T_FLOOR;
     bool visible = false;
     std::set<std::shared_ptr<Entity>> ents;
-    bool passable() const;
-    uint character() const;
+    const static std::map<TILE_TAG, uint> basechars;
 
     Tile(TILE_TAG tag);
+    void draw(uint, uint);
 };
-
-
-struct FloorTile: public Tile {
-    FloorTile();
-};
-
-struct WallTile: public Tile {
-    WallTile();
-};
-

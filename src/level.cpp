@@ -7,10 +7,10 @@ constexpr int Level::multipliers[4][8];
 //constructor just makes a solid wall map of widthxheight
 //widthxheight map, each 'tile' is really a map of tiletag:tile* (pointers to just one immutable tile instance per tile
 Level::Level(uint depth, uint width, uint height) : width(width), height(height), depth(depth) {
-    Tile outermost = WallTile();
+    Tile outermost = Tile(T_WALL);
     std::vector<Tile> col(height, outermost);
     auto t = std::vector<std::vector<Tile>>(width, col);
-    for (int i=0; i<depth; i++){
+    for (uint i=0; i<depth; i++){
         tiles.push_back(t);
     }
 };
@@ -22,13 +22,14 @@ bool Level::is_visible(uint f, uint x, uint y) const {
     return tiles[f][x][y].visible;
 }
 
-uint Level::get_character(uint f, uint x, uint y) const {
-    return tiles[f][x][y].character();
+
+bool Level::passable(uint f, uint x, uint y) const {
+    if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return false;
+    return pass.find(tiles[f][x][y].tag)->second;
 }
 
-bool Level::is_passable(uint f, uint x, uint y) const {
-    if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return false;
-    return tiles[f][x][y].passable();
+bool Level::blocks_vision(uint f, uint x, uint y) {
+    return vblock.find(tiles[f][x][y].tag)->second;
 }
 
 Tile* Level::at(uint f, uint x, uint y) {
@@ -40,17 +41,29 @@ void Level::randomize() {
     for (uint x = 0; x < width; x++) {
         for (uint y = 0; y < height ; y++) {
             for (uint f = 0; f < depth ; f++) {
-                if (rand() % 10 == 1) tiles[f][x][y] = WallTile(); else tiles[f][x][y] = FloorTile();
+                if (rand() % 10 == 1) tiles[f][x][y] = Tile(T_WALL); else tiles[f][x][y] = Tile(T_FLOOR);
             }
         }
     }
 }
 
+const std::map<TILE_TAG, bool> Level::pass = {
+    {T_FLOOR, true},
+    {T_WALL, false},
+    {T_AIR, false},
+    {T_RAMP, true}
+};
+const std::map<TILE_TAG, bool> Level::vblock = {
+    {T_FLOOR, false},
+    {T_WALL, true},
+    {T_AIR, false},
+    {T_RAMP, false}
+};
 
-void Level::create_room(uint f, uint xi, uint yi, uint w, uint h) {
+void Level::create_room(uint f, uint xi, uint yi, uint w, uint h, TILE_TAG ttag) {
     for (uint x = xi; x < xi + w; x++) {
         for (uint y = yi; y < yi + h; y++) {
-            tiles[f][x][y] = FloorTile();
+            tiles[f][x][y] = Tile(ttag);
         }
     }
 }
@@ -94,14 +107,14 @@ void Level::cast_light(uint f, uint x, uint y, uint radius, uint row,
             }
 
             if (blocked) {
-                if (!is_passable(f, ax, ay)) {
+                if (blocks_vision(f, ax, ay)) {
                     next_start_slope = r_slope;
                     continue;
                 } else {
                     blocked = false;
                     start_slope = next_start_slope;
                 }
-            } else if (!is_passable(f, ax, ay)) {
+            } else if (blocks_vision(f, ax, ay)) {
                 blocked = true;
                 next_start_slope = r_slope;
                 cast_light(f, x, y, radius, i + 1, start_slope, l_slope, xx, xy, yx, yy);

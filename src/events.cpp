@@ -10,7 +10,7 @@ void move(Entity * ent, int f, int x, int y) {
         printf("Entity with no positional component attempted to move\n");
         return;
     }
-    if (levelmanager->get_const_currlvl().is_passable(f, x, y)){
+    if (levelmanager->get_const_currlvl().passable(f, x, y)){
         pos->setpos(f, x, y);
     }
 }

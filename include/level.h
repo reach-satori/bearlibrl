@@ -22,20 +22,23 @@ struct Level {
         {0, 1, 1, 0, 0, -1, -1, 0},
         {1, 0, 0, 1, -1, 0, 0, -1}
     };
+    static const std::map<TILE_TAG, uint> chars;
+    static const std::map<TILE_TAG, bool> pass;
+    static const std::map<TILE_TAG, bool> vblock;
 
     Level();
     Level(uint depth, uint width, uint height);
-    void create_room(uint f, uint xi, uint yi, uint w, uint h);
+    void create_room(uint f, uint xi, uint yi, uint w, uint h, TILE_TAG ttag);
     void cast_light(uint f, uint x, uint y, uint radius, uint row,
         float start_slope, float end_slope, uint xx, uint xy, uint yx,
         uint yy);
     void do_fov(uint f, uint x, uint y, uint radius);
+    bool blocks_vision(uint f, uint x, uint y);
     void randomize();
     void all_nonvisible();
     bool is_visible(uint f, uint x, uint y) const;
     bool blocks_vision(uint f, uint x, uint y) const;
-    uint get_character(uint f, uint x, uint y) const;
-    bool is_passable(uint f, uint x, uint y) const;
+    bool passable(uint f, uint x, uint y) const;
     Tile* at(uint f, uint x, uint y);
 
     std::set<std::shared_ptr<Entity>> get_entities_in_spot(uint, uint, uint) const;

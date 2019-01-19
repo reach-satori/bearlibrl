@@ -2,32 +2,23 @@
 
 Tile::Tile(TILE_TAG tag) : tag(tag) {};
 
-FloorTile::FloorTile() : Tile(T_FLOOR) {};
-WallTile::WallTile() : Tile(T_WALL) {};
+const std::map<TILE_TAG, uint> Tile::basechars = {
+    {T_FLOOR, 0x2E},
+    {T_WALL, 0x23},
+    {T_AIR, 0x2193},
+    {T_RAMP, 0x25CA}
+};
 
-bool Tile::passable() const {
-    bool out;
-    switch(tag) {
-        case T_FLOOR:
-            out = true;
+void Tile::draw(uint x, uint y) {
+    switch (tag) {
+        case T_AIR:
+            terminal_color(0xff00ff00);
+            terminal_put(x, y, basechars.find(tag)->second);
+            terminal_color(0xffffffff);
             break;
-        case T_WALL:
-            out = false;
+
+        default:
+            terminal_put(x, y, basechars.find(tag)->second);
             break;
     }
-    return out;
 }
-
-uint Tile::character() const {
-    uint out;
-    switch(tag) {
-        case T_FLOOR:
-            out = 0x2E;
-            break;
-        case T_WALL:
-            out = 0x23;
-            break;
-    }
-    return out;
-}
-

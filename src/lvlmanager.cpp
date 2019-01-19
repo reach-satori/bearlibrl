@@ -2,7 +2,7 @@
 
 
 LevelManager::LevelManager() {
-    auto lvl0 = std::make_unique<Level>(2, 200, 200);
+    auto lvl0 = std::make_unique<Level>(3, 200, 200);
     all_levels.insert(std::make_pair(current_tag, std::move(lvl0)));
     tagged_entities.insert(std::make_pair(current_tag, std::set<std::shared_ptr<Entity>>()));
 }

@@ -1,12 +1,16 @@
+#pragma once
 #include <unordered_map>
 #include <stack>
 #include "menus.h"
+#include "compact.h"
+#include "comptags.h"
 #include "BearLibTerminal.h"
 
 enum COMMAND_DOMAIN {
     CMD_DEFAULT,
     CMD_PICKUP,
-    CMD_INVENTORY
+    CMD_INVENTORY,
+    CMD_COMMON_ACTION,
 };
 
 enum COMMAND_TAG {
@@ -20,6 +24,8 @@ enum COMMAND_TAG {
     MOVE_SE,
     MOVE_E,
     MOVE_W,
+    MOVE_UP,
+    MOVE_DOWN,
     ATK_N,
     ATK_NW,
     ATK_NE,
@@ -32,6 +38,7 @@ enum COMMAND_TAG {
     PICKUP_CONFIRM,
     INVENTORY_OPEN,
     INVENTORY_DROP,
+    COMMON_ACTION_OPEN,
     MENU_CANCEL,
     MENU_UP,
     MENU_DOWN,
