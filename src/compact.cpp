@@ -57,30 +57,30 @@ static void player_pickup_confirm() {
 static void target_move(int x, int y) {
     auto tpos = get_target();
     tpos->setpos(tpos->f(), tpos->x() + x, tpos->y() + y);
-    camera.center(tpos);
+    camera.center_after_check(tpos);
 }
 
 static void target_zmove(int dir) {
-    auto target = get_target();
-    auto fl = target->f();
-    auto lvl = levelmanager->get_change_currlvl();
+    auto tpos = get_target();
+    auto fl = tpos->f();
+    auto& lvl = levelmanager->get_change_currlvl();
     if (fl + dir < 0 || fl + dir >= lvl.depth) {
         return;
     }
-    target->setpos(fl + dir, target->x(), target->y());
-    camera.center(target);
+    tpos->setpos(fl + dir, tpos->x(), tpos->y());
+    camera.center(tpos);
 }
-
 
 static void player_move(int x, int y) {
     auto ppos = player->get_component<Positional>(C_POSITIONAL);
     move(player.get(),ppos->f(), x, y);
+    camera.center_on_player();
 };
 
 static void player_zmove(int dir) {
     auto ppos = player->get_component<Positional>(C_POSITIONAL);
     auto pfloor = ppos->f();
-    auto lvl = levelmanager->get_change_currlvl();
+    auto& lvl = levelmanager->get_change_currlvl();
     auto tile = lvl.at(pfloor, ppos->x(), ppos->y());
 
     if (tile->tag != T_RAMP) {
@@ -94,6 +94,7 @@ static void player_zmove(int dir) {
         return;
     }
     move(player.get(),ppos->f() + dir, ppos->x(), ppos->y());
+    camera.center_on_player();
 };
 
 static void player_inventory_open() {

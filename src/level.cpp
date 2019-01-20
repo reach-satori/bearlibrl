@@ -4,6 +4,19 @@
 
 constexpr int Level::multipliers[4][8];
 
+const static std::vector<int> dirs{
+    -1, -1,
+    -1,  0,
+    -1,  1,
+     0, -1,
+     0,  0,
+     0,  1,
+     1, -1,
+     1,  0,
+     1,  1
+};
+
+
 //constructor just makes a solid wall map of widthxheight
 //widthxheight map, each 'tile' is really a map of tiletag:tile* (pointers to just one immutable tile instance per tile
 Level::Level(uint depth, uint width, uint height) : width(width), height(height), depth(depth) {
@@ -22,7 +35,6 @@ bool Level::is_visible(uint f, uint x, uint y) const {
     return tiles[f][x][y].visible;
 }
 
-
 bool Level::passable(uint f, uint x, uint y) const {
     if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return false;
     return pass.find(tiles[f][x][y].tag)->second;
@@ -35,6 +47,15 @@ bool Level::blocks_vision(uint f, uint x, uint y) {
 Tile* Level::at(uint f, uint x, uint y) {
     if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return nullptr;
     return &tiles[f][x][y];
+}
+
+void Level::set_square_visible(uint f, uint x, uint y) {
+    for (uint i = 0; i < dirs.size(); i += 2) {
+        auto t = at(f, x+dirs[i], y+dirs[i+1]);
+        if (t) {
+            t->set_visible();
+        }
+    }
 }
 
 void Level::randomize() {
@@ -103,7 +124,14 @@ void Level::cast_light(uint f, uint x, uint y, uint radius, uint row,
 
             uint radius2 = radius * radius;
             if ((uint)(dx * dx + dy * dy) < radius2) {
-                tiles[f][ax][ay].visible = true;
+                auto t = at(f, ax, ay);
+                t->set_visible();
+                if (t->tag == T_AIR && f > 0) {
+                    set_square_visible(f-1, ax, ay);
+                }
+                if (f < depth-1 && at(f+1, ax, ay)->tag == T_AIR) {
+                    set_square_visible(f+1, ax, ay);
+                }
             }
 
             if (blocked) {

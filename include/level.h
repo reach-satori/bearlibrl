@@ -27,19 +27,20 @@ struct Level {
     static const std::map<TILE_TAG, bool> vblock;
 
     Level();
-    Level(uint depth, uint width, uint height);
-    void create_room(uint f, uint xi, uint yi, uint w, uint h, TILE_TAG ttag);
+    Level(uint, uint, uint);
+    void create_room(uint, uint, uint, uint, uint, TILE_TAG);
     void cast_light(uint f, uint x, uint y, uint radius, uint row,
         float start_slope, float end_slope, uint xx, uint xy, uint yx,
         uint yy);
-    void do_fov(uint f, uint x, uint y, uint radius);
-    bool blocks_vision(uint f, uint x, uint y);
+    void do_fov(uint, uint, uint, uint);
+    bool blocks_vision(uint, uint, uint);
     void randomize();
     void all_nonvisible();
-    bool is_visible(uint f, uint x, uint y) const;
-    bool blocks_vision(uint f, uint x, uint y) const;
-    bool passable(uint f, uint x, uint y) const;
-    Tile* at(uint f, uint x, uint y);
+    void set_square_visible(uint, uint, uint);
+    bool is_visible(uint, uint, uint) const;
+    bool blocks_vision(uint, uint, uint) const;
+    bool passable(uint, uint, uint) const;
+    Tile* at(uint, uint, uint);
 
     std::set<std::shared_ptr<Entity>> get_entities_in_spot(uint, uint, uint) const;
 

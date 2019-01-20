@@ -121,22 +121,23 @@ int main() {
         //stuff that should happen once per "turn"(player action)
         if (input.game_running) {
             tick_game(); //deals with entities that have an action component
-            camera.center_on_player();
 
             //fov
             auto& currlvl = levelmanager->get_change_currlvl();
             currlvl.all_nonvisible();
             currlvl.do_fov(p->f(), p->x(), p->y(), 10);
+
         } else {
             //this is a little ugly but i want every command in one place (inside player action component)
-            //that includes menu control commands
+            //that includes menu control commands and others that don't advance game time
             player->get_component<Actional>(C_ACT)->take_action();
         }
+
         input.last_cmd = NONE;
 
         camera.draw_world();
         camera.draw_entities();
-        draw_menus();
+        draw_menus();// i think it's logical that menus aren't in the camera...
 
         terminal_refresh();
         terminal_clear();

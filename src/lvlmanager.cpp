@@ -1,6 +1,5 @@
 #include "lvlmanager.h"
 
-
 LevelManager::LevelManager() {
     auto lvl0 = std::make_unique<Level>(3, 200, 200);
     all_levels.insert(std::make_pair(current_tag, std::move(lvl0)));
@@ -100,6 +99,7 @@ bool LevelManager::entity_check (std::shared_ptr<Entity> const & ent) const {
     //so we can return just one of em: true if it's in, false if it's not
     return (in_tagged_entities);
 }
+
 
 bool LevelManager::level_check (uint tag) const {
     bool in_all_lvls = (all_levels.find(tag) != all_levels.end());
