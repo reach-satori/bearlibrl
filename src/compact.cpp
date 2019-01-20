@@ -57,8 +57,20 @@ static void player_pickup_confirm() {
 static void target_move(int x, int y) {
     auto tpos = get_target();
     tpos->setpos(tpos->f(), tpos->x() + x, tpos->y() + y);
-    camera.center(tpos->x(), tpos->y());
+    camera.center(tpos);
 }
+
+static void target_zmove(int dir) {
+    auto target = get_target();
+    auto fl = target->f();
+    auto lvl = levelmanager->get_change_currlvl();
+    if (fl + dir < 0 || fl + dir >= lvl.depth) {
+        return;
+    }
+    target->setpos(fl + dir, target->x(), target->y());
+    camera.center(target);
+}
+
 
 static void player_move(int x, int y) {
     auto ppos = player->get_component<Positional>(C_POSITIONAL);
@@ -81,7 +93,6 @@ static void player_zmove(int dir) {
         tolog("You can't do that.");
         return;
     }
-
     move(player.get(),ppos->f() + dir, ppos->x(), ppos->y());
 };
 
@@ -212,8 +223,6 @@ void PlayerActional::take_action(void) {
                 break;
             case ATK_SE    :
                 player_attack( x+1, y+1);
-                pos->setpos(1, x, y);
-                printf("%d\n", pos->f());
                 break;
             case PICKUP_CONFIRM:
                 player_pickup_confirm();
@@ -230,8 +239,6 @@ void PlayerActional::take_action(void) {
         switch (input.last_cmd) {
                 //nothing here actually triggers a menu open: they just initialize the necessary data in menus.cpp
                 //the thing that decides what menu gets shown is the command domain in input
-            case MENU_CANCEL:
-                break;
             case PICKUP_OPEN:
                 player_pickup_open();
                 break;
@@ -247,33 +254,42 @@ void PlayerActional::take_action(void) {
             case LOOK_OPEN:
                 target->get_component<Positional>(C_POSITIONAL)->setpos(pos->f(), pos->x(), pos->y());
                 break;
-            case TARGET_MOVE_N    :
-                target_move( 0, -1);
+            case TARGET_MOVE_N:
+                target_move(0, -1);
                 break;
-            case TARGET_MOVE_S    :
-                target_move( 0, 1);
+            case TARGET_MOVE_S:
+                target_move(0, 1);
                 break;
-            case TARGET_MOVE_W    :
-                target_move( -1, 0);
+            case TARGET_MOVE_W:
+                target_move(-1, 0);
                 break;
-            case TARGET_MOVE_E    :
-                target_move( 1, 0);
+            case TARGET_MOVE_E:
+                target_move(1, 0);
                 break;
-            case TARGET_MOVE_NE    :
-                target_move( 1, -1);
+            case TARGET_MOVE_NE:
+                target_move(1, -1);
                 break;
-            case TARGET_MOVE_NW    :
-                target_move( -1, -1);
+            case TARGET_MOVE_NW:
+                target_move(-1, -1);
                 break;
-            case TARGET_MOVE_SW    :
-                target_move( -1, 1);
+            case TARGET_MOVE_SW:
+                target_move(-1, 1);
                 break;
-            case TARGET_MOVE_SE    :
-                target_move( 1, 1);
+            case TARGET_MOVE_SE:
+                target_move(1, 1);
+                break;
+            case TARGET_MOVE_DOWN:
+                target_zmove(-1);
+                break;
+            case TARGET_MOVE_UP:
+                target_zmove(1);
+                break;
+            case TARGET_CANCEL:
+                camera.center(pos);
                 break;
             case NONE:
-            case TARGET_CANCEL:
             case COMMON_ACTION_OPEN:
+            case MENU_CANCEL:
                 break;
             default:
                 printf("reaching this spot means a command that should have moved game time has not\n");

@@ -10,6 +10,10 @@ const std::map<TILE_TAG, uint> Tile::basechars = {
 };
 
 void Tile::draw(uint x, uint y) {
+    if (!visible) {
+        terminal_put(x, y, 0x20);
+        return;
+    }
     switch (tag) {
         case T_AIR:
             terminal_color(0xff00ff00);

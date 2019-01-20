@@ -98,6 +98,8 @@ CommandManager::CommandManager() {
     add_command(CMD_TARGET , TK_DOWN   , Command(false , false , false , TARGET_MOVE_S));
     add_command(CMD_TARGET , TK_ENTER  , Command(false , false , false , TARGET_CONFIRM));
     add_command(CMD_TARGET , TK_ESCAPE , Command(false , false , false , TARGET_CANCEL));
+    add_command(CMD_TARGET , TK_PERIOD , Command(true  , false , false , TARGET_MOVE_DOWN));
+    add_command(CMD_TARGET , TK_COMMA  , Command(true  , false , false , TARGET_MOVE_UP));
 
     add_command(CMD_LOOK , TK_KP_8   , Command(false , false , false , TARGET_MOVE_N));
     add_command(CMD_LOOK , TK_KP_7   , Command(false , false , false , TARGET_MOVE_NW));
@@ -112,6 +114,8 @@ CommandManager::CommandManager() {
     add_command(CMD_LOOK , TK_RIGHT  , Command(false , false , false , TARGET_MOVE_E));
     add_command(CMD_LOOK , TK_DOWN   , Command(false , false , false , TARGET_MOVE_S));
     add_command(CMD_LOOK , TK_ESCAPE , Command(false , false , false , TARGET_CANCEL));
+    add_command(CMD_LOOK , TK_PERIOD , Command(true  , false , false , TARGET_MOVE_DOWN));
+    add_command(CMD_LOOK , TK_COMMA  , Command(true  , false , false , TARGET_MOVE_UP));
 }
 
 

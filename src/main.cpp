@@ -96,13 +96,19 @@ int main() {
     it->name = "Test object 2";
     it.reset();
 
+    //camera init (using player component)
+    auto ppos = std::make_unique<Positional>(1, 30, 10, 0x40);
+    camera.set_pos(ppos->f(), ppos->x() - camera.width/2, ppos->y() - camera.height/2);
+    auto& currlvl = levelmanager->get_change_currlvl();
+    currlvl.do_fov(ppos->f(), ppos->x(), ppos->y(), 10);
+
+    //player init
     levelmanager->add_entity_to_currlvl(player);
-    player->add_component(std::make_unique<Positional>(1, 30, 10, 0x40));
+    player->add_component(std::move(ppos));
     player->add_component(std::make_unique<PlayerActional>(1000));
     player->add_component(std::make_unique<Offensal>(5, 5, 5, 5));
     player->add_component(std::make_unique<Statsal>(10, 10, 10, 10, 10, 10));
-    auto inv = std::make_unique<EquipInventorial>(100);
-    player->add_component(std::move(inv));
+    player->add_component(std::make_unique<EquipInventorial>(100));
 
     //main loop
     while (input.last_key != TK_CLOSE) {
@@ -128,7 +134,7 @@ int main() {
         }
         input.last_cmd = NONE;
 
-        camera.draw_world(p->f());
+        camera.draw_world();
         camera.draw_entities();
         draw_menus();
 

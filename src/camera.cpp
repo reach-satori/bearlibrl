@@ -4,7 +4,7 @@
 
 Camera::Camera() {};
 
-void Camera::draw_world(int floor) const {
+void Camera::draw_world() const {
     Level& lvl = levelmanager->get_change_currlvl();
     const int camx = pos[0];
     const int camy = pos[1];
@@ -23,23 +23,22 @@ void Camera::draw_world(int floor) const {
 }
 
 void Camera::draw_entities(void) const {
-    for (const auto& ent : levelmanager->get_current_entities()) {
-        auto posin = ent->get_component<Positional>(C_POSITIONAL);
-        if (!posin)
-            continue;
-        if (!on_camera(posin->x(), posin->y()))
+    for (auto const posin : levelmanager->get_current_components<Positional const>(C_POSITIONAL)) {
+        assert(posin);
+        if (!on_camera(posin))
             continue;
         terminal_put(posin->x()-pos[0], posin->y()-pos[1], posin->codepoint);
     }
     if (input.domainstack.top() == CMD_LOOK) {
-        auto tpos = player->get_component<PlayerActional>(C_ACT_PLAYER)->target->get_component<Positional>(C_POSITIONAL);
+        auto tpos = get_target();
         terminal_put(tpos->x()-pos[0], tpos->y()-pos[1], tpos->codepoint);
     }
 }
 
-void Camera::set_pos(int x, int y) {
+void Camera::set_pos(int f, int x, int y) {
     pos[0] = x;
     pos[1] = y;
+    floor = f;
 }
 
 //returns true if within some margin of the center of the camera (either horizontally or vertically)
@@ -56,21 +55,37 @@ bool Camera::in_camera_center(int x, int y) const {
     return (horcenter && vertcenter);
 }
 
-bool Camera::on_camera(int x, int y) const {
-    return x >= pos[0] && x < pos[0] + width && y >= pos[1] && y < pos[1] + height;
+bool Camera::on_camera(Positional const * posin) const {
+    return
+        //focken compiler warnings
+        posin->f() == floor &&
+        static_cast<int>(posin->x()) >= pos[0] &&
+        posin->x() < pos[0] + width &&
+        static_cast<int>(posin->y()) >= pos[1] &&
+        posin->y() < pos[1] + height;
 }
 
-void Camera::center(int x, int y) {
-    if (!in_camera_center(x, y)) {
-        set_pos(x-width/2, y-height/2);
+void Camera::chfloor(int dir) {
+    auto lvl = levelmanager->get_change_currlvl();
+    if (floor + dir < 0 || floor + dir >= lvl.depth) {
+        return;
+    }
+    floor += dir;
+}
+
+void Camera::center_after_check(Positional const * pos){
+    int x = pos->x();
+    int y = pos->y();
+    if (!in_camera_center(x, y) || pos->f() != floor) {
+        center(pos);
     }
 }
+
+void Camera::center(Positional const * pos) {
+    int x = pos->x();
+    int y = pos->y();
+    set_pos(pos->f(), x-width/2, y-height/2);
+}
 void Camera::center_on_player(){
-    Positional const * ppos;
-    if (input.domainstack.top() == CMD_TARGET || input.domainstack.top() == CMD_LOOK) {
-        ppos = player->get_component<PlayerActional>(C_ACT_PLAYER)->target->get_component<Positional const>(C_POSITIONAL);
-    } else {
-        ppos = player->get_component<Positional const>(C_POSITIONAL);
-    }
-    center(ppos->x(), ppos->y());
+    center_after_check(player->get_component<Positional const>(C_POSITIONAL));
 }
