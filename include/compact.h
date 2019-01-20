@@ -17,6 +17,8 @@ struct Actional: public BaseComponent {
 ///////////
 
 struct PlayerActional: public Actional {
+    std::shared_ptr<Entity> target;
+
     PlayerActional(int spd);
     void check_next_action(void);
     void take_action(void);
@@ -28,5 +30,7 @@ struct EmptyActional : public Actional {
     EmptyActional(int spd);
     void take_action(void);
 };
+
+Positional* get_target();
 
 

@@ -31,6 +31,10 @@ void Camera::draw_entities(void) const {
             continue;
         terminal_put(posin->x()-pos[0], posin->y()-pos[1], posin->codepoint);
     }
+    if (input.domainstack.top() == CMD_LOOK) {
+        auto tpos = player->get_component<PlayerActional>(C_ACT_PLAYER)->target->get_component<Positional>(C_POSITIONAL);
+        terminal_put(tpos->x()-pos[0], tpos->y()-pos[1], tpos->codepoint);
+    }
 }
 
 void Camera::set_pos(int x, int y) {
@@ -62,6 +66,11 @@ void Camera::center(int x, int y) {
     }
 }
 void Camera::center_on_player(){
-    const auto * ppos = player->get_component<Positional const>(C_POSITIONAL);
+    Positional const * ppos;
+    if (input.domainstack.top() == CMD_TARGET || input.domainstack.top() == CMD_LOOK) {
+        ppos = player->get_component<PlayerActional>(C_ACT_PLAYER)->target->get_component<Positional const>(C_POSITIONAL);
+    } else {
+        ppos = player->get_component<Positional const>(C_POSITIONAL);
+    }
     center(ppos->x(), ppos->y());
 }

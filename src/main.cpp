@@ -78,7 +78,6 @@ void terminal_init() {
 int main() {
 
     terminal_init();
-    Camera camera = Camera();
 
     //levelmanager initiation initiates a level
     //map creation (idk where to move this)
@@ -87,7 +86,7 @@ int main() {
     cmap.create_room(1, 5, 6, 5, 5, T_AIR);
     *cmap.at(1, 5, 4) = Tile(T_RAMP);
     *cmap.at(2, 5, 4) = Tile(T_RAMP);
-    /* *cmap.at(0, 5, 4) = Tile(T_RAMP); */
+    *cmap.at(0, 5, 4) = Tile(T_RAMP);
     cmap.do_fov(0, 30, 10, 10);
 
     //initializing entities here for now

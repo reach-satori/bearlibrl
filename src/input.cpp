@@ -26,6 +26,8 @@ CommandManager::CommandManager() {
     cmdlists.insert(std::make_pair(CMD_PICKUP, std::unordered_multimap<uint, Command>()));
     cmdlists.insert(std::make_pair(CMD_INVENTORY, std::unordered_multimap<uint, Command>()));
     cmdlists.insert(std::make_pair(CMD_COMMON_ACTION, std::unordered_multimap<uint, Command>()));
+    cmdlists.insert(std::make_pair(CMD_TARGET, std::unordered_multimap<uint, Command>()));
+    cmdlists.insert(std::make_pair(CMD_LOOK, std::unordered_multimap<uint, Command>()));
 
     //                                              shift    alt     ctrl
     add_command(CMD_DEFAULT , TK_KP_8   , Command(false , false , false , MOVE_N));
@@ -59,6 +61,7 @@ CommandManager::CommandManager() {
     add_command(CMD_DEFAULT , TK_G      , Command(false , false , false , PICKUP_OPEN));
     add_command(CMD_DEFAULT , TK_I      , Command(false , false , false , INVENTORY_OPEN));
     add_command(CMD_DEFAULT , TK_Y      , Command(false , false , false , COMMON_ACTION_OPEN));
+    add_command(CMD_DEFAULT , TK_L      , Command(false , false , false , LOOK_OPEN));
 
     add_command(CMD_PICKUP    , TK_ESCAPE , Command(false , false , false , MENU_CANCEL));
     add_command(CMD_PICKUP    , TK_DOWN   , Command(false , false , false , MENU_DOWN));
@@ -79,6 +82,36 @@ CommandManager::CommandManager() {
     add_command(CMD_COMMON_ACTION , TK_UP     , Command(false , false , false , MENU_UP));
     add_command(CMD_COMMON_ACTION , TK_KP_2   , Command(false , false , false , MENU_DOWN));
     add_command(CMD_COMMON_ACTION , TK_KP_8   , Command(false , false , false , MENU_UP));
+    add_command(CMD_COMMON_ACTION , TK_J      , Command(false , false , false , COMMON_ACTION_LEAP));
+
+    add_command(CMD_TARGET , TK_KP_8   , Command(false , false , false , TARGET_MOVE_N));
+    add_command(CMD_TARGET , TK_KP_7   , Command(false , false , false , TARGET_MOVE_NW));
+    add_command(CMD_TARGET , TK_KP_9   , Command(false , false , false , TARGET_MOVE_NE));
+    add_command(CMD_TARGET , TK_KP_2   , Command(false , false , false , TARGET_MOVE_S));
+    add_command(CMD_TARGET , TK_KP_1   , Command(false , false , false , TARGET_MOVE_SW));
+    add_command(CMD_TARGET , TK_KP_3   , Command(false , false , false , TARGET_MOVE_SE));
+    add_command(CMD_TARGET , TK_KP_6   , Command(false , false , false , TARGET_MOVE_E));
+    add_command(CMD_TARGET , TK_KP_4   , Command(false , false , false , TARGET_MOVE_W));
+    add_command(CMD_TARGET , TK_UP     , Command(false , false , false , TARGET_MOVE_N));
+    add_command(CMD_TARGET , TK_LEFT   , Command(false , false , false , TARGET_MOVE_W));
+    add_command(CMD_TARGET , TK_RIGHT  , Command(false , false , false , TARGET_MOVE_E));
+    add_command(CMD_TARGET , TK_DOWN   , Command(false , false , false , TARGET_MOVE_S));
+    add_command(CMD_TARGET , TK_ENTER  , Command(false , false , false , TARGET_CONFIRM));
+    add_command(CMD_TARGET , TK_ESCAPE , Command(false , false , false , TARGET_CANCEL));
+
+    add_command(CMD_LOOK , TK_KP_8   , Command(false , false , false , TARGET_MOVE_N));
+    add_command(CMD_LOOK , TK_KP_7   , Command(false , false , false , TARGET_MOVE_NW));
+    add_command(CMD_LOOK , TK_KP_9   , Command(false , false , false , TARGET_MOVE_NE));
+    add_command(CMD_LOOK , TK_KP_2   , Command(false , false , false , TARGET_MOVE_S));
+    add_command(CMD_LOOK , TK_KP_1   , Command(false , false , false , TARGET_MOVE_SW));
+    add_command(CMD_LOOK , TK_KP_3   , Command(false , false , false , TARGET_MOVE_SE));
+    add_command(CMD_LOOK , TK_KP_6   , Command(false , false , false , TARGET_MOVE_E));
+    add_command(CMD_LOOK , TK_KP_4   , Command(false , false , false , TARGET_MOVE_W));
+    add_command(CMD_LOOK , TK_UP     , Command(false , false , false , TARGET_MOVE_N));
+    add_command(CMD_LOOK , TK_LEFT   , Command(false , false , false , TARGET_MOVE_W));
+    add_command(CMD_LOOK , TK_RIGHT  , Command(false , false , false , TARGET_MOVE_E));
+    add_command(CMD_LOOK , TK_DOWN   , Command(false , false , false , TARGET_MOVE_S));
+    add_command(CMD_LOOK , TK_ESCAPE , Command(false , false , false , TARGET_CANCEL));
 }
 
 
@@ -107,8 +140,13 @@ void CommandManager::read_key() {
     //(actual action is defined in compact.cpp)
     switch (last_cmd) {
         case MENU_CANCEL:
+        case TARGET_CANCEL:
             game_running = false;
             domainstack.pop();
+            break;
+        case LOOK_OPEN:
+            game_running = false;
+            domainstack.push(CMD_LOOK);
             break;
         case INVENTORY_DROP:
             if (!retrieve_chosen_item()) {
@@ -136,6 +174,21 @@ void CommandManager::read_key() {
             game_running = false;
             domainstack.push(CMD_COMMON_ACTION);
             break;
+        case COMMON_ACTION_LEAP:
+            game_running = true;
+            domainstack.pop();
+            break;
+        case TARGET_MOVE_N:
+        case TARGET_MOVE_NW:
+        case TARGET_MOVE_NE:
+        case TARGET_MOVE_S:
+        case TARGET_MOVE_SW:
+        case TARGET_MOVE_SE:
+        case TARGET_MOVE_E:
+        case TARGET_MOVE_W:
+        case TARGET_MOVE_UP:
+        case TARGET_MOVE_DOWN:
+
         case MENU_UP:
         case MENU_DOWN:
         case NONE:

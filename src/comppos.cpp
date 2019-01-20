@@ -1,7 +1,7 @@
 #include "comppos.h"
 #include "globals.h"
 
-Positional::Positional(uint f, uint x, uint y, uint codepoint) : BaseComponent(C_POSITIONAL), pos{f, x, y}, codepoint(codepoint) {
+Positional::Positional(int f, int x, int y, uint codepoint) : BaseComponent(C_POSITIONAL), pos{f, x, y}, codepoint(codepoint) {
     setpos(f, x, y);
 }
 

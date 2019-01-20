@@ -7,3 +7,5 @@ std::unique_ptr<LevelManager> levelmanager = std::make_unique<LevelManager>();
 
 CommandManager input = CommandManager();
 
+Camera camera = Camera();
+

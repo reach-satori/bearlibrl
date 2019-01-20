@@ -1,6 +1,11 @@
 #include "compact.h"
 #include "globals.h"
 
+
+Positional* get_target() {
+    return player->get_component<PlayerActional>(C_ACT_PLAYER)->target->get_component<Positional>(C_POSITIONAL);
+}
+
 static void player_attack(int x, int y) {
     printf("reached player attack \n");
     auto& currlvl = levelmanager->get_change_currlvl();
@@ -48,6 +53,12 @@ static void player_pickup_confirm() {
             break;
     }
 };
+
+static void target_move(int x, int y) {
+    auto tpos = get_target();
+    tpos->setpos(tpos->f(), tpos->x() + x, tpos->y() + y);
+    camera.center(tpos->x(), tpos->y());
+}
 
 static void player_move(int x, int y) {
     auto ppos = player->get_component<Positional>(C_POSITIONAL);
@@ -128,7 +139,11 @@ Actional::Actional(int spd, COMPONENT_TAG tag) : BaseComponent(tag), base_speed(
 ////////////////
 ////////////////
 
-PlayerActional::PlayerActional(int spd) : Actional(spd, C_ACT_PLAYER) {}
+PlayerActional::PlayerActional(int spd) : Actional(spd, C_ACT_PLAYER) {
+    target = std::make_shared<Entity>(E_TARGET);
+    target->add_component(std::make_unique<Positional>(0, 1, 1, 0x25cb));
+    target->name = "Target Reticle";
+}
 
 void PlayerActional::take_action(void) {
     if (input.game_running) {
@@ -211,6 +226,7 @@ void PlayerActional::take_action(void) {
         }
 
     } else {
+            Positional * pos = player->get_component<Positional>(C_POSITIONAL);
         switch (input.last_cmd) {
                 //nothing here actually triggers a menu open: they just initialize the necessary data in menus.cpp
                 //the thing that decides what menu gets shown is the command domain in input
@@ -228,9 +244,36 @@ void PlayerActional::take_action(void) {
             case MENU_DOWN:
                 menu_scroll(1);
                 break;
-            case COMMON_ACTION_OPEN:
+            case LOOK_OPEN:
+                target->get_component<Positional>(C_POSITIONAL)->setpos(pos->f(), pos->x(), pos->y());
+                break;
+            case TARGET_MOVE_N    :
+                target_move( 0, -1);
+                break;
+            case TARGET_MOVE_S    :
+                target_move( 0, 1);
+                break;
+            case TARGET_MOVE_W    :
+                target_move( -1, 0);
+                break;
+            case TARGET_MOVE_E    :
+                target_move( 1, 0);
+                break;
+            case TARGET_MOVE_NE    :
+                target_move( 1, -1);
+                break;
+            case TARGET_MOVE_NW    :
+                target_move( -1, -1);
+                break;
+            case TARGET_MOVE_SW    :
+                target_move( -1, 1);
+                break;
+            case TARGET_MOVE_SE    :
+                target_move( 1, 1);
                 break;
             case NONE:
+            case TARGET_CANCEL:
+            case COMMON_ACTION_OPEN:
                 break;
             default:
                 printf("reaching this spot means a command that should have moved game time has not\n");

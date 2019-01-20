@@ -7,12 +7,12 @@
 struct Positional: public BaseComponent {
 
     private:
-        uint pos[3]; // x, y
+        int pos[3]; // x, y
     public:
         uint codepoint; // display character
 
         Positional(void);
-        Positional(uint f, uint x, uint y, uint codepoint);
+        Positional(int f, int x, int y, uint codepoint);
         ~Positional(void);
         void setpos(int f, int x, int y);
 

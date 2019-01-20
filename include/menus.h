@@ -7,7 +7,6 @@
 #include <assert.h>
 #include <string>
 #include <stdarg.h>
-#include <queue>
 
 class txtlog {
     std::vector<std::string> txt = std::vector<std::string>(1000);
@@ -23,6 +22,7 @@ struct ItemMenu {
     int p_currload = 0;
     int currpos = 0;
 };
+
 struct CActMenu {
     const std::vector<const char*> opts = {
         "Jump",
