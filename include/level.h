@@ -4,6 +4,9 @@
 #include <memory>
 #include <cstdlib>
 #include <tile.h>
+
+#include "noise.h"
+
 #include "util.h"
 #include "fdecs.h"
 #include "comptags.h"
@@ -36,6 +39,7 @@ struct Level {
     bool blocks_vision(uint, uint, uint);
     void randomize();
     void all_nonvisible();
+    void all_visible();
     void set_square_visible(uint, uint, uint);
     bool is_visible(uint, uint, uint) const;
     bool blocks_vision(uint, uint, uint) const;
@@ -54,3 +58,6 @@ struct Level {
         return out;
     }
 };
+
+void lvlgen(Level*);
+

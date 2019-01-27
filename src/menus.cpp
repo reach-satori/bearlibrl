@@ -8,7 +8,7 @@ static CActMenu cactmenu;
 void item_menu_update(std::set<std::shared_ptr<Entity>> const &items, int maxw, int currw) {
     std::vector<std::weak_ptr<Entity>> wkptrs;
     for (auto i: items) {
-        if (i->get_component<Carrial>(C_CARR) != nullptr)
+        if (i->get_component<Carrial>(C_CARR))
             wkptrs.push_back(std::weak_ptr<Entity>(i));
     }
     imenu.items = wkptrs;
@@ -102,7 +102,7 @@ void pickup_menu() {
     auto &items = imenu.items;
     auto lim = items.size();
 
-    for (int i = 0; i < lim; i++) {
+    for (uint i = 0; i < lim; i++) {
         auto iname = items[i].lock()->name.c_str();
         auto toprint = i == imenu.currpos ? txt("[color=yellow]%s[/color]", iname) : txt(iname);
         terminal_print(x+1, y+i+1, toprint.c_str());
@@ -110,29 +110,29 @@ void pickup_menu() {
 }
 
 void inventory_menu() {
-        constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * SCREEN_HEIGHT / 4;
-        constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
-        constexpr int y = (SCREEN_HEIGHT/2 - h/2)-1;
-        terminal_clear_area(x, y, w, h);
-        draw_outline(x, y, w, h, 0xffffffff);
-        auto &items = imenu.items;
-        auto lim = items.size();
-        for (int i = 0; i < lim; i++) {
-            auto iname = items[i].lock()->name.c_str();
-            auto toprint = i == imenu.currpos ? txt("[color=yellow]%s[/color]", iname) : txt(iname);
-            terminal_print(x+1, y+i+1, toprint.c_str());
+    constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * SCREEN_HEIGHT / 4;
+    constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
+    constexpr int y = (SCREEN_HEIGHT/2 - h/2)-1;
+    terminal_clear_area(x, y, w, h);
+    draw_outline(x, y, w, h, 0xffffffff);
+    auto &items = imenu.items;
+    auto lim = items.size();
+    for (uint i = 0; i < lim; i++) {
+        auto iname = items[i].lock()->name.c_str();
+        auto toprint = i == imenu.currpos ? txt("[color=yellow]%s[/color]", iname) : txt(iname);
+        terminal_print(x+1, y+i+1, toprint.c_str());
     }
 }
 
 void common_action_menu() {
-        constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * SCREEN_HEIGHT / 4;
-        constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
-        constexpr int y = (SCREEN_HEIGHT/2 - h/2)-1;
-        terminal_clear_area(x, y, w, h);
-        draw_outline(x, y, w, h, 0xffffffff);
-        for (int i = 0; i < cactmenu.opts.size(); i++) {
-            auto toprint = i == cactmenu.currpos ? txt("[color=yellow]%s[/color]", cactmenu.opts[i]) : txt(cactmenu.opts[i]);
-            terminal_print(x+1, y+i+1, toprint.c_str());
+    constexpr int w = 3 * CONSOLE_WIDTH/4, h = 3 * SCREEN_HEIGHT / 4;
+    constexpr int x = (CONSOLE_WIDTH/2 - w/2)-1;
+    constexpr int y = (SCREEN_HEIGHT/2 - h/2)-1;
+    terminal_clear_area(x, y, w, h);
+    draw_outline(x, y, w, h, 0xffffffff);
+    for (uint i = 0, max = cactmenu.opts.size(); i < max; i++) {
+        auto toprint = i == cactmenu.currpos ? txt("[color=yellow]%s[/color]", cactmenu.opts[i]) : txt(cactmenu.opts[i]);
+        terminal_print(x+1, y+i+1, toprint.c_str());
     }
 }
 
@@ -170,7 +170,8 @@ void draw_menus() {
 }
 
 std::shared_ptr<Entity> retrieve_chosen_item() {
-    if (imenu.items.empty() || imenu.currpos > imenu.items.size()-1) return nullptr;
+    if (imenu.items.empty() || imenu.currpos > imenu.items.size()-1)
+        return nullptr;
     auto chosen = imenu.items[imenu.currpos];
     return chosen.lock();
 }

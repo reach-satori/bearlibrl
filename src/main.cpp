@@ -36,7 +36,6 @@ void tick_game() {
     //destroyed until the end of tick_game, and no dangling pointers get accessed
     auto entset = levelmanager->get_current_entities();
     while(true) {
-
         auto acts = levelmanager->get_current_components<Actional>(C_ACT);
 
         //get lowest tick (action that comes soonest)
@@ -81,7 +80,7 @@ int main() {
 
     //levelmanager initiation initiates a level
     //map creation (idk where to move this)
-    auto& cmap = levelmanager->get_change_currlvl();
+    auto& cmap = levelmanager->get_currlvl();
     cmap.randomize();
     cmap.create_room(1, 5, 6, 5, 5, T_AIR);
     *cmap.at(1, 5, 4) = Tile(T_RAMP);
@@ -99,8 +98,9 @@ int main() {
     //camera init (using player component)
     auto ppos = std::make_unique<Positional>(1, 30, 10, 0x40);
     camera.set_pos(ppos->f(), ppos->x() - camera.width/2, ppos->y() - camera.height/2);
-    auto& currlvl = levelmanager->get_change_currlvl();
+    auto& currlvl = levelmanager->get_currlvl();
     currlvl.do_fov(ppos->f(), ppos->x(), ppos->y(), 10);
+    lvlgen(&currlvl);
 
     //player init
     levelmanager->add_entity_to_currlvl(player);
@@ -123,8 +123,8 @@ int main() {
             tick_game(); //deals with entities that have an action component
 
             //fov
-            auto& currlvl = levelmanager->get_change_currlvl();
-            currlvl.all_nonvisible();
+            auto& currlvl = levelmanager->get_currlvl();
+            currlvl.all_visible();
             currlvl.do_fov(p->f(), p->x(), p->y(), 10);
 
         } else {

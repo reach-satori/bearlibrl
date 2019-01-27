@@ -8,14 +8,16 @@ Positional::Positional(int f, int x, int y, uint codepoint) : BaseComponent(C_PO
 Positional::Positional(void) : Positional(0, 5, 5, 0xBF) {}
 
 void Positional::setpos(int f, int x, int y) {
-    auto& lvl = levelmanager->get_change_currlvl();
+    Level& lvl = levelmanager->get_currlvl();
+    auto pptr = parent.lock();
     x = clamp(x, 0, lvl.width-1);
     y = clamp(y, 0, lvl.height-1);
-    lvl.tiles[pos[0]][pos[1]][pos[2]].ents.erase(parent.lock());
+    f = clamp(f, 0, lvl.depth-1);
+    lvl.tiles[pos[0]][pos[1]][pos[2]].ents.erase(pptr);
     pos[0] = f;
     pos[1] = x;
     pos[2] = y;
-    lvl.at(f, x, y)->ents.insert(parent.lock());
+    lvl.at(f, x, y)->ents.insert(pptr);
 }
 
 Positional::~Positional(void) {}

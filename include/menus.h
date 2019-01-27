@@ -10,7 +10,7 @@
 
 class txtlog {
     std::vector<std::string> txt = std::vector<std::string>(1000);
-    const int maxsize = 10000;
+    const uint maxsize = 10000;
     public:
         void log(std::string);
         std::string const * retrieve_last_n(int n) const;
@@ -20,7 +20,7 @@ struct ItemMenu {
     std::vector<std::weak_ptr<Entity>> items = std::vector<std::weak_ptr<Entity>>();
     int p_maxweight = 100;
     int p_currload = 0;
-    int currpos = 0;
+    uint currpos = 0;
 };
 
 struct CActMenu {
@@ -28,7 +28,7 @@ struct CActMenu {
         "Jump",
         "Do nothing"
     };
-    int currpos = 0;
+    uint currpos = 0;
 };
 
 

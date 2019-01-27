@@ -20,7 +20,7 @@ const static std::vector<int> dirs{
 //constructor just makes a solid wall map of widthxheight
 //widthxheight map, each 'tile' is really a map of tiletag:tile* (pointers to just one immutable tile instance per tile
 Level::Level(uint depth, uint width, uint height) : width(width), height(height), depth(depth) {
-    Tile outermost = Tile(T_WALL);
+    Tile outermost = Tile(T_FLOOR);
     std::vector<Tile> col(height, outermost);
     auto t = std::vector<std::vector<Tile>>(width, col);
     for (uint i=0; i<depth; i++){
@@ -31,26 +31,47 @@ Level::Level(uint depth, uint width, uint height) : width(width), height(height)
 Level::Level() : Level::Level(1, 80, 25) {};
 
 bool Level::is_visible(uint f, uint x, uint y) const {
-    if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return false;
+    if (x < 0        ||
+        x > width-1  ||
+        y < 0        ||
+        y > height-1 ||
+        f < 0        ||
+        f > depth-1) return false;
     return tiles[f][x][y].visible;
 }
 
 bool Level::passable(uint f, uint x, uint y) const {
-    if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return false;
+    if (x < 0        ||
+        x > width-1  ||
+        y < 0        ||
+        y > height-1 ||
+        f < 0        ||
+        f > depth-1) return false;
     return pass.find(tiles[f][x][y].tag)->second;
 }
 
 bool Level::blocks_vision(uint f, uint x, uint y) {
+    if (x < 0        ||
+        x > width-1  ||
+        y < 0        ||
+        y > height-1 ||
+        f < 0        ||
+        f > depth-1) return true;
     return vblock.find(tiles[f][x][y].tag)->second;
 }
 
 Tile* Level::at(uint f, uint x, uint y) {
-    if (x < 0  || x >= width || y < 0 || y >= height || f < 0 || f >= depth ) return nullptr;
+    if (x < 0        ||
+        x > width-1  ||
+        y < 0        ||
+        y > height-1 ||
+        f < 0        ||
+        f > depth-1) return nullptr;
     return &tiles[f][x][y];
 }
 
 void Level::set_square_visible(uint f, uint x, uint y) {
-    for (uint i = 0; i < dirs.size(); i += 2) {
+    for (uint i = 0, max = dirs.size(); i < max; i += 2) {
         auto t = at(f, x+dirs[i], y+dirs[i+1]);
         if (t) {
             t->set_visible();
@@ -84,7 +105,10 @@ const std::map<TILE_TAG, bool> Level::vblock = {
 void Level::create_room(uint f, uint xi, uint yi, uint w, uint h, TILE_TAG ttag) {
     for (uint x = xi; x < xi + w; x++) {
         for (uint y = yi; y < yi + h; y++) {
-            tiles[f][x][y] = Tile(ttag);
+            Tile* t = at(f, x, y);
+            if (t){
+                *t = Tile(ttag);
+            }
         }
     }
 }
@@ -170,6 +194,15 @@ void Level::all_nonvisible() {
         }
     }
 }
+void Level::all_visible() {
+    for (uint x = 0; x < width; x++) {
+        for (uint y = 0; y < height ; y++) {
+            for (uint f = 0; f < depth ; f++) {
+                tiles[f][x][y].visible = true;
+            }
+        }
+    }
+}
 
 std::set<std::shared_ptr<Entity>> Level::get_entities_in_spot(uint f, uint x, uint y) const {
     auto out = std::set<std::shared_ptr<Entity>>();
@@ -181,4 +214,26 @@ std::set<std::shared_ptr<Entity>> Level::get_entities_in_spot(uint f, uint x, ui
     return out;
 }
 
+void lvlgen(Level* lvl) {
+    float asp = (float)lvl->width/lvl->height;
+    noise::module::Perlin perlin;
+    perlin.SetOctaveCount(3);
+    perlin.SetPersistence(0.33);
+    perlin.SetLacunarity(2.5);
+    float pwidth = 10.f,
+      pheight= pwidth * (1 / asp),
+      incx = pwidth/lvl->width,
+      incy = pheight/lvl->height;
+
+    for (int x = 0; x < lvl->width; x++ ) {
+        for (int y = 0; y < lvl->height; y++ ) {
+            double v = perlin.GetValue(x * incx, y * incy, 1.0);
+            if (v > -0.25)
+                *lvl->at(1, x, y) = Tile(T_WALL);
+            if (v <= -0.25 || v > 0.8)
+                *lvl->at(1, x, y) = Tile(T_FLOOR);
+        }
+    }
+
+}
 

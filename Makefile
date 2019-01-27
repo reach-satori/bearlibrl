@@ -3,8 +3,9 @@ EXE = build/test
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:src/%.cpp=build/%.o)
 DEP = $(OBJ:%.o=%.d)
-CXXFLAGS = -Iinclude -Wfatal-errors -Wall -MMD -fPIC -std=c++14 -g
-LDFLAGS = -Llibs -lBearLibTerminal
+INC = $(shell pkg-config --cflags libnoise) -Iinclude
+CXXFLAGS = $(INC) -Wfatal-errors -MMD -fPIC -std=c++14 -g -Wall -Wextra -Wpedantic
+LDFLAGS = -lBearLibTerminal $(shell pkg-config --libs libnoise)
 
 all: $(EXE)
 

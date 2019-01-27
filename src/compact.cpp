@@ -8,8 +8,8 @@ Positional* get_target() {
 
 static void player_attack(int x, int y) {
     printf("reached player attack \n");
-    auto& currlvl = levelmanager->get_change_currlvl();
-    auto ppos = player->get_component<Positional>(C_POSITIONAL);
+    Level const& currlvl = levelmanager->get_currlvl();
+    Positional const* ppos = player->get_component<Positional>(C_POSITIONAL);
     std::vector<Vital*> vit = currlvl.get_components_in_spot<Vital>(ppos->f(), x, y, C_VITAL);
     assert(vit.size() < 2);
     if (vit.empty()) {
@@ -22,7 +22,8 @@ static void player_attack(int x, int y) {
 
 static void player_drop_item() {
     std::shared_ptr<Entity> item = retrieve_chosen_item();
-    auto inv = player->get_component<Inventorial>(C_INV);
+    Inventorial* inv = player->get_component<Inventorial>(C_INV);
+    assert(inv && "player should always have an inventory");
     int status = inv->remove_from_inventory(item);
     switch(status) {
         case 0:
@@ -38,7 +39,7 @@ static void player_drop_item() {
 
 static void player_pickup_confirm() {
     std::shared_ptr<Entity> item = retrieve_chosen_item();
-    auto status = item_pickup(player.get(), item);
+    int status = item_pickup(player.get(), item);
     switch (status) {
         case 0:
             You(txt("picked up a %s.", item->name.c_str()).c_str());
@@ -55,15 +56,15 @@ static void player_pickup_confirm() {
 };
 
 static void target_move(int x, int y) {
-    auto tpos = get_target();
+    Positional* tpos = get_target();
     tpos->setpos(tpos->f(), tpos->x() + x, tpos->y() + y);
     camera.center_after_check(tpos);
 }
 
 static void target_zmove(int dir) {
-    auto tpos = get_target();
-    auto fl = tpos->f();
-    auto& lvl = levelmanager->get_change_currlvl();
+    Positional* tpos = get_target();
+    uint fl = tpos->f();
+    Level& lvl = levelmanager->get_currlvl();
     if (fl + dir < 0 || fl + dir >= lvl.depth) {
         return;
     }
@@ -72,16 +73,16 @@ static void target_zmove(int dir) {
 }
 
 static void player_move(int x, int y) {
-    auto ppos = player->get_component<Positional>(C_POSITIONAL);
+    Positional* ppos = player->get_component<Positional>(C_POSITIONAL);
     move(player.get(),ppos->f(), x, y);
     camera.center_on_player();
 };
 
 static void player_zmove(int dir) {
-    auto ppos = player->get_component<Positional>(C_POSITIONAL);
-    auto pfloor = ppos->f();
-    auto& lvl = levelmanager->get_change_currlvl();
-    auto tile = lvl.at(pfloor, ppos->x(), ppos->y());
+    Positional* ppos = player->get_component<Positional>(C_POSITIONAL);
+    uint pfloor = ppos->f();
+    Level& lvl = levelmanager->get_currlvl();
+    Tile* tile = lvl.at(pfloor, ppos->x(), ppos->y());
 
     if (tile->tag != T_RAMP) {
         tolog("No ramps to climb here.");
@@ -105,12 +106,11 @@ static void player_inventory_open() {
 
 static void player_pickup_open() {
     Positional const * ppos = player->get_component<Positional const>(C_POSITIONAL);
-    auto icarr = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->f(), ppos->x(), ppos->y(), C_CARR);
+    std::vector<Carrial*> icarr = levelmanager->get_currlvl().get_components_in_spot<Carrial>(ppos->f(), ppos->x(), ppos->y(), C_CARR);
 
     if (icarr.empty()) { // no item on the ground
         tolog("Nothing to pick up here.");
         input.domainstack.pop();
-
     }
     /**else if (icarr.size() == 1) { //shortcut the pickup menu if there's only one item to get
      * currently commented out because this function is only entered if game_running is false, allowing
@@ -131,13 +131,13 @@ static void player_pickup_open() {
         input.domainstack.pop();
     }**/
     else { // initialize the menu for pick up of multiple items
-        auto items = levelmanager->get_const_currlvl().get_components_in_spot<Carrial>(ppos->f(), ppos->x(), ppos->y(), C_CARR);
+        std::vector<Carrial*> items = levelmanager->get_currlvl().get_components_in_spot<Carrial>(ppos->f(), ppos->x(), ppos->y(), C_CARR);
         std::set<std::shared_ptr<Entity>> out;
         for (auto& it : items) {
             if (it->parent.lock()->get_component<Positional>(C_POSITIONAL) != nullptr)
                 out.insert(it->parent.lock());
         }
-        auto inv = player->get_component<Inventorial>(C_INV);
+        Inventorial* inv = player->get_component<Inventorial>(C_INV);
         item_menu_update(out, inv->maxweight, inv->currload);
     }
 

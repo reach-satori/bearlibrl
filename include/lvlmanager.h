@@ -19,8 +19,7 @@ class LevelManager {
     public:
         LevelManager();
         std::set<std::shared_ptr<Entity>> const &get_current_entities(void) const;
-        Level const &get_const_currlvl(void) const;
-        Level &get_change_currlvl(void) const;
+        Level &get_currlvl(void);
         bool entity_check (std::shared_ptr<Entity> const &) const;
         bool level_check (uint tag) const;
         void add_entity_to_currlvl(const std::shared_ptr<Entity>& ent);
@@ -33,7 +32,7 @@ class LevelManager {
         std::vector<T*> get_current_components(COMPONENT_TAG tag) const {
             auto out = std::vector<T*>();
             for (const auto& e : get_current_entities()) {
-                auto ptr = e->get_component<T>(tag);
+                T* ptr = e->get_component<T>(tag);
                 if (!ptr) continue; else out.push_back(ptr);
             }
             return out;

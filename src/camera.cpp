@@ -5,7 +5,7 @@
 Camera::Camera() {};
 
 void Camera::draw_world() const {
-    Level& lvl = levelmanager->get_change_currlvl();
+    Level& lvl = levelmanager->get_currlvl();
     const int camx = pos[0];
     const int camy = pos[1];
 
@@ -23,14 +23,14 @@ void Camera::draw_world() const {
 }
 
 void Camera::draw_entities(void) const {
-    for (auto const posin : levelmanager->get_current_components<Positional const>(C_POSITIONAL)) {
+    for (auto const& posin : levelmanager->get_current_components<Positional const>(C_POSITIONAL)) {
         assert(posin);
         if (!on_camera(posin))
             continue;
         terminal_put(posin->x()-pos[0], posin->y()-pos[1], posin->codepoint);
     }
     if (input.domainstack.top() == CMD_LOOK) {
-        auto tpos = get_target();
+        Positional const* tpos = get_target();
         terminal_put(tpos->x()-pos[0], tpos->y()-pos[1], tpos->codepoint);
     }
 }
@@ -66,7 +66,7 @@ bool Camera::on_camera(Positional const * posin) const {
 }
 
 void Camera::chfloor(int dir) {
-    auto lvl = levelmanager->get_change_currlvl();
+    Level const& lvl = levelmanager->get_currlvl();
     if (floor + dir < 0 || floor + dir >= lvl.depth) {
         return;
     }
